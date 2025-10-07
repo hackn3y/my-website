@@ -1,0 +1,8 @@
+{
+  "name": "my-portfolio-shop",
+  "version": "1.0.0",
+  "description": "Portfolio and shop website",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
