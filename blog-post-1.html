@@ -124,7 +124,7 @@
         }
 
         .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
-        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
 
         nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
 
@@ -135,6 +135,38 @@
             padding: 0.25rem 0.5rem;
             border-radius: 10px;
             backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
         }
 
         .cart-btn {
@@ -289,6 +321,44 @@
         }
 
         @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
             .blog-post h1 {
                 font-size: 2rem;
             }
@@ -359,9 +429,18 @@
 
             <p>To handle the increased power, the rear end received a complete upgrade with axles, bearings, and differential from a V8 Camaro. The exhaust system will feature long tube headers and a custom-built exhaust. Once running, the engine will receive professional dyno tuning for optimal performance.</p>
 
+            <h2>Engine Paint & Preparation</h2>
+
+            <p>Before final assembly, I took the time to properly paint the LQ4 engine block. Starting with a thorough cleaning and degreasing, I applied high-temperature engine primer followed by Chevrolet orange engine enamel. This not only gives the engine a clean, professional appearance but also protects the block from corrosion and makes it easier to spot any future leaks.</p>
+
+            <div class="image-gallery" style="margin: 2rem 0;">
+                <img src="primer.jpg" alt="LQ4 engine block with primer coat" loading="lazy">
+                <img src="orange.jpg" alt="LQ4 engine painted Chevrolet orange" loading="lazy">
+            </div>
+
             <h2>Current Status</h2>
 
-            <p>The build is in the assembly phase. The engine has been fully rebuilt with the BTR components, and the transmission is being prepared with the Stage 2 package. Current focus is on the fabrication work—tunnel modification, wiring harness integration, and exhaust fitment. Follow along as I document the entire process from teardown to first startup!</p>
+            <p>The build is progressing well. The engine has been fully rebuilt with the BTR components and freshly painted, and the transmission is being prepared with the Stage 2 package. Current focus is on the fabrication work—tunnel modification, wiring harness integration, and exhaust fitment. Follow along as I document the entire process from teardown to first startup!</p>
 
             <div style="width: 315px; height: 560px; margin: 2rem auto; position: relative;">
               <iframe

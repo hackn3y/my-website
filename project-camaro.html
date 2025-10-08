@@ -118,7 +118,7 @@
         }
 
         .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
-        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
 
         nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
 
@@ -128,6 +128,38 @@
             padding: 0.25rem 0.5rem;
             border-radius: 10px;
             backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
         }
 
         .cart-btn {
@@ -372,6 +404,44 @@
         }
 
         @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
             .project-detail h1 {
                 font-size: 2rem;
             }

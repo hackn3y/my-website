@@ -24,8 +24,37 @@
             document.body.insertBefore(container, document.body.firstChild);
             // dispatch event so other scripts can initialize
             window.dispatchEvent(new CustomEvent('header:loaded'));
+
+            // Initialize hamburger menu
+            initHamburgerMenu();
         } catch (err) {
             console.error('Failed to load header partial:', err);
+        }
+    }
+
+    function initHamburgerMenu() {
+        const hamburger = document.getElementById('hamburger-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+
+                // Update aria-expanded
+                const isExpanded = navMenu.classList.contains('active');
+                hamburger.setAttribute('aria-expanded', isExpanded);
+            });
+
+            // Close menu when clicking a link
+            const navLinks = navMenu.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                });
+            });
         }
     }
 

@@ -118,7 +118,7 @@
         }
 
         .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
-        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
 
         nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
 
@@ -128,6 +128,38 @@
             padding: 0.25rem 0.5rem;
             border-radius: 10px;
             backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
         }
 
         .cart-btn {
@@ -384,6 +416,48 @@
         }
 
         @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
             .project-detail h1 {
                 font-size: 2rem;
             }
@@ -496,10 +570,38 @@
                 <li>Put It to Work: Prepare for Cybersecurity Jobs</li>
             </ol>
 
-            <h2>Skills Applied to Real-World Scenarios</h2>
-            <p>The certificate program emphasizes practical, real-world application. I gained experience responding to simulated security incidents, analyzing actual threat scenarios, and using the same tools and frameworks employed by security teams at major organizations.</p>
+            <h2>Automating Cybersecurity Tasks with Python</h2>
+            <p>A key component of the program focused on using Python for security automation. I developed skills in writing Python scripts to automate common cybersecurity tasks, analyze security logs, and streamline incident response workflows.</p>
 
-            
+            <h3>Python Skills & Applications</h3>
+            <ul>
+                <li><strong>Security Automation:</strong> Writing scripts to automate repetitive security tasks such as file integrity monitoring, log parsing, and alert generation</li>
+                <li><strong>Data Analysis:</strong> Parsing and analyzing security logs using Python libraries to identify patterns and anomalies</li>
+                <li><strong>File Operations:</strong> Automated file handling, directory scanning, and hash verification for security purposes</li>
+                <li><strong>Regular Expressions:</strong> Pattern matching for detecting security indicators in logs and network traffic</li>
+                <li><strong>API Integration:</strong> Interacting with security tools and services through APIs for automated threat intelligence gathering</li>
+                <li><strong>String Manipulation:</strong> Processing and filtering security data from various sources</li>
+                <li><strong>Error Handling:</strong> Implementing robust error handling for production security scripts</li>
+            </ul>
+
+            <h3>Example Projects</h3>
+            <ul>
+                <li>Automated login attempt analyzer that parses authentication logs and flags suspicious activity</li>
+                <li>File integrity checker using hash algorithms to detect unauthorized modifications</li>
+                <li>IP address parser and validator for network security analysis</li>
+                <li>Security alert script that monitors system events and sends notifications</li>
+                <li>User access management tool for reviewing and auditing permissions</li>
+            </ul>
+
+            <div class="document-links" style="margin-top: 2rem;">
+                <h3>📎 Python Security Automation Code</h3>
+                <ul>
+                    <li><a href="python.pdf" target="_blank" rel="noopener">View Python Code Examples (PDF)</a> - Collection of security automation scripts demonstrating practical Python applications in cybersecurity</li>
+                </ul>
+            </div>
+
+            <h2>Skills Applied to Real-World Scenarios</h2>
+            <p>The certificate program emphasizes practical, real-world application. I gained experience responding to simulated security incidents, analyzing actual threat scenarios, and using the same tools and frameworks employed by security teams at major organizations. The Python automation skills are directly applicable to Security Operations Center (SOC) environments where efficiency and automation are critical.</p>
 
             <!-- Certificate embed block -->
             <div class="certificate-block" aria-labelledby="cert-heading">

@@ -7,8 +7,5 @@ node_modules/
 *.exe
 *.msi
 
-# PDFs that might contain sensitive info
-cdr-report.pdf
-
 # Optional: Uncomment if you don't want to commit resume
 # resume.pdf
