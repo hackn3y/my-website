@@ -32,8 +32,8 @@ exports.handler = async (event) => {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${event.headers.origin || 'https://yourdomain.com'}?success=true`,
-      cancel_url: `${event.headers.origin || 'https://yourdomain.com'}?canceled=true`,
+      success_url: `${event.headers.origin || 'https://ryanhackney.com'}?success=true`,
+      cancel_url: `${event.headers.origin || 'https://ryanhackney.com'}?canceled=true`,
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'], // Add your shipping countries
       },

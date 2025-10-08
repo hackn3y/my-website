@@ -1,0 +1,15 @@
+# Local Netlify folder
+.netlify
+node_modules/
+.DS_Store
+
+# Installers and executables
+*.exe
+*.msi
+
+# PDFs that might contain sensitive info
+cdr-report.pdf
+goog.pdf
+
+# Optional: Uncomment if you don't want to commit resume
+# resume.pdf

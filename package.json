@@ -4,5 +4,11 @@
   "description": "Portfolio and shop website",
   "dependencies": {
     "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  },
+  "scripts": {
+    "test:smoke": "npx playwright test tests/smoke.spec.js --browser=chromium"
   }
 }

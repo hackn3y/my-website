@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cybersecurity audit project demonstrating network analysis, threat detection, and security assessment skills.">
+    <meta name="author" content="Ryan Hackney">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-security.html">
+    <meta property="og:title" content="Security Audit Project - Ryan Hackney">
+    <meta property="og:description" content="Comprehensive security audit demonstrating cybersecurity analysis and threat detection capabilities.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-security.html">
+    <meta property="twitter:title" content="Security Audit Project - Ryan Hackney">
+    <meta property="twitter:description" content="Comprehensive security audit demonstrating cybersecurity analysis and threat detection capabilities.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#ff6b35">
+    
+    <title>Security Audit Project - Ryan Hackney</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+        
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Reusable helper to ensure list markers and content align consistently */
+        .aligned-lists ul,
+        .aligned-lists ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.6rem; /* consistent left padding for markers */
+            list-style-position: outside;
+        }
+
+        .aligned-lists ol { padding-left: 1.95rem; }
+
+        .aligned-lists li { margin-bottom: 0.45rem; }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        /* Ensure ordered and unordered lists align consistently */
+        .project-content ul,
+        .project-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            list-style-position: outside; /* keep markers outside the content box */
+        }
+
+        /* Slightly more space for numbered lists so multi-digit markers don't collide */
+        .project-content ol {
+            padding-left: 1.9rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        /* PDF embed container for certificates */
+        .certificate-block {
+            margin: 2rem 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .certificate-frame {
+            width: 100%;
+            height: 480px;
+            border: none;
+            border-radius: 6px;
+            display: block;
+            background: white;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .document-links {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-links h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .document-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .document-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-links a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+        
+        <h1>Google Cybersecurity Professional Certificate</h1>
+        
+        <div class="project-meta">
+            <strong>Issuer:</strong> Google (via Coursera) • <strong>Year:</strong> 2024-2025
+            <div class="project-tags">
+                <span class="tag">Cybersecurity</span>
+                <span class="tag">Network Security</span>
+                <span class="tag">SIEM Tools</span>
+                <span class="tag">Risk Management</span>
+            </div>
+        </div>
+
+    <div class="project-content aligned-lists">
+            <h2>Program Overview</h2>
+            <p>Completed Google's comprehensive Cybersecurity Professional Certificate program, gaining job-ready skills in cybersecurity fundamentals, network security, threat detection, incident response, and security operations. The program provides hands-on experience with industry-standard tools and frameworks used by security professionals.</p>
+
+            <h2>Core Competencies Developed</h2>
+            
+            <h3>Security Foundations</h3>
+            <ul>
+                <li>Understanding of the CIA triad (Confidentiality, Integrity, Availability)</li>
+                <li>Security frameworks and controls (NIST CSF, OWASP)</li>
+                <li>Threat actor types and attack vectors</li>
+                <li>Security ethics and governance</li>
+            </ul>
+
+            <h3>Network Security</h3>
+            <ul>
+                <li>Network protocols and architecture (TCP/IP, DNS, HTTP/HTTPS)</li>
+                <li>Network security hardening techniques</li>
+                <li>Firewall and VPN configuration principles</li>
+                <li>Intrusion Detection Systems (IDS) and Intrusion Prevention Systems (IPS)</li>
+                <li>Packet analysis using Wireshark and tcpdump</li>
+            </ul>
+
+            <h3>Linux & Command Line</h3>
+            <ul>
+                <li>Linux file system navigation and permissions</li>
+                <li>Bash scripting for security automation</li>
+                <li>SQL queries for security log analysis</li>
+                <li>System hardening and configuration</li>
+            </ul>
+
+            <h3>Security Information and Event Management (SIEM)</h3>
+            <ul>
+                <li>SIEM tool operation (Splunk, Chronicle)</li>
+                <li>Log analysis and event correlation</li>
+                <li>Query writing for security investigations</li>
+                <li>Dashboard creation for security monitoring</li>
+            </ul>
+
+            <h3>Incident Response & Detection</h3>
+            <ul>
+                <li>Incident detection and analysis methodologies</li>
+                <li>Incident response lifecycle (NIST framework)</li>
+                <li>Digital forensics fundamentals</li>
+                <li>Playbook development for incident handling</li>
+                <li>Post-incident documentation and reporting</li>
+            </ul>
+
+            <h3>Vulnerability Assessment</h3>
+            <ul>
+                <li>Vulnerability scanning and assessment techniques</li>
+                <li>Threat modeling and risk analysis</li>
+                <li>Common vulnerabilities (CVE database, MITRE ATT&CK)</li>
+                <li>Penetration testing fundamentals</li>
+            </ul>
+
+            <h2>Hands-On Projects & Labs</h2>
+            <p>Throughout the certificate program, I completed numerous hands-on labs and projects including:</p>
+            <ul>
+                <li>Analyzing network traffic with Wireshark to identify security threats</li>
+                <li>Using Splunk and Chronicle to investigate security incidents</li>
+                <li>Writing Python scripts for security automation tasks</li>
+                <li>Conducting security audits using NIST Cybersecurity Framework</li>
+                <li>Documenting incidents and creating incident response playbooks</li>
+                <li>Performing file integrity checks and hash verification</li>
+            </ul>
+
+            <h2>Course Structure</h2>
+            <p>The certificate consists of 8 comprehensive courses:</p>
+            <ol>
+                <li>Foundations of Cybersecurity</li>
+                <li>Play It Safe: Manage Security Risks</li>
+                <li>Connect and Protect: Networks and Network Security</li>
+                <li>Tools of the Trade: Linux and SQL</li>
+                <li>Assets, Threats, and Vulnerabilities</li>
+                <li>Sound the Alarm: Detection and Response</li>
+                <li>Automate Cybersecurity Tasks with Python</li>
+                <li>Put It to Work: Prepare for Cybersecurity Jobs</li>
+            </ol>
+
+            <h2>Skills Applied to Real-World Scenarios</h2>
+            <p>The certificate program emphasizes practical, real-world application. I gained experience responding to simulated security incidents, analyzing actual threat scenarios, and using the same tools and frameworks employed by security teams at major organizations.</p>
+
+            
+
+            <!-- Certificate embed block -->
+            <div class="certificate-block" aria-labelledby="cert-heading">
+                <h2 id="cert-heading">Certificate</h2>
+                <p>View my Google Cybersecurity Professional Certificate (PDF). You can scroll inside the viewer or open the file in a new tab.</p>
+                <div class="certificate-embed">
+                    <embed src="goog.pdf" type="application/pdf" class="certificate-frame" aria-label="Google Cybersecurity Professional Certificate PDF">
+                    <!-- Fallback for browsers that don't support embed -->
+                    <p>If the certificate does not display, <a href="goog.pdf" target="_blank" rel="noopener">open the PDF in a new tab</a>.</p>
+                </div>
+            </div>
+
+            <h2>Professional Impact</h2>
+            <p>This certificate has provided me with industry-recognized credentials and practical cybersecurity skills that complement my ECE background. The combination of electrical/computer engineering knowledge and cybersecurity expertise positions me well for roles in security engineering, network security, or security operations.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

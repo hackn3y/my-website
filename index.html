@@ -1,11 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Portfolio & Shop</title>
+    <meta name="description" content="Ryan Hackney - ECE Graduate from Ohio State, Cybersecurity Professional, Developer. Shop handmade farm products including raw honey, soy candles, and handmade soap. Follow my Camaro build and technical projects.">
+    <meta name="keywords" content="Ryan Hackney, Cybersecurity, ECE, Ohio State, Web Developer, Raw Honey, Handmade Soap, Camaro Build">
+    <meta name="author" content="Ryan Hackney">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ryanhackney.com/">
+    <meta property="og:title" content="Ryan Hackney - Portfolio & Shop">
+    <meta property="og:description" content="ECE Grad • Cybersecurity • Developer • Farmer. Shop handmade products and follow my technical projects.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/">
+    <meta property="twitter:title" content="Ryan Hackney - Portfolio & Shop">
+    <meta property="twitter:description" content="ECE Grad • Cybersecurity • Developer • Farmer. Shop handmade products and follow my technical projects.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#ff6b35">
+    
+    <title>Ryan Hackney - Portfolio & Shop</title>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,17 +68,123 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Navigation */
+        /* Theme toggle: inline icon inside nav controls (not floating) */
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
         nav {
-            background: #fff;
-            padding: 1rem 5%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* nav inner wrapper to center links while allowing right-aligned controls */
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            flex: 1 1 auto;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex: 0 0 auto;
+        }
+
+        /* Control group visual: subtle background and rounded border to group toggle + cart */
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        /* Small circular badge shown on the cart icon when items are in the cart */
+        .cart-badge {
+            position: relative;
+        }
+
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .cart-btn:hover,
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+        }
+
+        /* Screen-reader-only helper to keep labels accessible but visually hidden */
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
         }
 
         nav ul {
@@ -34,30 +193,45 @@
             justify-content: center;
             gap: 2rem;
             flex-wrap: wrap;
+            align-items: center;
+        }
+        /* Nav link colors: default orange, visited a distinct warm variant */
+        :root {
+            --nav-link-color: var(--accent-primary); /* orange */
+            --nav-link-visited: #c85a00; /* darker warm orange (not purple) */
         }
 
         nav a {
+            color: var(--nav-link-color);
+            position: relative;
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
 
         nav a:hover {
-            color: #007bff;
+            color: var(--accent-hover);
         }
 
-        /* Hero Section */
+        nav a:visited {
+            color: var(--nav-link-visited);
+        }
+
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: white;
             padding: 6rem 5%;
             text-align: center;
+            border-bottom: 3px solid var(--accent-primary);
+        }
+
+        body.light-mode .hero {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
         }
 
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .hero p {
@@ -68,19 +242,21 @@
         .btn {
             display: inline-block;
             padding: 0.8rem 2rem;
-            background: white;
-            color: #667eea;
+            background: var(--accent-primary);
+            color: white;
             text-decoration: none;
             border-radius: 5px;
             font-weight: 600;
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            border: 2px solid var(--accent-primary);
         }
 
         .btn:hover {
+            background: var(--accent-hover);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -91,12 +267,24 @@
             text-align: center;
             font-size: 2.5rem;
             margin-bottom: 3rem;
-            color: #333;
+            color: var(--text-primary);
+            position: relative;
+            padding-bottom: 1rem;
         }
 
-        /* About Section */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent-primary);
+        }
+
         #about {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
         }
 
         .about-content {
@@ -111,9 +299,129 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 2rem;
+            border: 4px solid var(--accent-primary);
+            box-shadow: 0 5px 20px var(--shadow);
         }
 
-        /* Blog Section */
+        .about-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content strong {
+            color: var(--accent-primary);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+            border-color: var(--accent-primary);
+        }
+
+        .skill-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .skill-card ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .skill-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .skill-card li:before {
+            content: "▹ ";
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        #projects {
+            background: var(--bg-secondary);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-primary);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px var(--shadow);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+        }
+
+        .project-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .project-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .project-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+            text-decoration-color: #c85a00;
+        }
+
         .blog-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -121,15 +429,17 @@
         }
 
         .blog-card {
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px var(--shadow);
             transition: transform 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .blog-card:hover {
             transform: translateY(-5px);
+            border-color: var(--accent-primary);
         }
 
         .blog-card img {
@@ -144,29 +454,38 @@
 
         .blog-card h3 {
             margin-bottom: 0.5rem;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .blog-card .date {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
 
         .blog-card p {
-            color: #555;
+            color: var(--text-secondary);
             margin-bottom: 1rem;
         }
 
         .read-more {
-            color: #667eea;
+            color: var(--accent-primary);
             text-decoration: none;
             font-weight: 600;
         }
 
-        /* Shop Section */
+        .blog-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .blog-card a:hover .read-more {
+            text-decoration: underline;
+            text-decoration-color: #c85a00;
+        }
+
         #shop {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
         }
 
         .products-grid {
@@ -176,15 +495,18 @@
         }
 
         .product-card {
-            background: white;
+            background: var(--bg-primary);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px var(--shadow);
             transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
         }
 
         .product-card:hover {
             transform: translateY(-5px);
+            border-color: var(--accent-primary);
         }
 
         .product-card img {
@@ -199,11 +521,16 @@
 
         .product-info h3 {
             margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .product-info p {
+            color: var(--text-secondary);
         }
 
         .price {
             font-size: 1.5rem;
-            color: #667eea;
+            color: var(--accent-primary);
             font-weight: 700;
             margin: 1rem 0;
         }
@@ -211,7 +538,7 @@
         .buy-now {
             width: 100%;
             padding: 0.8rem;
-            background: #667eea;
+            background: var(--accent-primary);
             color: white;
             border: none;
             border-radius: 5px;
@@ -222,15 +549,14 @@
         }
 
         .buy-now:hover {
-            background: #5568d3;
+            background: var(--accent-hover);
         }
 
         .buy-now:disabled {
-            background: #ccc;
+            background: #666;
             cursor: not-allowed;
         }
 
-        /* Contact Section */
         .contact-form {
             max-width: 600px;
             margin: 0 auto;
@@ -244,16 +570,25 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
+            color: var(--text-primary);
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
             padding: 0.8rem;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             font-size: 1rem;
             font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
 
         .form-group textarea {
@@ -264,7 +599,7 @@
         .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: #667eea;
+            background: var(--accent-primary);
             color: white;
             border: none;
             border-radius: 5px;
@@ -275,15 +610,15 @@
         }
 
         .submit-btn:hover {
-            background: #5568d3;
+            background: var(--accent-hover);
         }
 
-        /* Footer */
         footer {
-            background: #333;
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
             text-align: center;
             padding: 2rem 5%;
+            border-top: 1px solid var(--border-color);
         }
 
         .social-links {
@@ -291,17 +626,16 @@
         }
 
         .social-links a {
-            color: white;
+            color: var(--text-primary);
             text-decoration: none;
             margin: 0 1rem;
             transition: color 0.3s;
         }
 
         .social-links a:hover {
-            color: #667eea;
+            color: var(--accent-primary);
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -309,7 +643,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -320,13 +654,14 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--bg-primary);
             padding: 2rem;
             border-radius: 10px;
             max-width: 500px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            border: 1px solid var(--border-color);
         }
 
         .modal-header {
@@ -338,6 +673,7 @@
 
         .modal-header h2 {
             margin: 0;
+            color: var(--text-primary);
         }
 
         .close-modal {
@@ -345,7 +681,11 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #666;
+            color: var(--text-secondary);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-primary);
         }
 
         .checkout-form {
@@ -356,7 +696,8 @@
             display: flex;
             justify-content: space-between;
             padding: 1rem 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
         }
 
         .checkout-total {
@@ -364,21 +705,115 @@
             font-weight: 700;
             margin-top: 1rem;
             text-align: right;
+            color: var(--accent-primary);
         }
 
-        #card-element {
-            border: 1px solid #ddd;
+        /* Newsletter Section */
+        #newsletter {
+            background: var(--bg-secondary);
+            border-top: 2px solid var(--accent-primary);
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-content h2 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-content p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
-            padding: 1rem;
-            margin: 1rem 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
         }
 
-        .card-errors {
-            color: #dc3545;
-            margin: 0.5rem 0;
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
 
-        /* Responsive */
+        .newsletter-form button {
+            padding: 0.8rem 2rem;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--accent-hover);
+        }
+
+        .product-card {
+            cursor: pointer;
+        }
+
+        .quick-view-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .quick-view-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .quick-view-info h2 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .quick-view-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .quick-view-price {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            font-weight: 700;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .quick-view-content {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-view-image {
+                height: 300px;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2rem;
@@ -391,234 +826,465 @@
             nav ul {
                 gap: 1rem;
             }
+
+            .theme-toggle {
+                top: 0.5rem;
+                right: 0.5rem;
+                padding: 0.3rem;
+                font-size: 1rem;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                justify-content: center;
+            }
+
+            /* Hide text on small screens */
+            #theme-text {
+                display: none;
+            }
+        }
+
+        /* product card focus/hover affordances for accessibility */
+        .product-card:hover,
+        .product-card:focus {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+            outline: none;
+        }
+
+        .product-card:focus {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.35);
+            border-color: var(--accent-primary);
+        }
+
+        /* Strong, but subtle focus ring for keyboard users. We show ring when
+           keyboard navigation is detected (html.user-is-tabbing) or when
+           :focus-visible is supported by the browser. */
+        html.user-is-tabbing .focus-ring:focus,
+        html.user-is-tabbing .product-card:focus,
+        html.user-is-tabbing .theme-toggle:focus,
+        html.user-is-tabbing .buy-now:focus,
+        html.user-is-tabbing .cart-btn:focus,
+        .focus-ring:focus-visible,
+        .product-card:focus-visible,
+        .theme-toggle:focus-visible,
+        .buy-now:focus-visible,
+        .cart-btn:focus-visible {
+            outline: 3px solid rgba(255,107,53,0.15);
+            box-shadow: 0 0 0 4px rgba(255,107,53,0.12), 0 12px 24px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        /* fallback focus for browsers without :focus-visible support */
+        html.user-is-tabbing .product-card:focus,
+        html.user-is-tabbing .theme-toggle:focus,
+        html.user-is-tabbing .buy-now:focus,
+        html.user-is-tabbing .cart-btn:focus {
+            outline: 2px dashed rgba(255,107,53,0.35);
+            outline-offset: 3px;
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="#shop">Shop</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#" id="cart-link" onclick="openCheckout()">Cart (<span id="cart-count">0</span>)</a></li>
-        </ul>
-    </nav>
 
-    <!-- Hero Section -->
+<body>
+    <!-- theme toggle is placed inside the nav controls -->
+
+    <!-- Header will be loaded dynamically from partials/header.html -->
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
     <section id="home" class="hero">
-        <h1>Hi, I'm Your Name</h1>
-        <p>Designer • Writer • Creator</p>
-        <a href="#shop" class="btn">Shop My Work</a>
+        <h1>Hi, I'm Ryan Hackney</h1>
+        <p>ECE Grad • Cybersecurity • Developer</p>
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="#shop" class="btn">Check Out My Shop</a>
+            <a href="resume.pdf" class="btn" style="background: #28a745; color: white;" download>Download Resume</a>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; justify-content: center;">
+            <a href="https://github.com/hackn3y" style="color: white; font-size: 1.5rem;" target="_blank">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/" style="color: white; font-size: 1.5rem;"
+                target="_blank">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+            </a>
+        </div>
     </section>
 
-    <!-- About Section -->
     <section id="about">
         <div class="container">
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
-                <img src="https://via.placeholder.com/200" alt="Your photo">
-                <p>Welcome! I'm a passionate creator who loves to share my work with the world. This is where I document my journey, share my thoughts, and offer products I've carefully crafted.</p>
-                <p>Replace this text with your own story, what drives you, and what visitors can expect from your site.</p>
+                <img src="profile.jpg" alt="Ryan Hackney">
+                <p>I'm an Electrical and Computer Engineering graduate from The Ohio State University with a Google
+                    Cybersecurity Certificate, passionate about technology, security, and building things - whether it's
+                    secure systems, performance cars, or a thriving farm.</p>
+
+                <p><strong>Currently seeking opportunities in cybersecurity and software development.</strong></p>
+
+                <p>When I'm not coding or studying security, you'll find me working on my farm raising goats, chickens,
+                    and bees (that's where the honey comes from!), building high-performance cars (full bolt-on BMW 335i
+                    and a Camaro project), or playing guitar with my German Shepherd by my side.</p>
+
+                <p>I started this site to showcase my technical projects and sell products from my farm. Everything in
+                    the shop is handmade and the honey is locally sourced. Check out my blog for updates on my Camaro build and tech
+                    projects!</p>
+
+                <p><strong>Education & Certifications:</strong><br>
+                    B.S. Electrical and Computer Engineering - The Ohio State University<br>
+                    Google Cybersecurity Professional Certificate</p>
             </div>
         </div>
     </section>
 
-    <!-- Blog Section -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>🔒 Cybersecurity</h3>
+                    <ul>
+                        <li>Network Security</li>
+                        <li>Threat Analysis</li>
+                        <li>Security Auditing</li>
+                        <li>Incident Response</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>💻 Development</h3>
+                    <ul>
+                        <li>Python</li>
+                        <li>JavaScript</li>
+                        <li>Web Development</li>
+                        <li>Linux/Unix</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>⚡ Engineering</h3>
+                    <ul>
+                        <li>Circuit Design</li>
+                        <li>Embedded Systems</li>
+                        <li>Signal Processing</li>
+                        <li>Hardware/Software Integration</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>🔧 Other Skills</h3>
+                    <ul>
+                        <li>Automotive Performance Tuning</li>
+                        <li>Agriculture & Beekeeping</li>
+                        <li>Business Operations</li>
+                        <li>Problem Solving</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">Technical Projects</h2>
+            <div class="projects-grid">
+                <a href="project-portfolio.html" class="project-card">
+                    <h3>Portfolio E-Commerce Website</h3>
+                    <p>Built this full-stack website from scratch with integrated Stripe payments, Netlify serverless
+                        functions, and custom domain setup. Showcases both technical and business capabilities.</p>
+                    <div class="project-tags">
+                        <span class="tag">HTML/CSS/JS</span>
+                        <span class="tag">Stripe API</span>
+                        <span class="tag">Netlify</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
+                <a href="project-security.html" class="project-card">
+                    <h3>Google Cybersecurity Certificate</h3>
+                    <p>Completed Google's professional Cybersecurity Certificate, gaining hands-on experience with security frameworks, network analysis, threat detection, and incident response.</p>
+                    <div class="project-tags">
+                        <span class="tag">Cybersecurity</span>
+                        <span class="tag">Network Security</span>
+                        <span class="tag">SIEM Tools</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
+                <a href="project-embedded.html" class="project-card">
+                    <h3>Embedded Systems Project</h3>
+                    <p>Hardware/software integration project from OSU showcasing microcontroller programming, circuit design, and systems engineering skills.</p>
+                    <div class="project-tags">
+                        <span class="tag">C/C++</span>
+                        <span class="tag">Microcontrollers</span>
+                        <span class="tag">Hardware</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
+                <a href="project-bmw.html" class="project-card">
+                    <h3>BMW 335i Performance Build</h3>
+                    <p>Full bolt-on build with custom tuning. Demonstrates hands-on technical skills, troubleshooting,
+                        and systematic problem-solving in a complex mechanical/electrical system.</p>
+                    <div class="project-tags">
+                        <span class="tag">Automotive</span>
+                        <span class="tag">Tuning</span>
+                        <span class="tag">Diagnostics</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
+                <a href="project-camaro.html" class="project-card">
+                    <h3>Camaro Build Project</h3>
+                    <p>Complete build and restoration of a Camaro from the ground up. Showcases fabrication, electrical systems, project management, and systematic problem-solving skills.</p>
+                    <div class="project-tags">
+                        <span class="tag">Restoration</span>
+                        <span class="tag">Fabrication</span>
+                        <span class="tag">Systems Engineering</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <section id="blog">
         <div class="container">
             <h2 class="section-title">Latest Posts</h2>
             <div class="blog-grid">
                 <article class="blog-card">
-                    <img src="https://via.placeholder.com/400x200" alt="Blog post">
-                    <div class="blog-card-content">
-                        <h3>My First Blog Post</h3>
-                        <p class="date">October 7, 2025</p>
-                        <p>This is a brief excerpt from your blog post. Write something engaging to draw readers in...</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <img src="https://via.placeholder.com/400x200" alt="Blog post">
-                    <div class="blog-card-content">
-                        <h3>Behind the Scenes</h3>
-                        <p class="date">October 5, 2025</p>
-                        <p>Take a look at how I create my products and what inspires my work...</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
-                </article>
-
-                <article class="blog-card">
-                    <img src="https://via.placeholder.com/400x200" alt="Blog post">
-                    <div class="blog-card-content">
-                        <h3>Tips and Tricks</h3>
-                        <p class="date">October 1, 2025</p>
-                        <p>Here are some useful tips I've learned along the way that might help you too...</p>
-                        <a href="#" class="read-more">Read More →</a>
-                    </div>
+                    <a href="blog-post-1.html" class="card-link">
+                        <img src="camaro.jpg" alt="Building a Camaro">
+                        <div class="blog-card-content">
+                            <h3>Building My Dream Camaro</h3>
+                            <p class="date">October 7, 2025</p>
+                            <p>Follow along as I document the journey of building and restoring my Camaro from the
+                                ground up...</p>
+                            <span class="read-more">Read More →</span>
+                        </div>
+                    </a>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- Shop Section -->
     <section id="shop">
         <div class="container">
             <h2 class="section-title">Shop</h2>
             <div class="products-grid" id="products-container">
-                <!-- Products will be loaded by JavaScript -->
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+
+
+    <!-- Newsletter Section -->
+    <section id="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Stay Updated!</h2>
+                <p>Get notified about new products, restocks, and Camaro build updates. Plus exclusive deals for
+                    subscribers!</p>
+                <form class="newsletter-form"
+                    action="https://gmail.us9.list-manage.com/subscribe/post?u=a6af27b933b95a3044d8073f6&id=8939025efe&f_id=003151e1f0"
+                    method="post" target="_blank">
+                    <input type="email" name="EMAIL" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+
     <section id="contact">
         <div class="container">
             <h2 class="section-title">Get In Touch</h2>
-            <form class="contact-form" onsubmit="handleSubmit(event)">
+            <form class="contact-form" name="contact" method="POST" action="/thank-you.html" netlify>
+                <input type="hidden" name="form-name" value="contact">
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="message">Message</label>
-                    <textarea id="message" required></textarea>
+                    <textarea id="message" name="message" required></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Send Message</button>
             </form>
         </div>
     </section>
 
-    <!-- Checkout Modal -->
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Checkout</h2>
-                <button class="close-modal" onclick="closeCheckout()">&times;</button>
+                <button class="close-modal">&times;</button>
             </div>
             <div id="cart-items"></div>
             <div class="checkout-total">
                 Total: $<span id="total-amount">0.00</span>
             </div>
             <form id="payment-form" class="checkout-form">
-                <div class="form-group">
-                    <label for="customer-name">Full Name</label>
-                    <input type="text" id="customer-name" required>
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    You'll be redirected to Stripe's secure checkout to complete your purchase.
+                </p>
+                <div style="display:flex; gap:0.5rem;">
+                    <button type="button" class="submit-btn" id="clear-cart">Clear Cart</button>
+                    <button type="submit" class="submit-btn" id="submit-payment">Proceed to Checkout</button>
                 </div>
-                <div class="form-group">
-                    <label for="customer-email">Email</label>
-                    <input type="email" id="customer-email" required>
-                </div>
-                <div class="form-group">
-                    <label>Card Information</label>
-                    <div id="card-element"></div>
-                    <div id="card-errors" class="card-errors"></div>
-                </div>
-                <button type="submit" class="submit-btn" id="submit-payment">
-                    Pay Now
-                </button>
             </form>
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Quick View Modal -->
+    <div id="quickview-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 id="quickview-title">Product Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="quick-view-content">
+                <img id="quickview-image" class="quick-view-image" src="" alt="">
+                <div class="quick-view-info">
+                    <p id="quickview-description"></p>
+                    <div class="quick-view-price" id="quickview-price"></div>
+                    <button class="buy-now" id="quickview-add" style="max-width: 300px;" data-buy-quickview="1">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2025 Your Name. All rights reserved.</p>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
         <div class="social-links">
-            <a href="#">Instagram</a>
-            <a href="#">Twitter</a>
-            <a href="#">LinkedIn</a>
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
         </div>
     </footer>
 
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
     <script>
-        // ⚠️ IMPORTANT: Replace this with your actual Stripe publishable key
-        const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_KEY_HERE';
-        
-        // Initialize Stripe
+        const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SFT2r4298bLnbuDbmaU4GzHAKPcs6gv6wwK0vh7xxjfpvapSzDgpn4tw7Fs9M0UhIv0gaBKOWInlhnswNmcb4xc00WNYF26Ld';
         const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-        
-        // Product catalog - Edit these with your actual products
+
         const products = [
             {
                 id: 'prod_1',
-                name: 'Handmade Ceramic Mug',
-                price: 29.99,
-                description: 'Beautiful handcrafted ceramic mug, perfect for your morning coffee.',
-                image: 'https://via.placeholder.com/300x250',
-                priceId: 'price_XXXXX' // You'll get this from Stripe
+                name: 'Soy Candle 304g',
+                price: 25.00,
+                description: 'Hand-poured soy candle with scents from Black Tie Barn, 304g',
+                image: 'candle.jpg'
             },
             {
                 id: 'prod_2',
-                name: 'Art Print - Sunset',
-                price: 39.99,
-                description: 'Limited edition art print on premium paper.',
-                image: 'https://via.placeholder.com/300x250',
-                priceId: 'price_XXXXX'
+                name: 'Pure Raw Local Honey - 1.5lb',
+                price: 15.00,
+                description: 'Pure raw local honey in a pint mason jar, 1.5lb',
+                image: 'honeysmall.jpg'
             },
             {
                 id: 'prod_3',
-                name: 'Leather Journal',
-                price: 49.99,
-                description: 'Handbound leather journal with 200 pages.',
-                image: 'https://via.placeholder.com/300x250',
-                priceId: 'price_XXXXX'
+                name: 'Pure Raw Local Honey - 3lb',
+                price: 25.00,
+                description: 'Pure raw local honey in a quart mason jar, 3lb',
+                image: 'honeybig.jpg'
             },
             {
                 id: 'prod_4',
-                name: 'Scented Candle Set',
-                price: 24.99,
-                description: 'Set of 3 hand-poured soy candles.',
-                image: 'https://via.placeholder.com/300x250',
-                priceId: 'price_XXXXX'
+                name: 'Handmade Soap',
+                price: 7.00,
+                description: 'Handmade with beef tallow, coconut, olive, avocado, castor oils and scents from Black Tie Barn',
+                image: 'soap.jpg'
             }
         ];
 
         let cart = [];
 
-        // Load products on page load
+        // theme logic moved to js/theme.js
+
         function loadProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <img src="${product.image}" alt="${product.name}">
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p>${product.description}</p>
-                        <div class="price">$${product.price.toFixed(2)}</div>
-                        <button class="buy-now" onclick="addToCart('${product.id}')">
-                            Add to Cart
-                        </button>
-                    </div>
+        <div class="product-card" data-product-id="${product.id}" tabindex="0" role="button">
+            <img src="${product.image}" alt="${product.name}">
+            <div class="product-info">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <div class="price">$${product.price.toFixed(2)}</div>
+                <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+                    <button class="buy-now" data-add-to-cart="${product.id}">Add to Cart</button>
                 </div>
-            `).join('');
+            </div>
+        </div>
+    `).join('');
         }
 
-        function addToCart(productId) {
+        // helper used by Add to Cart buttons rendered in the product grid (takes explicit button)
+        function addToCartFromCard(e, productId) {
+            e.stopPropagation();
+            const btn = e.currentTarget;
+            addToCartById(btn, productId);
+        }
+
+        function addToCartById(btn, productId) {
             const product = products.find(p => p.id === productId);
+            if (!product) return;
             cart.push(product);
             updateCartCount();
-            
-            // Show feedback
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'Added!';
-            btn.style.background = '#28a745';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-            }, 1000);
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Added!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 900);
+            }
+            // persist cart to localStorage
+            try { localStorage.setItem('cart', JSON.stringify(cart.map(i => i.id))); } catch (e) { /* ignore */ }
+        }
+
+        function addToCart(productId, btn) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            cart.push(product);
+            updateCartCount();
+
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Added!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 1000);
+            }
         }
 
         function updateCartCount() {
-            document.getElementById('cart-count').textContent = cart.length;
+            // visible badge (id="cart-count") and SR-only count (id="cart-count-sr")
+            const badge = document.getElementById('cart-count');
+            const sr = document.getElementById('cart-count-sr');
+            if (badge) {
+                badge.textContent = cart.length;
+                badge.style.display = cart.length > 0 ? 'inline-flex' : 'none';
+            }
+            if (sr) {
+                // announce friendly text for screen readers
+                const itemText = cart.length === 1 ? '1 item' : `${cart.length} items`;
+                sr.textContent = `${itemText} in cart`;
+            }
         }
 
         function openCheckout() {
@@ -626,116 +1292,177 @@
                 alert('Your cart is empty!');
                 return;
             }
-            
+
             const modal = document.getElementById('checkout-modal');
             const cartItems = document.getElementById('cart-items');
             const total = cart.reduce((sum, item) => sum + item.price, 0);
-            
-            // Display cart items
+
             cartItems.innerHTML = cart.map(item => `
                 <div class="checkout-item">
                     <span>${item.name}</span>
                     <span>$${item.price.toFixed(2)}</span>
                 </div>
             `).join('');
-            
+
             document.getElementById('total-amount').textContent = total.toFixed(2);
             modal.classList.add('active');
-            
-            // Mount card element if not already mounted
-            if (!cardElement._parent) {
-                cardElement.mount('#card-element');
-            }
         }
 
         function closeCheckout() {
             document.getElementById('checkout-modal').classList.remove('active');
         }
 
-        // Handle card errors
-        cardElement.on('change', (event) => {
-            const displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
+        function clearCart() {
+            cart = [];
+            try { localStorage.removeItem('cart'); } catch (e) { /* ignore */ }
+            updateCartCount();
+            const cartItems = document.getElementById('cart-items');
+            if (cartItems) cartItems.innerHTML = '';
+            document.getElementById('total-amount').textContent = '0.00';
+            closeCheckout();
+        }
 
-        // Handle form submission
-        document.getElementById('payment-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitButton = document.getElementById('submit-payment');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Processing...';
-            
+        let currentQuickViewProduct = null;
+
+        function openQuickView(productId) {
+            const product = products.find(p => p.id === productId);
+            currentQuickViewProduct = product;
+
+            document.getElementById('quickview-title').textContent = product.name;
+            document.getElementById('quickview-image').src = product.image;
+            document.getElementById('quickview-description').textContent = product.description;
+            document.getElementById('quickview-price').textContent = `$${product.price.toFixed(2)}`;
+
+            document.getElementById('quickview-modal').classList.add('active');
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickview-modal').classList.remove('active');
+        }
+
+        function addToCartFromQuickView() {
+            if (currentQuickViewProduct) {
+                cart.push(currentQuickViewProduct);
+                updateCartCount();
+                closeQuickView();
+                alert(`${currentQuickViewProduct.name} added to cart!`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            }
+
+            // If a blog page requested the cart to open, handle it and clear the flag
             try {
-                // Create payment intent on your server
-                // For now, this is a placeholder - you'll need a server endpoint
-                const response = await fetch('YOUR_SERVER_ENDPOINT/create-payment-intent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        items: cart,
-                        amount: cart.reduce((sum, item) => sum + item.price, 0) * 100 // in cents
-                    })
+                if (localStorage.getItem('openCart') === '1') {
+                    localStorage.removeItem('openCart');
+                    // small timeout to allow DOM to settle
+                    setTimeout(() => {
+                        openCheckout();
+                    }, 200);
+                }
+            } catch (e) { /* ignore */ }
+
+            loadProducts();
+
+            // ensure cart badge is initialized
+            updateCartCount();
+
+            // load persisted cart from localStorage (ids) and rebuild cart array
+            try {
+                const raw = localStorage.getItem('cart');
+                if (raw) {
+                    const ids = JSON.parse(raw);
+                    if (Array.isArray(ids)) {
+                        cart = ids.map(id => products.find(p => p.id === id)).filter(Boolean);
+                        updateCartCount();
+                    }
+                }
+            } catch (e) { /* ignore */ }
+
+            // Event delegation for product grid (replace inline handlers)
+            const productsContainer = document.getElementById('products-container');
+            if (productsContainer) {
+                productsContainer.addEventListener('click', (e) => {
+                    const addBtn = e.target.closest('[data-add-to-cart]');
+                    if (addBtn) {
+                        const id = addBtn.getAttribute('data-add-to-cart');
+                        addToCartById(addBtn, id);
+                        return;
+                    }
+
+                    const card = e.target.closest('.product-card');
+                    if (card) {
+                        const id = card.getAttribute('data-product-id');
+                        openQuickView(id);
+                    }
                 });
-                
-                const { clientSecret } = await response.json();
-                
-                // Confirm payment
-                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-                    payment_method: {
-                        card: cardElement,
-                        billing_details: {
-                            name: document.getElementById('customer-name').value,
-                            email: document.getElementById('customer-email').value
+
+                // keyboard activation: Enter/Space on focused card
+                productsContainer.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const card = e.target.closest('.product-card');
+                        if (card) {
+                            e.preventDefault();
+                            const id = card.getAttribute('data-product-id');
+                            openQuickView(id);
                         }
                     }
                 });
-                
-                if (error) {
-                    document.getElementById('card-errors').textContent = error.message;
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Pay Now';
-                } else {
-                    // Payment successful!
-                    alert('Payment successful! Thank you for your purchase.');
-                    cart = [];
-                    updateCartCount();
-                    closeCheckout();
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Pay Now';
-                }
-            } catch (err) {
-                alert('Payment failed. For demo purposes, server endpoint is not set up yet.');
-                submitButton.disabled = false;
-                submitButton.textContent = 'Pay Now';
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.id === 'cart-link') return;
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            const paymentForm = document.getElementById('payment-form');
+            if (paymentForm) {
+                paymentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitButton = document.getElementById('submit-payment');
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Processing...';
+
+                    try {
+                        const response = await fetch('/.netlify/functions/create-checkout', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ items: cart })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            window.location.href = data.url;
+                        } else {
+                            throw new Error(data.error || 'Failed to create checkout session');
+                        }
+                    } catch (err) {
+                        console.error('Error:', err);
+                        alert('Failed to start checkout: ' + err.message);
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Proceed to Checkout';
+                    }
+                });
             }
         });
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                if (this.id === 'cart-link') return;
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Contact form submission
-        function handleSubmit(e) {
-            e.preventDefault();
-            alert('Thanks for your message! (Note: Set up a form service like Formspree to actually receive messages)');
-            e.target.reset();
-        }
-
-        // Initialize
-        loadProducts();
     </script>
 </body>
+
 </html>

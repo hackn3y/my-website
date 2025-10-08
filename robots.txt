@@ -1,0 +1,25 @@
+# robots.txt for Ryan Hackney Portfolio Site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ryanhackney.com/sitemap.xml
+
+# Disallow admin/config files
+Disallow: /netlify/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Allow all important pages
+Allow: /index.html
+Allow: /blog-post-1.html
+Allow: /blog-post-2.html
+Allow: /blog-post-3.html
+Allow: /js/
+Allow: /partials/
+Allow: /*.jpg
+Allow: /*.png
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.pdf

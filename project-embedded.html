@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Embedded systems project demonstrating hardware/software integration and ECE engineering skills.">
+    <meta name="author" content="Ryan Hackney">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-embedded.html">
+    <meta property="og:title" content="Embedded Systems Project - Ryan Hackney">
+    <meta property="og:description" content="ECE project showcasing microcontroller programming and hardware/software integration.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-embedded.html">
+    <meta property="twitter:title" content="Embedded Systems Project - Ryan Hackney">
+    <meta property="twitter:description" content="ECE project showcasing microcontroller programming and hardware/software integration.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#ff6b35">
+    
+    <title>Embedded Systems Project - Ryan Hackney</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+        
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ol,
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            list-style-position: outside;
+        }
+
+        .project-content ol {
+            list-style-type: decimal;
+        }
+
+        .project-content ul {
+            list-style-type: disc;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Featured robot image specific styling */
+        .project-robot-image {
+            width: 100%;
+            max-height: 420px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 1.5rem 0 2rem 0;
+            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+            padding: 0.5rem;
+        }
+
+        .document-links {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-links h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .document-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .document-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-links a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>ECE 4900 Capstone: Autonomous Mapping UGV</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Electrical & Computer Engineer (Team 4) • <strong>Year:</strong> 2019
+            <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">Raspberry Pi</span>
+                <span class="tag">Robotics</span>
+                <span class="tag">Path Planning Algorithms</span>
+                <span class="tag">Embedded Systems</span>
+                <span class="tag">Autonomous Navigation</span>
+            </div>
+            <div style="margin-top:0.75rem; color:var(--text-secondary);">Team Members: Ryan Hackney, Devin Hensley, Emily Kong, Yoon Jae Lee, Matt Stoner, Yuan You</div>
+        </div>
+
+        <!-- Featured robot image -->
+        <div class="project-robot">
+            <img src="robot.png" alt="Autonomous UGV robot" class="project-robot-image">
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>This senior capstone project addressed the need for Unmanned Ground Vehicles (UGVs) capable of autonomously navigating hazardous or unknown environments. Our team designed and built an autonomous robot that could map indoor spaces, detect obstacles in real-time using ultrasonic sensors, and calculate optimal escape routes using advanced pathfinding algorithms.</p>
+
+            <p><strong>Problem Statement:</strong> In emergency scenarios (search and rescue, building inspections, hazardous material incidents), first responders need situational awareness before entering dangerous areas. Our UGV provides autonomous mapping and pathfinding to help personnel understand building layouts and identify optimal routes.</p>
+
+            <h2>System Design</h2>
+
+            <h3>Hardware Components</h3>
+            <p><strong>Microcontroller & Compute:</strong></p>
+            <ul>
+                <li>Raspberry Pi 4 (primary controller for navigation and mapping algorithms)</li>
+                <li>24 GPIO pins for sensor and motor driver interfaces</li>
+            </ul>
+
+            <p><strong>Motors & Drive System:</strong></p>
+            <ul>
+                <li>2x Wantai NEMA 23 stepper motors (rear-wheel drive)</li>
+                <li>4x SparkFun Big Easy motor drivers (A4988-based)</li>
+                <li>2x 3D-printed castor wheels (front)</li>
+                <li>2x 3D-printed 4.5" drive wheels with rubber tape for traction</li>
+            </ul>
+
+            <p><strong>Sensors:</strong></p>
+            <ul>
+                <li>7x HC-SR04 ultrasonic sensors (range: 4cm - 4m)</li>
+                <li>Mounted at front, sides, back, and underneath for obstacle detection</li>
+            </ul>
+
+            <p><strong>Power System:</strong></p>
+            <ul>
+                <li>12V power bank for stepper motors</li>
+                <li>5V USB power bank for Raspberry Pi</li>
+                <li>Independent power supplies to prevent motor noise interference</li>
+            </ul>
+
+            <p><strong>Chassis:</strong></p>
+            <ul>
+                <li>2-tier polypropylene pegboard (1/8" thick, custom drilled)</li>
+                <li>Dimensions: ~22" x 18" footprint</li>
+                <li>3D-printed sensor mounts and motor brackets</li>
+            </ul>
+
+            <h3>Software Architecture</h3>
+            <p><strong>Programming Language:</strong> Python 3.x</p>
+            <p><strong>Development Environment:</strong> Raspberry Pi OS, SSH remote development</p>
+            <p><strong>Key Algorithms:</strong></p>
+            <ul>
+                <li><strong>A*</strong> (A-Star) Pathfinding: Real-time optimal path calculation combining actual cost (G) and heuristic estimated cost (H)</li>
+                <li><strong>Dynamic A*</strong>: Continuously updates map as new obstacles detected</li>
+                <li><strong>Motion Planning</strong>: 4-direction grid-based movement (forward, left, right, U-turn)</li>
+            </ul>
+
+            <p><strong>Control Flow:</strong></p>
+            <ol>
+                <li>Ultrasonic sensors trigger and measure distances</li>
+                <li>Obstacle detection updates internal map representation</li>
+                <li>A* algorithm calculates optimal path to exit/goal</li>
+                <li>Motor control translates path into step commands</li>
+                <li>Real-time position tracking and map updates</li>
+            </ol>
+
+            <h3>Key Modules</h3>
+            <ul>
+                <li><code>Astar.py</code> - Pathfinding algorithm implementation</li>
+                <li><code>STEPPER.py</code> - Motor control with direction and step logic</li>
+                <li><code>Ultrasonic.py</code> - Sensor reading with averaging filter</li>
+                <li><code>GetObstacle.py</code> - Obstacle detection and map updating</li>
+                <li><code>Move.py</code> - Coordinate motion commands with direction vectors</li>
+            </ul>
+
+            <h2>Implementation</h2>
+
+            <h3>Circuit Design</h3>
+            <p>Started with breadboard testing of individual sensors and motors. Each HC-SR04 sensor was tested for accuracy and interference patterns. Motor drivers were bench-tested with single motors before integration.</p>
+
+            <p><strong>PCB & Wiring:</strong> Custom prototype boards for sensor voltage dividers (5V → 3.3V for Raspberry Pi GPIO protection). All motor drivers shared common ground with Raspberry Pi. Extensive wire management through chassis drill-holes to prevent tangling during operation.</p>
+
+            <h3>Firmware/Software Development</h3>
+            <p>Object-oriented Python with separate modules for hardware interfaces (sensors, motors) and algorithms (pathfinding, mapping). Used NumPy for efficient matrix operations in pathfinding.</p>
+
+            <p><strong>Key Challenges:</strong></p>
+            <ul>
+                <li><strong>Timing Synchronization:</strong> Ultrasonic sensors can interfere if triggered simultaneously. Implemented sequential triggering with 1ms delays.</li>
+                <li><strong>Stepper Motor Coordination:</strong> Initially used 4-wheel drive, but weight and power draw caused navigation failures. Switched to 2-wheel rear drive with front casters, reducing complexity and improving reliability.</li>
+                <li><strong>Coordinate System Mapping:</strong> Implemented transformation matrices to convert sensor readings from robot-relative coordinates to map-absolute coordinates based on heading.</li>
+            </ul>
+
+            <p><strong>Memory Management:</strong> Raspberry Pi 4's 4GB RAM was more than sufficient. Primary constraint was computation time for pathfinding in large maps (optimized to &lt;5 minutes per path calculation).</p>
+
+            <h3>Testing & Debugging</h3>
+            <p><strong>Testing Methodology:</strong></p>
+            <ol>
+                <li><strong>Unit Testing:</strong> Each sensor tested individually at set distances (5cm - 300cm) to establish accuracy (±5-15cm acceptable error)</li>
+                <li><strong>Integration Testing:</strong> Motor + sensor synchronization tested in controlled hallway environments</li>
+                <li><strong>Algorithm Validation:</strong> Pathfinding tested in simulation before hardware deployment</li>
+            </ol>
+
+            <p><strong>Debug Tools:</strong></p>
+            <ul>
+                <li>SSH terminal logging for real-time algorithm state</li>
+                <li>LED indicators for system status (searching, moving, obstacle detected)</li>
+                <li>Matplotlib for visualizing generated maps post-run</li>
+            </ul>
+
+            <h3>Major Issues & Solutions</h3>
+            <ul>
+                <li><strong>Issue:</strong> Robot drifted during rotation due to wheel slippage on smooth floors — <strong>Solution:</strong> Added rubber tape to wheels for friction, calibrated rotation step counts (130 steps per 90° turn)</li>
+                <li><strong>Issue:</strong> Ultrasonic sensors gave erratic readings when too close together (&lt;10cm spacing) — <strong>Solution:</strong> Repositioned sensors with minimum 10cm separation, applied sliding average filter (10 samples)</li>
+                <li><strong>Issue:</strong> Four-wheel drive caused excessive current draw and motor stalling — <strong>Solution:</strong> Redesigned to two-wheel drive, reducing power consumption and mechanical complexity</li>
+            </ul>
+
+            <h2>Technical Challenges</h2>
+
+            <h3>Signal Noise & Filtering</h3>
+            <p>Ultrasonic sensors produced noisy distance readings, especially near reflective surfaces. Implemented a <strong>sliding average filter</strong> (10-sample window) to smooth readings and reduce false obstacle detection.</p>
+
+            <h3>Timing & Synchronization</h3>
+            <p>Coordinating stepper motor steps between left and right motors required precise timing. Used Python's <code>time.sleep()</code> with 4.5ms step delays to ensure smooth, synchronized motion.</p>
+
+            <h3>Power Consumption</h3>
+            <p>Initial 4-motor design drained batteries rapidly (&lt;30 minutes runtime). Switching to 2-motor drive extended battery life to meet 60-minute specification.</p>
+
+            <h3>Hardware/Software Integration</h3>
+            <p>Translating algorithmic path (grid coordinates) into motor commands (step counts and directions) required careful calibration. Developed transformation matrices to handle rotation and coordinate system conversions.</p>
+
+            <h2>Results & Performance</h2>
+
+            <p>The UGV successfully navigated a demonstration course and demonstrated all required capabilities: autonomous mapping, obstacle detection and avoidance, and path planning using the A* family of algorithms. The system met the project's functional requirements and performed reliably during testing runs.</p>
+
+            
+            <div class="document-links" style="margin-top:1rem;">
+                <h3>Project Documents</h3>
+                <ul>
+                    <li><a href="https://example.com/cdr-report.pdf" target="_blank">Critical Design Review Report (PDF)</a></li>
+                </ul>
+            </div>
+            <h2>Skills Demonstrated</h2>
+            <ul>
+                <li>Python Programming: Object-oriented design, NumPy for matrix operations, hardware interfacing with RPi.GPIO</li>
+                <li>Robotics & Kinematics: Stepper motor control, coordinate transformations, odometry</li>
+                <li>Algorithm Design: A* pathfinding, graph search, heuristic optimization</li>
+                <li>Embedded Systems: Raspberry Pi GPIO, sensor integration, real-time control loops</li>
+                <li>Hardware Design: Motor driver circuits, voltage regulation, mechanical assembly</li>
+                <li>Systems Engineering: Requirements analysis, design iteration, integration testing</li>
+                <li>Technical Communication: Design reports, presentations, engineering documentation</li>
+                <li>Team Collaboration: 6-person team with divided responsibilities (hardware, navigation, mapping)</li>
+            </ul>
+
+            <h2>Lessons Learned & Future Work</h2>
+            <p><strong>Key Takeaways:</strong></p>
+            <ul>
+                <li>Simplicity often beats complexity: switching from 4-wheel to 2-wheel drive dramatically improved reliability</li>
+                <li>Algorithm optimization (A*) can provide both speed and optimality when properly tuned</li>
+                <li>Robust testing (unit → integration → system) catches issues early</li>
+            </ul>
+
+            <p><strong>Potential Improvements:</strong></p>
+            <ul>
+                <li>Upgrade to LIDAR for more accurate 2D mapping (ultrasonic has limited angular resolution)</li>
+                <li>Implement SLAM (Simultaneous Localization and Mapping) for larger, more complex environments</li>
+                <li>Add wireless telemetry for real-time map visualization on remote display</li>
+                <li>Enclosed chassis with transparent dome for better aesthetics and cable management</li>
+            </ul>
+
+            <p style="margin-top:1.5rem; color:var(--text-secondary);"><strong>Professor:</strong> Haskell Jac Fought • <strong>Course:</strong> ECE 4900 Capstone Design II<br>
+            <strong>Institution:</strong> The Ohio State University, Department of Electrical and Computer Engineering</p>
+
+            <p style="margin-top:1.5rem; color:var(--text-secondary);">This project fulfilled the requirements for Ohio State's ECE capstone sequence, demonstrating proficiency in embedded systems design, algorithm development, and interdisciplinary engineering problem-solving.</p>
+        </div>
+            </ul>
+
+            
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
