@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Small-scale farming operation with goats, chickens, and beekeeping. Producing raw honey, eggs, and learning sustainable agriculture.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-farm.html">
+    <meta property="og:title" content="Farm & Animals - Ryan Hackney">
+    <meta property="og:description" content="Raising goats, chickens, and honeybees. Producing raw honey and eggs while learning sustainable agriculture practices.">
+    <meta property="og:image" content="https://ryanhackney.com/honeybig.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-farm.html">
+    <meta property="twitter:title" content="Farm & Animals - Ryan Hackney">
+    <meta property="twitter:description" content="Raising goats, chickens, and honeybees. Producing raw honey and eggs while learning sustainable agriculture practices.">
+    <meta property="twitter:image" content="https://ryanhackney.com/honeybig.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Farm & Animals - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content strong {
+            color: var(--text-primary);
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery.tall-images img {
+            height: 600px;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover {
+            color: var(--accent-primary);
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Farm & Animals</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Farmer & Caretaker • <strong>Ongoing:</strong> 2020-Present
+            <div class="project-tags">
+                <span class="tag">Agriculture</span>
+                <span class="tag">Animal Husbandry</span>
+                <span class="tag">Beekeeping</span>
+                <span class="tag">Sustainable Farming</span>
+            </div>
+        </div>
+
+        <div class="project-content">
+            <h2>Farm Overview</h2>
+            <p>Operating a small-scale farm focused on sustainable agriculture and animal husbandry. Raising goats, chickens, and honeybees while producing raw honey, eggs, and handmade farm products. This hands-on farming experience combines animal care, land management, and small business operations.</p>
+
+            <h2>Beekeeping & Honey Production</h2>
+
+            <h3>Hive Types & Construction</h3>
+            <ul>
+                <li>Experimented with multiple hive designs for different management approaches</li>
+                <li>Built Langstroth hives from scratch (standard 10-frame configuration)</li>
+                <li>Constructed long Langstroth hives for horizontal beekeeping</li>
+                <li>Built Layens hives from scratch for low-intervention beekeeping</li>
+                <li>Compared performance and management differences between hive types</li>
+                <li>Applied woodworking skills to create precise, bee-tight joints</li>
+            </ul>
+
+            <h3>Hive Management & Health</h3>
+            <ul>
+                <li>Maintaining multiple honeybee colonies across different hive types</li>
+                <li>Performing regular hive inspections for health and productivity</li>
+                <li>Managing seasonal hive populations and preventing swarming</li>
+                <li>Built swarm traps from scratch to capture wild swarms</li>
+                <li>Successfully caught a wild swarm using trap placement and lemongrass oil attractant</li>
+                <li>Attempted hive splits using double screen board technique</li>
+                <li>Double screen board allows two colonies to share heat while remaining separate</li>
+                <li>Treating for varroa mites using oxalic acid vaporization</li>
+                <li>Applying ApiGuard (thymol-based treatment) for mite control</li>
+                <li>Monitoring pest levels and adjusting treatment protocols</li>
+                <li>Ensuring adequate food stores and supplementing when necessary</li>
+                <li>Winterizing hives for cold weather survival</li>
+            </ul>
+
+            <h3>Honey Harvesting & Processing</h3>
+            <ul>
+                <li>Harvesting frames during peak nectar flow periods</li>
+                <li>Extracting raw honey using centrifugal extractor</li>
+                <li>Filtering honey through multiple stages for clarity</li>
+                <li>Bottling pure, unprocessed local honey in mason jars</li>
+                <li>Maintaining proper temperature for optimal honey viscosity</li>
+                <li>Producing both 1.5lb (pint) and 3lb (quart) jar sizes</li>
+                <li>Selling raw honey through the farm shop on this website</li>
+            </ul>
+
+            <div class="image-gallery">
+                <img src="langstroth.jpg" alt="Langstroth beehives">
+                <img src="layens.jpg" alt="Layens beehive">
+            </div>
+
+            <div class="image-gallery">
+                <img src="honeysmall.jpg" alt="Raw Honey - 1.5lb Jar">
+                <img src="honeybig.jpg" alt="Raw Honey - 3lb Jar">
+            </div>
+
+            <h2>Goat Husbandry</h2>
+
+            <h3>Herd Management</h3>
+            <ul>
+                <li>Raising goats for land management and as companion animals</li>
+                <li>Providing daily feeding, fresh water, and mineral supplements</li>
+                <li>Maintaining clean shelter and bedding areas</li>
+                <li>Performing hoof trimming and basic health maintenance</li>
+                <li>Rotational grazing for pasture management</li>
+            </ul>
+
+            <h3>Breeding & Kidding Management</h3>
+            <ul>
+                <li>Managing annual breeding program and kidding seasons</li>
+                <li>Built jug pens (maternity pens) for does and newborn kids</li>
+                <li>First year kidding: doe had 5 kids, treated milk fever (hypocalcemia) successfully</li>
+                <li>Administered calcium treatments for milk fever intervention</li>
+                <li>Bottle-fed kids when necessary due to large litter sizes or dam rejection</li>
+                <li>First year: Used lambar (multi-nipple feeding system) to feed 4 kids simultaneously</li>
+                <li>Mixed and warmed milk replacer for bottle-fed kids</li>
+                <li>Established feeding schedules (every 4 hours initially, gradually reducing)</li>
+                <li>Monitored newborn health and weight gain closely</li>
+                <li>Managed doe recovery and milk production post-kidding</li>
+                <li>Integrated bottle-fed kids back into herd successfully</li>
+            </ul>
+
+            <h3>Health & Nutrition</h3>
+            <ul>
+                <li>Monitoring herd health and identifying illness early</li>
+                <li>Implementing parasite management program with rotation of different dewormers</li>
+                <li>Administering copper bolus for copper deficiency prevention</li>
+                <li>Performing regular hoof trimming to prevent lameness and infections</li>
+                <li>Administering vaccinations according to schedule</li>
+                <li>Providing balanced diet of hay, grain, and browse</li>
+                <li>Ensuring access to minerals and supplements</li>
+                <li>Keeping detailed health and breeding records</li>
+            </ul>
+
+            <div class="image-gallery">
+                <img src="goat1.jpg" alt="Goats on the farm">
+                <img src="goat2.jpg" alt="Goats on the farm">
+                <img src="goat3.jpg" alt="Goats on the farm">
+                <img src="goat4.jpg" alt="Goats on the farm">
+            </div>
+
+            <h2>Chicken Raising</h2>
+
+            <h3>Flock Management</h3>
+            <ul>
+                <li>Raising Barred Rock, Buff Orpington, and Australorp breeds</li>
+                <li>Started flock by ordering hatching eggs and incubating them</li>
+                <li>Incubated eggs in temperature and humidity-controlled incubator</li>
+                <li>Managed 21-day incubation period with proper turning and monitoring</li>
+                <li>Continued incubating eggs to grow and maintain flock size as needed</li>
+                <li>Maintaining laying hens for fresh egg production</li>
+                <li>Providing secure housing with proper ventilation</li>
+                <li>Installed automatic coop doors for improved biosecurity and convenience</li>
+                <li>Automatic doors open at sunrise and close at dusk for predator protection</li>
+                <li>Daily feeding with quality layer feed and supplements</li>
+                <li>Ensuring clean water and regular coop maintenance</li>
+                <li>Collecting and cleaning eggs daily</li>
+                <li>Managing flock dynamics and integrating new birds</li>
+            </ul>
+
+            <h3>Egg Production</h3>
+            <ul>
+                <li>Producing fresh eggs for personal use and local sales</li>
+                <li>Providing nesting boxes and proper laying environments</li>
+                <li>Monitoring production rates and hen health</li>
+                <li>Ensuring proper calcium and protein in diet</li>
+                <li>Managing seasonal variations in laying cycles</li>
+            </ul>
+
+            <div class="image-gallery">
+                <img src="chickens.jpg" alt="Chickens on the farm">
+            </div>
+
+            <h2>Dog Training & Livestock Protection</h2>
+
+            <h3>German Shepherd Training</h3>
+            <ul>
+                <li>Raised German Shepherd from 8-week-old puppy</li>
+                <li>Implemented early socialization with people, animals, and environments</li>
+                <li>Established feeding schedules and house training routines</li>
+                <li>Provided age-appropriate exercise and mental stimulation</li>
+                <li>Built trust and bond through consistent positive reinforcement</li>
+                <li>Managed teething, crate training, and puppy development stages</li>
+            </ul>
+
+            <h3>Basic Obedience Training</h3>
+            <ul>
+                <li>Taught fundamental commands: sit, stay, down, come, heel</li>
+                <li>Used positive reinforcement techniques with treats and praise</li>
+                <li>Practiced recall commands for off-leash reliability</li>
+                <li>Trained loose-leash walking for controlled outdoor activities</li>
+                <li>Established boundaries and appropriate behavior around farm animals</li>
+                <li>Developed patience and consistency in training sessions</li>
+                <li>German Shepherd now serves as loyal companion on the farm</li>
+            </ul>
+
+            <div class="image-gallery tall-images">
+                <img src="shepherd.jpg" alt="German Shepherd on the farm">
+            </div>
+
+            <h3>Great Pyrenees Livestock Guardian Dog</h3>
+            <ul>
+                <li>Acquired Great Pyrenees puppy specifically for livestock protection</li>
+                <li>Introduced puppy to goat herd at young age to build bonding and protective instincts</li>
+                <li>Raised Great Pyrenees alongside goats to encourage natural guardian behavior</li>
+                <li>Allowed dog to live with the herd full-time for proper imprinting</li>
+                <li>Trained basic commands while preserving independent guardian instincts</li>
+                <li>Great Pyrenees naturally patrols perimeter and alerts to threats</li>
+                <li>Successfully deters predators including coyotes and stray dogs</li>
+                <li>Dog provides 24/7 protection for the goat herd</li>
+                <li>Balances gentle behavior with goats and aggressive response to threats</li>
+                <li>Maintains constant vigilance even during nighttime hours</li>
+                <li>Significantly reduced predator losses after introducing livestock guardian dog</li>
+            </ul>
+
+            <div class="image-gallery tall-images">
+                <img src="pyrenees.jpg" alt="Great Pyrenees livestock guardian dog">
+            </div>
+
+            <h2>Farm Infrastructure</h2>
+
+            <h3>Facilities & Equipment</h3>
+            <ul>
+                <li>Constructed and upgraded animal shelters and coops</li>
+                <li>Installed automatic waterers and feeding systems</li>
+                <li>Set up honey extraction and processing area</li>
+                <li>Created storage for feed, equipment, and supplies</li>
+            </ul>
+
+            <h3>Permanent Fence Installation</h3>
+            <ul>
+                <li>Built half-acre perimeter fence using goat fence and T-posts</li>
+                <li>Used gas-powered T-post driver for rapid and efficient post installation</li>
+                <li>Reinforced corner posts with bracing and additional anchoring</li>
+                <li>Pulled fence taut using truck and DIY fence puller attachment</li>
+                <li>Fabricated custom fence pulling tool for proper tension</li>
+                <li>Secured fence to T-posts with wire clips for durability</li>
+                <li>Created secure enclosure for goat containment and safety</li>
+                <li>Installed predator-proof fencing with hardware cloth and buried barriers for chicken areas</li>
+            </ul>
+
+            <h3>Electric Fence System (DIY Solar Setup)</h3>
+            <ul>
+                <li>Designed and installed DIY electric fence system for rotational grazing</li>
+                <li>Set up fence energizer powered by off-grid solar system</li>
+                <li>Configured 12V car battery as energy storage</li>
+                <li>Installed solar charge controller for battery management</li>
+                <li>Mounted solar panel for continuous charging</li>
+                <li>Created movable fence sections for rotational pasture access</li>
+                <li>Enables efficient grazing management and pasture recovery</li>
+            </ul>
+
+            <h3>Land Management</h3>
+            <ul>
+                <li>Implementing rotational grazing using electric fence system</li>
+                <li>Managing natural browse areas for goats</li>
+                <li>Planting pollinator-friendly flowers for bees</li>
+                <li>Composting animal waste for soil improvement</li>
+                <li>Water source management and conservation</li>
+                <li>Seasonal maintenance and improvement projects</li>
+            </ul>
+
+            <h2>Farm Products</h2>
+
+            <h3>Currently Offering</h3>
+            <ul>
+                <li><strong>Raw Local Honey:</strong> Pure, unprocessed honey in 1.5lb and 3lb jars</li>
+                <li><strong>Handmade Soy Candles:</strong> Using quality scents from Black Tie Barn</li>
+                <li><strong>Handmade Soap:</strong> Made with beef tallow and natural oils</li>
+                <li>All products available through the <a href="index.html#shop">shop section</a> of this website</li>
+            </ul>
+
+            <h2>Skills & Knowledge Gained</h2>
+            <ul>
+                <li><strong>Animal Husbandry:</strong> Understanding animal behavior, health, and nutrition</li>
+                <li><strong>Beekeeping:</strong> Colony management, honey production, and bee biology</li>
+                <li><strong>Problem Solving:</strong> Troubleshooting health issues, predator control, and infrastructure challenges</li>
+                <li><strong>Business Operations:</strong> Product development, pricing, inventory, and sales</li>
+                <li><strong>Sustainability:</strong> Resource management, composting, and ecological balance</li>
+                <li><strong>Construction:</strong> Building and maintaining farm structures</li>
+                <li><strong>Time Management:</strong> Balancing daily care routines with other responsibilities</li>
+                <li><strong>Veterinary Care:</strong> Basic health assessment and first aid</li>
+            </ul>
+
+            <h2>Challenges & Learning</h2>
+            <p>Weather and seasonal variations present constant challenges for animal care and honey production. I've learned to anticipate seasonal needs, from winterizing bee hives to managing goat nutrition during sparse forage periods. This requires planning ahead and maintaining adequate supplies year-round.</p>
+
+            <p>Predator management has taught me the importance of secure fencing and housing. After early losses to predators, I invested in improved infrastructure including hardware cloth on coops, electric fencing for pastures, and guardian animals for herd protection.</p>
+
+            <p>Beekeeping requires constant learning about colony dynamics, local flora, and disease management. Each season brings new challenges and opportunities to improve hive management techniques and honey production yields.</p>
+
+            <h2>Integration with Technical Projects</h2>
+            <p>The farm has become a testing ground for technical projects and practical problem-solving. I've used 3D printing to create custom feeders, equipment mounts, and repair parts. The experience of managing animals and land has developed strong troubleshooting skills, attention to detail, and systematic thinking that directly transfers to engineering work.</p>
+
+            <p>Operating the farm shop through this website demonstrates the integration of technical and agricultural skills - building the e-commerce platform to sell products I produce on the farm.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully established a sustainable small-scale farming operation that produces high-quality products while maintaining healthy, thriving animals. The farm provides hands-on experience with biology, animal behavior, seasonal planning, and small business operations.</p>
+
+            <p>This farming experience demonstrates work ethic, responsibility, adaptability, and the ability to manage complex systems with many interdependent variables - skills that translate directly to engineering and technical work. The combination of farming and technology showcases diverse capabilities and a well-rounded skill set.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">&times;</button>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="">
+    </div>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const galleryImages = document.querySelectorAll('.image-gallery img');
+
+        galleryImages.forEach(img => {
+            img.addEventListener('click', () => {
+                lightbox.classList.add('active');
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+            });
+        });
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

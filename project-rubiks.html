@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="3D-printed Rubik's Cube solving robot with computer vision and servo control.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-rubiks.html">
+    <meta property="og:title" content="Rubik's Cube Solving Robot - Ryan Hackney">
+    <meta property="og:description" content="Automated Rubik's Cube solver using 3D-printed parts, servo motors, and computer vision.">
+    <meta property="og:image" content="https://ryanhackney.com/robot.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-rubiks.html">
+    <meta property="twitter:title" content="Rubik's Cube Solving Robot - Ryan Hackney">
+    <meta property="twitter:description" content="Automated Rubik's Cube solver using 3D-printed parts, servo motors, and computer vision.">
+    <meta property="twitter:image" content="https://ryanhackney.com/robot.png">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Rubik's Cube Solving Robot - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content strong {
+            color: var(--text-primary);
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            padding: 1rem;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Rubik's Cube Solving Robot</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Designer & Developer • <strong>Year:</strong> 2024
+            <div class="project-tags">
+                <span class="tag">3D Printing</span>
+                <span class="tag">Computer Vision</span>
+                <span class="tag">Python</span>
+                <span class="tag">Arduino</span>
+                <span class="tag">Robotics</span>
+            </div>
+        </div>
+
+        <img src="rubiks.jpg" alt="Rubik's Cube Solving Robot" class="featured-image">
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Designed and built an autonomous Rubik's Cube solving robot from scratch. The system uses 3D-printed mechanical components, servo motors for precise cube manipulation, and computer vision to scan and solve the puzzle using advanced solving algorithms.</p>
+
+            <h2>Mechanical Design & Fabrication</h2>
+
+            <h3>3D Printed Components</h3>
+            <ul>
+                <li>Designed custom cube gripper mechanisms in CAD software</li>
+                <li>Created modular frame structure for easy assembly and adjustments</li>
+                <li>3D printed all mechanical parts with optimized tolerances</li>
+                <li>Designed servo motor mounts with precise alignment features</li>
+                <li>Iteratively refined parts for optimal cube manipulation</li>
+            </ul>
+
+            <h3>Servo Motor Integration</h3>
+            <ul>
+                <li>Integrated 6 servo motors for full cube rotation control</li>
+                <li>Wired servo control system with custom motor driver circuit</li>
+                <li>Calibrated precise rotation angles for 90° and 180° turns</li>
+                <li>Implemented motor sequencing for smooth cube movements</li>
+                <li>Added feedback mechanisms to ensure accurate positioning</li>
+            </ul>
+
+            <h2>Software & Computer Vision</h2>
+
+            <h3>Cube Scanning System</h3>
+            <ul>
+                <li>Integrated camera module for cube face recognition</li>
+                <li>Developed color detection algorithms using OpenCV</li>
+                <li>Implemented image processing for accurate color identification</li>
+                <li>Created calibration system for varying lighting conditions</li>
+                <li>Built cube state validation to prevent scanning errors</li>
+            </ul>
+
+            <h3>Solving Algorithm</h3>
+            <ul>
+                <li>Integrated existing Kociemba two-phase solving algorithm implementation</li>
+                <li>Used open-source solving software for cube solution generation</li>
+                <li>Translated algorithm output to servo motor commands</li>
+                <li>Adapted software interface to work with custom hardware</li>
+                <li>Integrated error handling for invalid cube states</li>
+            </ul>
+
+            <h2>Technical Implementation</h2>
+            <ul>
+                <li><strong>Programming:</strong> Python for computer vision and solving algorithms</li>
+                <li><strong>Microcontroller:</strong> Arduino for servo motor control</li>
+                <li><strong>Computer Vision:</strong> OpenCV for color detection and cube scanning</li>
+                <li><strong>Communication:</strong> Serial communication between Python and Arduino</li>
+                <li><strong>Hardware:</strong> Custom PCB for clean servo connections</li>
+            </ul>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li>Fully autonomous cube solving with no human intervention</li>
+                <li>Average solve time of 2-3 minutes from scan to completion</li>
+                <li>Camera-based scanning system for accurate color detection</li>
+                <li>Modular design allows for easy maintenance and upgrades</li>
+                <li>Real-time feedback during solving process</li>
+                <li>Handles scrambled cubes of varying difficulty</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+            <p>One major challenge was achieving reliable color detection under different lighting conditions. I solved this by implementing adaptive color calibration and using HSV color space instead of RGB, which proved more robust to lighting variations.</p>
+
+            <p>Another challenge was precise cube manipulation without slippage. I designed custom gripper mechanisms with textured surfaces and optimized the servo motor speeds to ensure smooth, accurate rotations without disturbing the cube's position.</p>
+
+            <h2>Skills Demonstrated</h2>
+            <ul>
+                <li>CAD design and 3D printing for functional mechanical parts</li>
+                <li>Computer vision and image processing with OpenCV</li>
+                <li>Algorithm implementation and optimization</li>
+                <li>Microcontroller programming and motor control</li>
+                <li>Hardware integration and circuit design</li>
+                <li>Systems engineering and troubleshooting</li>
+                <li>Iterative design and prototyping</li>
+            </ul>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully built a fully functional Rubik's Cube solving robot that demonstrates proficiency in mechanical design, computer vision, robotics, and software development. The project showcases the ability to integrate multiple engineering disciplines into a cohesive working system.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

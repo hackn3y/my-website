@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Custom-built FPV racing quadcopter with DIY flight controller, video telemetry, and first-person view system.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-quadcopter.html">
+    <meta property="og:title" content="FPV Racing Quadcopter - Ryan Hackney">
+    <meta property="og:description" content="Custom racing quadcopter built from scratch with DIY PCB assembly, FPV video system, and telemetry.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-quadcopter.html">
+    <meta property="twitter:title" content="FPV Racing Quadcopter - Ryan Hackney">
+    <meta property="twitter:description" content="Custom racing quadcopter built from scratch with DIY PCB assembly, FPV video system, and telemetry.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>FPV Racing Quadcopter - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content strong {
+            color: var(--text-primary);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            padding: 1rem;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>FPV Racing Quadcopter</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Designer, Builder & Programmer • <strong>Year:</strong> 2024
+            <div class="project-tags">
+                <span class="tag">PCB Assembly</span>
+                <span class="tag">Flight Controller</span>
+                <span class="tag">FPV Systems</span>
+                <span class="tag">Embedded Programming</span>
+                <span class="tag">RF/Telemetry</span>
+            </div>
+        </div>
+
+        <img src="quadcopter.jpg" alt="FPV Racing Quadcopter" class="featured-image">
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Designed and built a high-performance FPV racing quadcopter completely from scratch. The build includes custom PCB assembly, flight controller programming, first-person view (FPV) video system, telemetry, and racing-grade components. This project demonstrates advanced skills in electronics, embedded systems, RF communications, and systems integration.</p>
+
+            <h2>Electronics & PCB Assembly</h2>
+
+            <h3>Flight Controller</h3>
+            <ul>
+                <li>Used name-brand flight controller for main racing quadcopter</li>
+                <li>For a separate smaller quadcopter project, designed and built custom flight controller PCB from scratch</li>
+                <li>Custom board: Hand-soldered surface-mount components including microcontroller, sensors, and regulators</li>
+                <li>Built DIY reflow oven from modified toaster with custom temperature controller</li>
+                <li>Implemented precise temperature profiles for solder paste reflow</li>
+                <li>Tested and validated all board connections and power distribution on custom build</li>
+            </ul>
+
+            <h3>Power System</h3>
+            <ul>
+                <li>Integrated high-discharge LiPo batteries for racing performance</li>
+                <li>Designed custom power distribution board for clean power delivery</li>
+                <li>Implemented voltage regulation for 5V and 3.3V systems</li>
+                <li>Added battery monitoring and low-voltage protection</li>
+                <li>Optimized current paths to minimize voltage drop and heat</li>
+            </ul>
+
+            <h3>Motor & ESC Integration</h3>
+            <ul>
+                <li>Selected and installed brushless racing motors optimized for thrust-to-weight ratio</li>
+                <li>Configured Electronic Speed Controllers (ESCs) for rapid response</li>
+                <li>Calibrated motor timing and power curves for racing performance</li>
+                <li>Implemented OneShot125/DShot protocols for minimal latency</li>
+                <li>Balanced propellers and optimized motor mounting for vibration reduction</li>
+            </ul>
+
+            <h2>Flight Controller Software</h2>
+
+            <h3>Firmware Configuration & Tuning</h3>
+            <ul>
+                <li>Main racing quad: Configured and tuned Betaflight firmware for optimal performance</li>
+                <li>Custom board (smaller quad): Programmed custom flight controller firmware in C/C++</li>
+                <li>Custom firmware: Implemented PID control loops for stabilization (roll, pitch, yaw)</li>
+                <li>Custom firmware: Integrated IMU sensor fusion for accurate attitude estimation</li>
+                <li>Developed acro mode for racing and rate mode for stability</li>
+                <li>Configured failsafe protocols for signal loss scenarios on both builds</li>
+            </ul>
+
+            <h3>Sensor Integration & Calibration</h3>
+            <ul>
+                <li>Integrated 6-axis IMU (gyroscope + accelerometer) for attitude control</li>
+                <li>Custom board: Implemented Kalman filtering for noise reduction and sensor fusion</li>
+                <li>Calibrated accelerometer and gyroscope offsets on both systems</li>
+                <li>Tuned PID parameters for racing performance characteristics</li>
+                <li>Optimized sensor sampling rates for real-time performance</li>
+            </ul>
+
+            <h2>FPV Video System</h2>
+
+            <h3>Camera & Video Transmission</h3>
+            <ul>
+                <li>Installed low-latency FPV camera with wide field of view</li>
+                <li>Integrated 5.8GHz video transmitter for real-time video broadcast</li>
+                <li>Optimized antenna placement for maximum range and signal quality</li>
+                <li>Configured video parameters (brightness, contrast, WDR) for varying lighting</li>
+                <li>Implemented on-screen display (OSD) for flight data overlay</li>
+            </ul>
+
+            <h3>Ground Station & Headset</h3>
+            <ul>
+                <li>Set up FPV goggles with integrated receiver and monitor</li>
+                <li>Configured dual-antenna diversity for improved reception</li>
+                <li>Achieved immersive "cockpit view" flying experience</li>
+                <li>Added DVR recording capability for flight review</li>
+                <li>Tuned frequency channels to avoid interference</li>
+            </ul>
+
+            <h2>Telemetry & Remote Control</h2>
+
+            <h3>Radio System</h3>
+            <ul>
+                <li>Integrated 2.4GHz radio receiver with low-latency protocol</li>
+                <li>Configured channel mixing and control curves on transmitter</li>
+                <li>Implemented failsafe modes (return-to-home, land, disarm)</li>
+                <li>Added auxiliary switches for flight mode selection</li>
+                <li>Optimized control feel for racing maneuvers</li>
+            </ul>
+
+            <h3>FrSky Taranis Plus Transmitter Modifications</h3>
+            <ul>
+                <li>Modified FrSky Taranis Plus transmitter for enhanced functionality</li>
+                <li>Flashed custom OpenTX firmware for additional features and frequency support</li>
+                <li>Hardware modded to access extra frequencies beyond stock configuration</li>
+                <li>Swapped out stock gimbals with upgraded Hall effect joysticks for improved precision</li>
+                <li>Upgraded joysticks provide smoother control and eliminate potentiometer drift</li>
+                <li>Custom firmware allows advanced mixing, scripting, and telemetry features</li>
+                <li>Configured custom voice alerts and haptic feedback for flight events</li>
+            </ul>
+
+            <h3>Telemetry Data Link</h3>
+            <ul>
+                <li>Established bidirectional telemetry for real-time flight data</li>
+                <li>Transmitted battery voltage, current draw, and GPS position</li>
+                <li>Monitored motor temperatures and system health</li>
+                <li>Displayed telemetry data on OSD and ground station</li>
+                <li>Logged flight data for post-flight analysis</li>
+            </ul>
+
+            <h2>Technical Specifications</h2>
+            <ul>
+                <li><strong>Frame:</strong> Custom carbon fiber racing frame</li>
+                <li><strong>Motors:</strong> High-performance brushless racing motors</li>
+                <li><strong>Flight Controller (Main Quad):</strong> Name-brand controller with Betaflight firmware</li>
+                <li><strong>Flight Controller (Custom Build):</strong> Hand-built PCB with ARM Cortex-M microcontroller</li>
+                <li><strong>ESCs:</strong> 4x 30A+ ESCs with BLHeli_32 firmware</li>
+                <li><strong>Battery:</strong> 4S-6S LiPo (high C-rating for racing)</li>
+                <li><strong>FPV Camera:</strong> Low-latency CMOS sensor</li>
+                <li><strong>Video TX:</strong> 5.8GHz, 25-600mW adjustable power</li>
+                <li><strong>Radio:</strong> 2.4GHz SBUS/PPM receiver with modified FrSky Taranis Plus</li>
+            </ul>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li>Custom flight controller PCB built from scratch for smaller quadcopter project</li>
+                <li>Real-time FPV video with sub-30ms latency</li>
+                <li>Racing-tuned PID loops for agile flight characteristics</li>
+                <li>Bidirectional telemetry for complete flight monitoring</li>
+                <li>Failsafe systems for safe operation</li>
+                <li>OSD integration showing battery, flight mode, and warnings</li>
+                <li>High thrust-to-weight ratio for acrobatic performance</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+            <p>One of the biggest challenges was achieving proper PID tuning for stable yet responsive flight. I developed a systematic tuning methodology starting with conservative values and iteratively increasing gains while testing in different flight modes. This required extensive flight testing and parameter logging to analyze oscillations and response characteristics.</p>
+
+            <p>Another challenge was managing electromagnetic interference (EMI) between the video transmitter and flight controller. I solved this by implementing proper grounding techniques, using shielded cables for sensitive signals, and physically separating high-power components from sensitive electronics. Adding capacitors to the power lines also helped reduce noise.</p>
+
+            <p>Building the DIY reflow oven required precise temperature control to avoid damaging components. I designed a custom PID temperature controller and calibrated the thermal profile multiple times to achieve consistent, reliable results for SMD soldering.</p>
+
+            <h2>Skills Demonstrated</h2>
+            <ul>
+                <li>PCB design, assembly, and surface-mount soldering</li>
+                <li>Embedded C/C++ programming for real-time systems</li>
+                <li>Control systems engineering (PID tuning, sensor fusion)</li>
+                <li>RF communications and antenna theory</li>
+                <li>Power electronics and battery management</li>
+                <li>Signal processing and filtering algorithms</li>
+                <li>Systems integration and troubleshooting</li>
+                <li>DIY tooling and manufacturing processes</li>
+            </ul>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully built and flew a fully functional racing quadcopter with exceptional flight characteristics and FPV capabilities. The project showcases advanced technical skills across electronics, embedded programming, RF systems, and mechanical integration. The immersive FPV experience demonstrates the successful integration of multiple complex systems working in harmony.</p>
+
+            <p>This project highlights proficiency in both hardware and software development, with particular emphasis on real-time embedded systems, precision electronics assembly, and systems-level thinking required to integrate multiple subsystems into a cohesive, high-performance platform.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

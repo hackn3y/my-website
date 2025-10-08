@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Custom car audio build in 2015 Honda Civic with sound deadening, upgraded speakers, amplifier, DSP tuning, and subwoofer system.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-audio.html">
+    <meta property="og:title" content="Car Audio Build - 2015 Honda Civic - Ryan Hackney">
+    <meta property="og:description" content="Complete car audio system with sound deadening, component speakers, amplifier, DSP tuning, and 15-inch subwoofer.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-audio.html">
+    <meta property="twitter:title" content="Car Audio Build - 2015 Honda Civic - Ryan Hackney">
+    <meta property="twitter:description" content="Complete car audio system with sound deadening, component speakers, amplifier, DSP tuning, and 15-inch subwoofer.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Car Audio Build - 2015 Honda Civic - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content strong {
+            color: var(--text-primary);
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Car Audio Build - 2015 Honda Civic</h1>
+
+        <div class="project-meta">
+            <strong>Vehicle:</strong> 2015 Honda Civic • <strong>Year:</strong> 2023
+            <div class="project-tags">
+                <span class="tag">Car Audio</span>
+                <span class="tag">DSP Tuning</span>
+                <span class="tag">Acoustic Measurement</span>
+                <span class="tag">Sound Deadening</span>
+            </div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Designed and installed a complete high-fidelity car audio system in a 2015 Honda Civic. The build includes extensive sound deadening, upgraded component speakers, amplifier and DSP integration, and a custom subwoofer enclosure. Used professional acoustic measurement software and calibration microphone to tune the DSP for optimal sound quality and frequency response.</p>
+
+            <h2>Sound Deadening & Acoustic Treatment</h2>
+
+            <h3>Door Treatment</h3>
+            <ul>
+                <li>Removed all four door panels for access to inner structure</li>
+                <li>Applied sound deadening material (butyl-based) to outer door skin</li>
+                <li>Covered inner door panels to reduce vibration and road noise</li>
+                <li>Created sealed enclosures behind speakers for improved bass response</li>
+                <li>Added closed-cell foam (CCF) barrier for additional noise reduction</li>
+                <li>Sealed all factory holes and gaps to prevent air leaks</li>
+                <li>Significantly reduced exterior noise and improved speaker performance</li>
+            </ul>
+
+            <h3>Additional Sound Treatment</h3>
+            <ul>
+                <li>Applied deadening to trunk area and rear deck</li>
+                <li>Treated floor panels to reduce road noise transmission</li>
+                <li>Added mass-loaded vinyl (MLV) in key resonance areas</li>
+                <li>Created quieter cabin environment for better listening experience</li>
+            </ul>
+
+            <h2>Speaker System Installation</h2>
+
+            <h3>Component Speakers</h3>
+            <ul>
+                <li>Replaced factory speakers with high-quality component system</li>
+                <li>Installed upgraded tweeters in A-pillars or door-mounted locations</li>
+                <li>Mounted mid-bass drivers in factory door locations</li>
+                <li>Fabricated custom mounting brackets for secure fitment</li>
+                <li>Wired speakers with appropriate gauge speaker wire</li>
+                <li>Created crossover mounting locations for passive components</li>
+            </ul>
+
+            <h3>Rear Speakers</h3>
+            <ul>
+                <li>Upgraded rear speakers for balanced sound staging</li>
+                <li>Applied sound deadening to rear deck for improved output</li>
+                <li>Configured rear fill to complement front stage</li>
+            </ul>
+
+            <h2>Amplifier & DSP Integration</h2>
+
+            <h3>Amplifier Installation</h3>
+            <ul>
+                <li>Installed multi-channel amplifier to power all speakers</li>
+                <li>Ran power cable from battery with appropriate fuse protection</li>
+                <li>Installed distribution block for clean power splitting</li>
+                <li>Ran RCA signal cables away from power for noise prevention</li>
+                <li>Properly grounded amplifier to chassis for clean signal</li>
+                <li>Configured gain structure to prevent clipping and distortion</li>
+            </ul>
+
+            <h3>Digital Signal Processor (DSP)</h3>
+            <ul>
+                <li>Integrated DSP for advanced audio tuning capabilities</li>
+                <li>Connected DSP between head unit and amplifier</li>
+                <li>Enabled individual channel time alignment correction</li>
+                <li>Implemented 31-band parametric EQ per channel</li>
+                <li>Configured active crossovers for precise frequency division</li>
+                <li>Set up phase adjustment for optimal speaker integration</li>
+            </ul>
+
+            <h2>Subwoofer System</h2>
+
+            <h3>15-Inch Subwoofer</h3>
+            <ul>
+                <li>Selected 15-inch subwoofer for deep, powerful bass</li>
+                <li>Designed and built custom ported enclosure to manufacturer specs</li>
+                <li>Calculated optimal box volume and port tuning frequency</li>
+                <li>Constructed enclosure from 3/4-inch MDF with internal bracing</li>
+                <li>Carpeted and finished enclosure for professional appearance</li>
+                <li>Wired subwoofer to dedicated mono amplifier channel</li>
+            </ul>
+
+            <h3>Bass Integration</h3>
+            <ul>
+                <li>Tuned subsonic filter to protect driver from over-excursion</li>
+                <li>Set low-pass crossover for smooth blend with mids</li>
+                <li>Adjusted phase to align with front speakers</li>
+                <li>Configured bass boost and EQ for desired response</li>
+            </ul>
+
+            <h2>DSP Tuning & Acoustic Measurement</h2>
+
+            <h3>Measurement Equipment & Software</h3>
+            <ul>
+                <li>Used calibrated measurement microphone for accurate readings</li>
+                <li>Positioned microphone at primary listening position (driver's seat)</li>
+                <li>Ran acoustic measurement software (REW or similar) for frequency analysis</li>
+                <li>Generated pink noise test signals through system</li>
+                <li>Captured frequency response, impulse response, and phase data</li>
+                <li>Analyzed waterfall plots to identify resonances and decay</li>
+            </ul>
+
+            <h3>Time Alignment Calibration</h3>
+            <ul>
+                <li>Measured distance from each speaker to listening position</li>
+                <li>Calculated delay values to time-align all drivers</li>
+                <li>Configured DSP delays to create coherent soundstage</li>
+                <li>Fine-tuned using impulse response measurements</li>
+                <li>Achieved focused center image and proper staging</li>
+            </ul>
+
+            <h3>Frequency Response Tuning</h3>
+            <ul>
+                <li>Analyzed measured frequency response curves</li>
+                <li>Identified peaks, dips, and problem frequencies</li>
+                <li>Applied parametric EQ to flatten response</li>
+                <li>Corrected cabin gain and resonance issues</li>
+                <li>Targeted smooth response from 30Hz to 20kHz</li>
+                <li>Iteratively measured and adjusted until optimal</li>
+            </ul>
+
+            <h3>Crossover Optimization</h3>
+            <ul>
+                <li>Set crossover points based on driver capabilities</li>
+                <li>Configured slopes (12dB, 24dB, etc.) for proper integration</li>
+                <li>Adjusted subwoofer crossover to blend seamlessly with mids</li>
+                <li>Fine-tuned tweeter high-pass to prevent distortion</li>
+                <li>Verified summed response shows no dips at crossover points</li>
+            </ul>
+
+            <h2>System Specifications</h2>
+            <ul>
+                <li><strong>Front Speakers:</strong> Component system with separate tweeters and mid-bass</li>
+                <li><strong>Rear Speakers:</strong> Upgraded coaxial or component speakers</li>
+                <li><strong>Subwoofer:</strong> 15-inch driver in custom ported enclosure</li>
+                <li><strong>Amplifier:</strong> Multi-channel amplifier for all speakers</li>
+                <li><strong>DSP:</strong> Digital signal processor with time alignment and EQ</li>
+                <li><strong>Wiring:</strong> Appropriate gauge power and speaker wire throughout</li>
+                <li><strong>Sound Deadening:</strong> Comprehensive treatment in all doors and trunk</li>
+            </ul>
+
+            <h2>Technical Skills Demonstrated</h2>
+            <ul>
+                <li><strong>Acoustic Engineering:</strong> Understanding of sound waves, resonance, and cabin acoustics</li>
+                <li><strong>Measurement & Analysis:</strong> Using professional software and equipment for tuning</li>
+                <li><strong>Signal Processing:</strong> DSP configuration for time alignment, EQ, and crossovers</li>
+                <li><strong>Electrical Systems:</strong> Proper power distribution, grounding, and signal routing</li>
+                <li><strong>Fabrication:</strong> Custom enclosure design and speaker mounting</li>
+                <li><strong>Problem Solving:</strong> Identifying and correcting acoustic issues</li>
+                <li><strong>Data Analysis:</strong> Interpreting frequency response and phase measurements</li>
+                <li><strong>Iterative Tuning:</strong> Systematic approach to achieving target response</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+            <p>Cabin acoustics presented significant challenges with peaks and nulls in the frequency response. Using measurement software, I identified specific problem frequencies and applied narrow parametric EQ cuts to smooth the response without affecting overall tonality. This required multiple iterations of measurement and adjustment.</p>
+
+            <p>Time alignment was critical for proper imaging. The asymmetrical listening position (driver's seat) meant left and right speakers arrived at different times. By carefully measuring distances and applying precise delays through the DSP, I achieved a centered soundstage with accurate imaging.</p>
+
+            <p>Road noise initially interfered with sound quality at highway speeds. The comprehensive sound deadening treatment in doors, floor, and trunk dramatically reduced ambient noise levels, allowing the system to perform at lower volumes and with greater clarity.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully created a high-fidelity car audio system with flat frequency response, proper time alignment, and powerful, controlled bass. The combination of quality components, proper installation techniques, and scientific measurement-based tuning resulted in exceptional sound quality that rivals much more expensive systems.</p>
+
+            <p>This project demonstrates proficiency in acoustic engineering, signal processing, electrical systems, and data-driven optimization. The systematic approach to measurement and tuning showcases analytical thinking and the ability to use professional tools to achieve measurable, objective improvements.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

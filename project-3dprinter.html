@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MicroMax 3D printer assembly, calibration, and CAD design for functional prototypes and custom components.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-3dprinter.html">
+    <meta property="og:title" content="3D Printer Assembly & CAD Design - Ryan Hackney">
+    <meta property="og:description" content="Complete 3D printer build with self-leveling, software configuration, and custom CAD designs for functional parts.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-3dprinter.html">
+    <meta property="twitter:title" content="3D Printer Assembly & CAD Design - Ryan Hackney">
+    <meta property="twitter:description" content="Complete 3D printer build with self-leveling, software configuration, and custom CAD designs for functional parts.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>3D Printer Assembly & CAD Design - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content strong {
+            color: var(--text-primary);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            padding: 1rem;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>3D Printer Assembly & CAD Design</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Builder & Designer • <strong>Year:</strong> 2023-2024
+            <div class="project-tags">
+                <span class="tag">3D Printing</span>
+                <span class="tag">CAD Design</span>
+                <span class="tag">Mechanical Assembly</span>
+                <span class="tag">Firmware Configuration</span>
+            </div>
+        </div>
+
+        <img src="3d.jpg" alt="MicroMax 3D Printer" class="featured-image">
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Assembled a MicroMax 3D printer kit from scratch, configured all firmware and slicing software, and used it to design and manufacture functional components for various projects. Added self-leveling capabilities and printed custom upgrades to improve printer performance. This project demonstrates mechanical assembly, CAD design proficiency, and practical manufacturing skills.</p>
+
+            <h2>Printer Assembly & Build</h2>
+
+            <h3>Mechanical Assembly</h3>
+            <ul>
+                <li>Assembled complete MicroMax 3D printer kit from individual components</li>
+                <li>Installed and aligned linear rails and motion system for smooth movement</li>
+                <li>Configured stepper motors and belt tensioning for precise positioning</li>
+                <li>Built and wired heated print bed with thermal insulation</li>
+                <li>Installed hotend assembly and cooling system</li>
+                <li>Assembled frame with proper squareness and rigidity</li>
+            </ul>
+
+            <h3>Electronics & Wiring</h3>
+            <ul>
+                <li>Wired all stepper motor drivers to control board</li>
+                <li>Connected thermistors for hotend and bed temperature sensing</li>
+                <li>Installed power supply and configured voltage regulation</li>
+                <li>Set up endstop switches for homing and safety</li>
+                <li>Implemented cable management for clean wire routing</li>
+                <li>Added safety features including thermal runaway protection</li>
+            </ul>
+
+            <h2>Software Configuration</h2>
+
+            <h3>Firmware Setup</h3>
+            <ul>
+                <li>Flashed and configured Marlin firmware on printer controller</li>
+                <li>Calibrated stepper motor steps/mm for accurate dimensions</li>
+                <li>Tuned PID control loops for stable temperature regulation</li>
+                <li>Configured acceleration and jerk settings for quality prints</li>
+                <li>Set up LCD interface for manual control and monitoring</li>
+                <li>Implemented custom start and end G-code sequences</li>
+            </ul>
+
+            <h3>Slicing Software</h3>
+            <ul>
+                <li>Installed and configured Cura slicer with custom profiles</li>
+                <li>Created material-specific print profiles (PLA, PETG, TPU)</li>
+                <li>Optimized layer height, speed, and temperature settings</li>
+                <li>Configured support structures and infill patterns</li>
+                <li>Set up quality presets for different use cases (draft, quality, fine)</li>
+                <li>Integrated custom G-code for advanced features</li>
+            </ul>
+
+            <h2>Self-Leveling System</h2>
+
+            <h3>BLTouch Integration</h3>
+            <ul>
+                <li>Installed BLTouch auto bed leveling sensor</li>
+                <li>Updated firmware to support mesh bed leveling</li>
+                <li>Configured probe offsets and Z-height calibration</li>
+                <li>Created 9-point bed mesh for compensation</li>
+                <li>Implemented automatic bed leveling before each print</li>
+                <li>Significantly improved first layer adhesion and consistency</li>
+            </ul>
+
+            <h2>CAD Design & Functional Parts</h2>
+
+            <h3>Design Software Proficiency</h3>
+            <ul>
+                <li>Created custom parts using Fusion 360 and Tinkercad</li>
+                <li>Designed parametric models for easy modification</li>
+                <li>Applied proper tolerances and clearances for functional fits</li>
+                <li>Optimized designs for 3D printing (orientation, supports, bridging)</li>
+                <li>Exported STL files with correct scale and orientation</li>
+            </ul>
+
+            <h3>Custom Component Examples</h3>
+            <ul>
+                <li><strong>Project Enclosures:</strong> Custom boxes for electronics projects with precise mounting holes and ventilation</li>
+                <li><strong>Quadcopter Parts:</strong> Camera mounts, battery trays, and antenna holders</li>
+                <li><strong>Rubik's Cube Robot:</strong> Gripper mechanisms and servo motor mounts</li>
+                <li><strong>Organizers:</strong> Tool holders, cable management clips, and storage solutions</li>
+                <li><strong>Replacement Parts:</strong> Custom brackets and adapters for various applications</li>
+                <li><strong>Prototypes:</strong> Rapid iteration of mechanical designs for testing and refinement</li>
+            </ul>
+
+            <h2>Printer Upgrades & Improvements</h2>
+
+            <h3>Self-Printed Enhancements</h3>
+            <ul>
+                <li>Printed upgraded cooling duct for better part cooling</li>
+                <li>Created custom spool holder with integrated filament guide</li>
+                <li>Designed and printed cable chain for moving print head</li>
+                <li>Manufactured adjustable Z-axis endstop mount</li>
+                <li>Printed dampening feet to reduce vibration and noise</li>
+                <li>Created tool holders and storage solutions for printer accessories</li>
+            </ul>
+
+            <h3>Performance Optimizations</h3>
+            <ul>
+                <li>Tuned linear advance for better corners and overhangs</li>
+                <li>Calibrated extrusion multiplier for dimensional accuracy</li>
+                <li>Optimized retraction settings to eliminate stringing</li>
+                <li>Fine-tuned temperature and cooling for various materials</li>
+                <li>Implemented pressure advance for consistent extrusion</li>
+            </ul>
+
+            <h2>Technical Skills Demonstrated</h2>
+            <ul>
+                <li><strong>Mechanical Assembly:</strong> Precise alignment and adjustment of motion systems</li>
+                <li><strong>CAD Design:</strong> Creating functional, printable parts with proper tolerances</li>
+                <li><strong>Firmware Configuration:</strong> Understanding and modifying embedded printer software</li>
+                <li><strong>Process Optimization:</strong> Tuning parameters for quality and reliability</li>
+                <li><strong>Troubleshooting:</strong> Diagnosing and fixing print quality issues</li>
+                <li><strong>Manufacturing:</strong> Understanding of additive manufacturing constraints and best practices</li>
+                <li><strong>Iterative Design:</strong> Rapid prototyping and design refinement</li>
+            </ul>
+
+            <h2>Materials & Print Experience</h2>
+            <ul>
+                <li><strong>PLA:</strong> Standard prints, prototypes, and general components</li>
+                <li><strong>PETG:</strong> Functional parts requiring durability and temperature resistance</li>
+                <li><strong>TPU:</strong> Flexible components and shock-absorbing parts</li>
+                <li>Successfully printed hundreds of components across multiple projects</li>
+                <li>Developed expertise in material selection for specific applications</li>
+                <li>Optimized print profiles for minimal failures and high success rate</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+            <p>Initial bed adhesion issues were resolved by installing the BLTouch auto-leveling system and fine-tuning the Z-offset. This eliminated the need for manual leveling before each print and dramatically improved first layer consistency across the entire bed surface.</p>
+
+            <p>Designing functional parts required understanding of 3D printing constraints including minimum wall thickness, bridging angles, and support requirements. I developed a systematic approach to orient parts optimally and add necessary chamfers and fillets to ensure reliable printing.</p>
+
+            <p>Achieving dimensional accuracy required extensive calibration including steps/mm verification, flow rate tuning, and temperature optimization for each material. I created detailed calibration procedures and documented optimal settings for repeatable results.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully built and optimized a reliable 3D printing platform that has manufactured hundreds of functional components for various projects. The printer has become an essential tool for rapid prototyping and custom part fabrication, enabling faster iteration and problem-solving across multiple engineering projects.</p>
+
+            <p>This project demonstrates practical manufacturing skills, CAD proficiency, and the ability to build and maintain complex mechanical systems. The combination of assembly, software configuration, and design work showcases a comprehensive understanding of additive manufacturing from concept to finished product.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>
