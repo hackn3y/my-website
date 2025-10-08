@@ -18,9 +18,12 @@
     <meta property="twitter:description" content="Full bolt-on build with custom tuning showcasing technical automotive expertise.">
     <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
     
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#ff6b35">
     
     <title>BMW 335i Performance Build - Ryan Hackney</title>
@@ -258,6 +261,12 @@
             transform: scale(1.05);
         }
 
+        /* Override height constraint for dyno image specifically */
+        .image-gallery .dyno-image {
+            height: auto;
+            min-height: 500px;
+        }
+
         .featured-image {
             width: 100%;
             max-height: 500px;
@@ -267,22 +276,13 @@
             border: 1px solid var(--border-color);
         }
 
-        /* dyno-specific image tweak: prioritize the top of the image so the chart header isn't cropped */
+        /* dyno-specific image: show full image without cropping */
         .dyno-image {
-            /* responsive: use the smaller of 760px or 80vh so the image scales on large and small screens */
-            max-height: min(760px, 80vh);
-            height: auto;
             width: 100%;
-            object-fit: cover;
-            object-position: top center;
-        }
-
-        /* On very wide screens, show the entire dyno image (no cropping) so the legend is visible */
-        @media (min-width: 1200px) {
-            .dyno-image {
-                object-fit: contain;
-                object-position: center center;
-            }
+            height: auto;
+            object-fit: contain;
+            object-position: center center;
+            max-height: none;
         }
 
         /* Lightbox/modal styles */
@@ -456,6 +456,8 @@
                 <span class="tag">Systems Engineering</span>
             </div>
         </div>
+
+        <img src="bmw.png" alt="BMW 335i" class="featured-image" loading="lazy">
 
         <div class="project-content">
             <h2>Project Overview</h2>
