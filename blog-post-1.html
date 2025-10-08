@@ -334,17 +334,19 @@
                 top: 70px;
                 left: 0;
                 right: 0;
-                background: var(--bg-secondary);
-                border-bottom: 1px solid var(--border-color);
+                background: transparent;
+                border-bottom: none;
                 max-height: 0;
                 overflow: hidden;
-                transition: max-height 0.3s ease;
+                transition: max-height 0.3s ease, background 0.3s ease;
                 z-index: 1000;
             }
 
             .nav-center.active {
                 max-height: 500px;
                 overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
             }
 
             .nav-center ul {
@@ -377,6 +379,13 @@
 
             .theme-toggle {
                 padding: 0.4rem 0.8rem;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
             }
         }
     </style>
