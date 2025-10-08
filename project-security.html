@@ -281,9 +281,15 @@
             padding: 1rem;
         }
 
+        .certificate-embed {
+            position: relative;
+            width: 100%;
+            min-height: 600px;
+        }
+
         .certificate-frame {
             width: 100%;
-            height: 480px;
+            height: 600px;
             border: none;
             border-radius: 6px;
             display: block;
@@ -498,11 +504,9 @@
             <!-- Certificate embed block -->
             <div class="certificate-block" aria-labelledby="cert-heading">
                 <h2 id="cert-heading">Certificate</h2>
-                <p>View my Google Cybersecurity Professional Certificate (PDF). You can scroll inside the viewer or open the file in a new tab.</p>
+                <p>View my Google Cybersecurity Professional Certificate (PDF). You can scroll inside the viewer or <a href="goog.pdf" target="_blank" rel="noopener">open it in a new tab</a>.</p>
                 <div class="certificate-embed">
-                    <embed src="goog.pdf" type="application/pdf" class="certificate-frame" aria-label="Google Cybersecurity Professional Certificate PDF">
-                    <!-- Fallback for browsers that don't support embed -->
-                    <p>If the certificate does not display, <a href="goog.pdf" target="_blank" rel="noopener">open the PDF in a new tab</a>.</p>
+                    <iframe src="goog.pdf" class="certificate-frame" title="Google Cybersecurity Professional Certificate PDF"></iframe>
                 </div>
             </div>
 

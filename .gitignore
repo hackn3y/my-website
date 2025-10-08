@@ -9,7 +9,6 @@ node_modules/
 
 # PDFs that might contain sensitive info
 cdr-report.pdf
-goog.pdf
 
 # Optional: Uncomment if you don't want to commit resume
 # resume.pdf
