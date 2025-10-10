@@ -30,6 +30,9 @@ php -S localhost:8000
 
 ### Testing
 ```bash
+# Install dependencies first
+npm install
+
 # Run smoke tests (Playwright)
 npm run test:smoke
 ```
@@ -85,6 +88,7 @@ Cart count displayed in header badge requires:
 2. Element `#cart-count-sr` for screen reader announcement
 3. Call `updateCartCount()` after any cart modification
 4. Badge auto-syncs from localStorage on page load
+5. Cart persisted as array of product IDs in localStorage key `cart`
 
 ### Accessibility Features
 - Keyboard navigation detection via `user-is-tabbing` class on `<html>`
@@ -93,11 +97,13 @@ Cart count displayed in header badge requires:
 - ARIA attributes on interactive elements (cart button, theme toggle)
 
 ### Modal System
-Two modals with shared close behavior:
+Modals with shared close behavior:
 - `#checkout-modal` - Shopping cart checkout
 - `#quickview-modal` - Product detail view
+- `#product-lightbox` - Image gallery with navigation
 - Close via `.close-modal` buttons (event delegation in theme.js)
 - Functions: `openCheckout()`, `closeCheckout()`, `openQuickView()`, `closeQuickView()`
+- Lightbox supports keyboard (arrows/Escape) and mousewheel navigation
 
 ### Cross-Page Cart Navigation
 Blog pages redirect to index with cart open:
@@ -126,18 +132,20 @@ Blog pages redirect to index with cart open:
 ## Adding Products
 
 1. Create product in Stripe Dashboard
-2. Add entry to `products` array in `index.html`:
+2. Add entry to `products` array in `index.html` (~line 329):
    ```javascript
    {
      id: 'prod_X',
      name: 'Product Name',
      price: 25.00,
      description: 'Product description',
-     image: 'image.jpg'
+     image: 'image.jpg',
+     images: ['image.jpg', 'image2.jpg']  // Optional: for gallery
    }
    ```
-3. Add product image to root directory
+3. Add product image(s) to root directory
 4. Product ID should match Stripe for webhook processing
+5. If `images` array has >1 item, gallery badge and "View Gallery" button appear automatically
 
 ## Common Tasks
 
@@ -156,6 +164,13 @@ Modify CSS variables in `:root` and `body.light-mode` blocks in HTML files
 ### Environment Variables
 Set in Netlify dashboard:
 - `STRIPE_SECRET_KEY` - Required for payment processing
+
+### reCAPTCHA Setup
+Contact form uses Netlify's built-in reCAPTCHA v2:
+- Script loaded in head: `https://www.google.com/recaptcha/api.js`
+- Form has `netlify-recaptcha` attribute
+- reCAPTCHA widget: `<div data-netlify-recaptcha="true"></div>`
+- No manual configuration needed - Netlify handles keys automatically
 
 ## Testing Notes
 
