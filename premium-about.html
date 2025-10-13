@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about DigitalPro - Your trusted partner in digital transformation. Meet our team and discover our mission to transform businesses worldwide.">
+    <meta name="keywords" content="about us, digital agency, web design team, company values">
+    <meta name="author" content="Digital Solutions Pro">
+
+    <title>About Us - DigitalPro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--dark);
+        }
+
+        /* Same navigation as main page */
+        nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .content-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-image {
+            background: var(--gradient-1);
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .value-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .value-card p {
+            color: var(--text-muted);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .member-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .member-role {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-light);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1200px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .values-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">DigitalPro</div>
+            <ul class="nav-links">
+                <li><a href="premium-landing.html">Home</a></li>
+                <li><a href="premium-landing.html#features">Features</a></li>
+                <li><a href="premium-about.html">About</a></li>
+                <li><a href="premium-services.html">Services</a></li>
+                <li><a href="premium-landing.html#pricing">Pricing</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>About DigitalPro</h1>
+        <p>We're a team of passionate designers, developers, and marketers dedicated to transforming businesses through innovative digital solutions.</p>
+    </section>
+
+    <!-- Our Story -->
+    <section class="content-section">
+        <div class="two-column">
+            <div class="content-text">
+                <h2>Our Story</h2>
+                <p>Founded in 2018, DigitalPro emerged from a simple yet powerful vision: to make world-class digital solutions accessible to businesses of all sizes.</p>
+                <p>What started as a small team of three has grown into a 50+ member agency serving clients across the globe. Our journey has been driven by one constant—an unwavering commitment to our clients' success.</p>
+                <p>Today, we're proud to have helped over 500 businesses transform their digital presence and achieve remarkable growth.</p>
+            </div>
+            <div class="content-image">
+                📖
+            </div>
+        </div>
+
+        <div class="two-column" style="direction: rtl;">
+            <div class="content-text" style="direction: ltr;">
+                <h2>Our Mission</h2>
+                <p>To empower businesses worldwide with cutting-edge digital solutions that drive measurable results and sustainable growth.</p>
+                <p>We believe that every business deserves access to premium web design, development, and marketing services—regardless of size or budget.</p>
+                <p>Our mission is to level the playing field, giving small and medium businesses the tools they need to compete with industry giants.</p>
+            </div>
+            <div class="content-image" style="direction: ltr;">
+                🎯
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="content-section" style="background: rgba(30, 41, 59, 0.3); padding: 6rem 2rem;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Our Core Values</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto 3rem;">The principles that guide everything we do</p>
+
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🎨</div>
+                    <h3>Excellence</h3>
+                    <p>We never settle for good enough. Every project receives our absolute best effort and attention to detail.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>Partnership</h3>
+                    <p>Your success is our success. We're not just vendors—we're your committed partners in growth.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💡</div>
+                    <h3>Innovation</h3>
+                    <p>We stay ahead of trends and technologies to deliver cutting-edge solutions that future-proof your business.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <h3>Results-Driven</h3>
+                    <p>Pretty designs aren't enough. We focus on delivering measurable results that impact your bottom line.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🌍</div>
+                    <h3>Transparency</h3>
+                    <p>Open communication, honest pricing, and clear deliverables. No hidden fees or surprises.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>Speed</h3>
+                    <p>In digital, timing is everything. We deliver fast without compromising on quality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Team -->
+    <section class="content-section">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Meet Our Team</h2>
+        <p style="text-align: center; color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">The talented people behind your success</p>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-avatar">JD</div>
+                <div class="member-name">John Davis</div>
+                <div class="member-role">CEO & Founder</div>
+            </div>
+            <div class="team-member">
+                <div class="member-avatar">SM</div>
+                <div class="member-name">Sarah Miller</div>
+                <div class="member-role">Creative Director</div>
+            </div>
+            <div class="team-member">
+                <div class="member-avatar">MW</div>
+                <div class="member-name">Mike Wilson</div>
+                <div class="member-role">Lead Developer</div>
+            </div>
+            <div class="team-member">
+                <div class="member-avatar">EJ</div>
+                <div class="member-name">Emily Johnson</div>
+                <div class="member-role">Marketing Head</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding: 6rem 2rem; background: var(--gradient-1); text-align: center;">
+        <h2 style="font-size: 3rem; font-weight: 900; color: white; margin-bottom: 1rem;">Ready to Work Together?</h2>
+        <p style="font-size: 1.3rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Let's transform your business with cutting-edge digital solutions.</p>
+        <a href="premium-landing.html#contact" style="display: inline-block; padding: 1rem 2.5rem; background: var(--dark); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">Get Started Today</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DigitalPro. All rights reserved. Built with passion and precision.</p>
+    </footer>
+</body>
+
+</html>

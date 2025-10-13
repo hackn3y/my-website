@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore our comprehensive digital services: Web Design, Development, SEO, Marketing, and more. Premium solutions for businesses ready to grow.">
+    <meta name="keywords" content="web design, web development, SEO services, digital marketing, e-commerce">
+    <meta name="author" content="Digital Solutions Pro">
+
+    <title>Our Services - DigitalPro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--dark);
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+            padding: 4rem;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .service-detail:hover {
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            transform: translateY(-10px);
+        }
+
+        .service-detail:nth-child(even) {
+            direction: rtl;
+        }
+
+        .service-detail:nth-child(even) > * {
+            direction: ltr;
+        }
+
+        .service-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .service-content p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .service-features li {
+            padding: 0.8rem 0;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .service-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+
+        .service-visual {
+            background: var(--gradient-1);
+            border-radius: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            transition: transform 0.3s ease;
+        }
+
+        .service-detail:hover .service-visual {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .btn-service {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
+            background: var(--gradient-1);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-service:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Process Section */
+        .process-section {
+            padding: 6rem 2rem;
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .process-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .process-step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+        }
+
+        .process-step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Technologies Section */
+        .tech-section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tech-item {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .tech-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-name {
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-light);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1200px) {
+            .service-detail {
+                grid-template-columns: 1fr;
+                padding: 3rem;
+            }
+
+            .service-detail:nth-child(even) {
+                direction: ltr;
+            }
+
+            .process-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-step::after {
+                display: none;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .service-detail {
+                padding: 2rem;
+            }
+
+            .service-content h2 {
+                font-size: 2rem;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">DigitalPro</div>
+            <ul class="nav-links">
+                <li><a href="premium-landing.html">Home</a></li>
+                <li><a href="premium-landing.html#features">Features</a></li>
+                <li><a href="premium-about.html">About</a></li>
+                <li><a href="premium-services.html">Services</a></li>
+                <li><a href="premium-landing.html#pricing">Pricing</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Our Services</h1>
+        <p>Comprehensive digital solutions designed to elevate your business and drive measurable results.</p>
+    </section>
+
+    <!-- Services Detail Section -->
+    <section class="services-section">
+        <!-- Web Design -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>Web Design</h2>
+                <p>Create a lasting first impression with stunning, custom-designed websites that reflect your brand identity and captivate your audience.</p>
+                <p>Our design philosophy blends aesthetics with functionality, ensuring your website not only looks beautiful but also delivers an exceptional user experience.</p>
+                <ul class="service-features">
+                    <li>Custom UI/UX Design</li>
+                    <li>Responsive Layouts</li>
+                    <li>Brand Identity Integration</li>
+                    <li>User-Centered Approach</li>
+                    <li>Wireframing & Prototyping</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual">
+                🎨
+            </div>
+        </div>
+
+        <!-- Web Development -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>Web Development</h2>
+                <p>Transform designs into high-performance, scalable websites built with cutting-edge technologies and industry best practices.</p>
+                <p>From simple landing pages to complex web applications, we deliver robust solutions that stand the test of time.</p>
+                <ul class="service-features">
+                    <li>Frontend Development (React, Vue, Next.js)</li>
+                    <li>Backend Development (Node.js, Python)</li>
+                    <li>E-commerce Solutions</li>
+                    <li>CMS Integration</li>
+                    <li>API Development & Integration</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual" style="background: var(--gradient-2);">
+                💻
+            </div>
+        </div>
+
+        <!-- SEO Optimization -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>SEO Optimization</h2>
+                <p>Dominate search rankings and attract organic traffic with comprehensive SEO strategies tailored to your industry and goals.</p>
+                <p>Our data-driven approach ensures your website gets found by the right audience at the right time.</p>
+                <ul class="service-features">
+                    <li>Technical SEO Audit</li>
+                    <li>Keyword Research & Strategy</li>
+                    <li>On-Page Optimization</li>
+                    <li>Content Optimization</li>
+                    <li>Performance Monitoring</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual" style="background: var(--gradient-3);">
+                🚀
+            </div>
+        </div>
+
+        <!-- Digital Marketing -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>Digital Marketing</h2>
+                <p>Amplify your reach and convert visitors into customers with targeted marketing campaigns across multiple channels.</p>
+                <p>From social media to email marketing, we create cohesive strategies that drive engagement and boost ROI.</p>
+                <ul class="service-features">
+                    <li>Social Media Marketing</li>
+                    <li>Email Marketing Campaigns</li>
+                    <li>Content Marketing</li>
+                    <li>PPC Advertising</li>
+                    <li>Analytics & Reporting</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                📈
+            </div>
+        </div>
+
+        <!-- Maintenance & Support -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>Maintenance & Support</h2>
+                <p>Keep your website running smoothly with ongoing maintenance, updates, and dedicated support from our expert team.</p>
+                <p>We handle the technical details so you can focus on growing your business with peace of mind.</p>
+                <ul class="service-features">
+                    <li>24/7 Technical Support</li>
+                    <li>Regular Updates & Backups</li>
+                    <li>Security Monitoring</li>
+                    <li>Performance Optimization</li>
+                    <li>Content Updates</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                🛠️
+            </div>
+        </div>
+
+        <!-- E-commerce Solutions -->
+        <div class="service-detail">
+            <div class="service-content">
+                <h2>E-commerce Solutions</h2>
+                <p>Launch and scale your online store with powerful e-commerce platforms designed to maximize conversions and streamline operations.</p>
+                <p>From product catalogs to payment processing, we build complete solutions that drive sales.</p>
+                <ul class="service-features">
+                    <li>Custom Store Development</li>
+                    <li>Payment Gateway Integration</li>
+                    <li>Inventory Management</li>
+                    <li>Shopping Cart Optimization</li>
+                    <li>Multi-currency Support</li>
+                </ul>
+                <a href="premium-landing.html#contact" class="btn-service">Get Started →</a>
+            </div>
+            <div class="service-visual" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                🛒
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process-section">
+        <div class="process-container">
+            <h2 class="section-title">Our Process</h2>
+            <p class="section-subtitle">A proven methodology that delivers exceptional results every time</p>
+
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Discovery</h3>
+                    <p>We learn about your business, goals, and target audience to create a tailored strategy.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>Design</h3>
+                    <p>Our team creates stunning designs and prototypes for your review and approval.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Develop</h3>
+                    <p>We build your solution using cutting-edge technologies and best practices.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3>Launch</h3>
+                    <p>After rigorous testing, we launch your project and provide ongoing support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section class="tech-section">
+        <h2 class="section-title">Technologies We Use</h2>
+        <p class="section-subtitle">Powered by the latest and most reliable technologies in the industry</p>
+
+        <div class="tech-grid">
+            <div class="tech-item">
+                <div class="tech-icon">⚛️</div>
+                <div class="tech-name">React</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🔷</div>
+                <div class="tech-name">Vue.js</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">▲</div>
+                <div class="tech-name">Next.js</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🟢</div>
+                <div class="tech-name">Node.js</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🐍</div>
+                <div class="tech-name">Python</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">💾</div>
+                <div class="tech-name">MongoDB</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🐘</div>
+                <div class="tech-name">PostgreSQL</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">☁️</div>
+                <div class="tech-name">AWS</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🔷</div>
+                <div class="tech-name">Docker</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🎨</div>
+                <div class="tech-name">Figma</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🎯</div>
+                <div class="tech-name">WordPress</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-icon">🛒</div>
+                <div class="tech-name">Shopify</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding: 6rem 2rem; background: var(--gradient-1); text-align: center;">
+        <h2 style="font-size: 3rem; font-weight: 900; color: white; margin-bottom: 1rem;">Ready to Get Started?</h2>
+        <p style="font-size: 1.3rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Let's discuss your project and bring your vision to life.</p>
+        <a href="premium-landing.html#contact" style="display: inline-block; padding: 1rem 2.5rem; background: var(--dark); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;">Contact Us Today</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DigitalPro. All rights reserved. Built with passion and precision.</p>
+    </footer>
+</body>
+
+</html>
