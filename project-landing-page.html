@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium React landing page template designed for Fiverr portfolio - modern, responsive, and conversion-focused.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-landing-page.html">
+    <meta property="og:title" content="Premium Landing Page Template - Ryan Hackney">
+    <meta property="og:description" content="Professional React landing page with modern design, responsive layout, and conversion optimization.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-landing-page.html">
+    <meta property="twitter:title" content="Premium Landing Page Template - Ryan Hackney">
+    <meta property="twitter:description" content="Professional React landing page with modern design, responsive layout, and conversion optimization.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Premium Landing Page Template - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-highlight {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-highlight pre {
+            margin: 0;
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            /* Remove control-group styling on mobile */
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Premium Landing Page Template</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Frontend Developer & Designer • <strong>Year:</strong> 2025
+            <div class="project-tags">
+                <span class="tag">React</span>
+                <span class="tag">Tailwind CSS</span>
+                <span class="tag">Lucide Icons</span>
+                <span class="tag">Responsive Design</span>
+            </div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Designed and developed a premium landing page template for my Fiverr portfolio to showcase modern web development skills. Built with React and Tailwind CSS, this conversion-focused landing page demonstrates professional-grade design patterns, responsive layouts, and best practices for client-facing web applications.</p>
+
+            <h2>Technical Implementation</h2>
+
+            <h3>Modern React Architecture</h3>
+            <ul>
+                <li>Built with React functional components and hooks (useState)</li>
+                <li>Single-file component for easy deployment and reusability</li>
+                <li>Lucide React for scalable, accessible icon system</li>
+                <li>Smooth scroll navigation with anchor links</li>
+                <li>Form state management with controlled components</li>
+            </ul>
+
+            <h3>Styling & Design</h3>
+            <ul>
+                <li>Tailwind CSS utility-first approach for rapid styling</li>
+                <li>Dark gradient background with glassmorphism effects</li>
+                <li>Responsive grid layouts that adapt to all screen sizes</li>
+                <li>Hover effects and transitions for enhanced interactivity</li>
+                <li>Modern color palette with blue accent colors</li>
+            </ul>
+
+            <h3>User Experience Features</h3>
+            <ul>
+                <li>Hero section with clear value proposition and CTAs</li>
+                <li>Services grid showcasing key offerings</li>
+                <li>Featured projects section with live links</li>
+                <li>Credentials section highlighting education and certifications</li>
+                <li>Contact form with success state feedback</li>
+                <li>Social media links with icon integration</li>
+            </ul>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li><strong>Conversion-Optimized:</strong> Clear hierarchy, compelling CTAs, and trust signals throughout</li>
+                <li><strong>Professional Presentation:</strong> Showcases real projects with live links and tech stacks</li>
+                <li><strong>Mobile-First Design:</strong> Fully responsive with flexbox and grid layouts</li>
+                <li><strong>Fast & Lightweight:</strong> Single-file component, minimal dependencies</li>
+                <li><strong>Accessible:</strong> Semantic HTML, ARIA labels, keyboard navigation support</li>
+                <li><strong>Modern Aesthetic:</strong> Gradient backgrounds, smooth animations, and clean typography</li>
+            </ul>
+
+            <h2>Design Philosophy</h2>
+            <p>The landing page follows modern web design principles focused on conversion optimization. Each section serves a specific purpose in the user journey:</p>
+
+            <ul>
+                <li><strong>Hero:</strong> Immediately communicates who I am and what I do</li>
+                <li><strong>Services:</strong> Highlights key offerings with visual icons</li>
+                <li><strong>Projects:</strong> Provides social proof with real, working applications</li>
+                <li><strong>Credentials:</strong> Builds trust with education and certifications</li>
+                <li><strong>Contact:</strong> Makes it easy to get started with multiple touchpoints</li>
+            </ul>
+
+            <h2>Technologies Used</h2>
+            <div class="code-highlight">
+                <pre>
+- React 18+ (functional components, hooks)
+- Tailwind CSS (utility-first styling)
+- Lucide React (icon library)
+- Responsive design patterns
+- Form state management
+- Smooth scroll navigation
+                </pre>
+            </div>
+
+            <h2>Deployment & Integration</h2>
+            <p>This template is designed for easy integration into any React project. The single-file component can be dropped into any React application, styled with Tailwind CSS, and customized with personal information and project details. It's perfect for freelancers, developers, and agencies looking to create a professional web presence quickly.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Created a professional, modern landing page that effectively showcases web development capabilities to potential clients. The clean design, smooth interactions, and clear value proposition make it an ideal template for Fiverr profiles and freelance portfolios. The conversion-focused layout guides visitors toward taking action while providing all necessary information about services and expertise.</p>
+
+            <h2>Future Enhancements</h2>
+            <ul>
+                <li>Integration with backend API for form submissions</li>
+                <li>Dark/light mode toggle</li>
+                <li>Animation library integration (Framer Motion)</li>
+                <li>Blog section for content marketing</li>
+                <li>Client testimonials carousel</li>
+                <li>Live chat integration</li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
