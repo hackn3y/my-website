@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Full-stack social fitness platform with React Native mobile app, Node.js backend, and admin dashboard. Built with AI assistance featuring Stripe payments, real-time messaging, and PWA capabilities.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-intentional-movement.html">
+    <meta property="og:title" content="Intentional Movement - Full-Stack Social Fitness Platform - Ryan Hackney">
+    <meta property="og:description" content="Mobile-first fitness platform combining social features with program sales. React Native, Node.js, PostgreSQL, Stripe integration.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-intentional-movement.html">
+    <meta property="twitter:title" content="Intentional Movement - Full-Stack Social Fitness Platform - Ryan Hackney">
+    <meta property="twitter:description" content="Mobile-first fitness platform combining social features with program sales. React Native, Node.js, PostgreSQL, Stripe integration.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Intentional Movement Platform - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .svg-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .svg-diagram svg { width: 100%; height: auto; display: block; }
+
+        .diagram-caption {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .document-links {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-links h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .document-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .document-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-links a:hover {
+            text-decoration: underline;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .tech-stack {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tech-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .tech-category h4 {
+            color: var(--accent-primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-list {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Intentional Movement - Social Fitness Platform</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Full-Stack Developer • <strong>Year:</strong> 2025 • <strong>Development:</strong> AI-Assisted
+            <div class="project-tags">
+                <span class="tag">React Native</span>
+                <span class="tag">Node.js/Express</span>
+                <span class="tag">PostgreSQL</span>
+                <span class="tag">Stripe API</span>
+                <span class="tag">Socket.io</span>
+                <span class="tag">Redux Toolkit</span>
+                <span class="tag">PWA</span>
+                <span class="tag">AWS S3</span>
+            </div>
+        </div>
+
+        <div class="document-links">
+            <h3>Live Deployments</h3>
+            <ul>
+                <li><a href="https://intentionalmovement.netlify.app/" target="_blank">→ Mobile App (PWA)</a></li>
+                <li><a href="https://adminintentionalmovement.netlify.app/" target="_blank">→ Admin Dashboard</a></li>
+            </ul>
+        </div>
+
+        <div class="svg-diagram" role="img" aria-labelledby="arch-diagram-title arch-diagram-desc">
+            <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 z" fill="#ff6b35" />
+                    </marker>
+                    <style>
+                        .box { fill: #111; stroke: #333; stroke-width:1; rx:8; }
+                        .label { fill: #e0e0e0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:14px; }
+                        .small { font-size:11px; fill: #bdbdbd; }
+                        .arrow { stroke: #ff6b35; stroke-width:2; fill: none; marker-end: url(#arrow); }
+                        .title { font-size:16px; font-weight:600; fill: #ff6b35; }
+                    </style>
+                </defs>
+
+                <!-- Mobile App -->
+                <text x="100" y="25" text-anchor="middle" class="title">Mobile App</text>
+                <rect x="20" y="40" width="160" height="90" class="box" />
+                <text x="100" y="70" text-anchor="middle" class="label">React Native</text>
+                <text x="100" y="87" text-anchor="middle" class="small">(Expo)</text>
+                <text x="100" y="104" text-anchor="middle" class="small">Redux Toolkit</text>
+                <text x="100" y="121" text-anchor="middle" class="small">Socket.io Client</text>
+
+                <!-- Backend API -->
+                <text x="450" y="25" text-anchor="middle" class="title">Backend</text>
+                <rect x="350" y="40" width="200" height="90" class="box" />
+                <text x="450" y="70" text-anchor="middle" class="label">Node.js + Express</text>
+                <text x="450" y="87" text-anchor="middle" class="small">JWT Auth</text>
+                <text x="450" y="104" text-anchor="middle" class="small">Socket.io Server</text>
+                <text x="450" y="121" text-anchor="middle" class="small">Sequelize ORM</text>
+
+                <!-- Admin Dashboard -->
+                <text x="750" y="25" text-anchor="middle" class="title">Admin</text>
+                <rect x="670" y="40" width="160" height="90" class="box" />
+                <text x="750" y="70" text-anchor="middle" class="label">React Dashboard</text>
+                <text x="750" y="87" text-anchor="middle" class="small">Tailwind CSS</text>
+                <text x="750" y="104" text-anchor="middle" class="small">Recharts</text>
+                <text x="750" y="121" text-anchor="middle" class="small">Dark Mode</text>
+
+                <!-- Database -->
+                <rect x="350" y="180" width="200" height="60" class="box" />
+                <text x="450" y="210" text-anchor="middle" class="label">PostgreSQL</text>
+                <text x="450" y="227" text-anchor="middle" class="small">SQLite (dev)</text>
+
+                <!-- Services -->
+                <rect x="50" y="280" width="120" height="60" class="box" />
+                <text x="110" y="310" text-anchor="middle" class="label">Stripe</text>
+                <text x="110" y="327" text-anchor="middle" class="small">Payments</text>
+
+                <rect x="200" y="280" width="120" height="60" class="box" />
+                <text x="260" y="310" text-anchor="middle" class="label">AWS S3</text>
+                <text x="260" y="327" text-anchor="middle" class="small">File Storage</text>
+
+                <rect x="350" y="280" width="120" height="60" class="box" />
+                <text x="410" y="310" text-anchor="middle" class="label">Firebase</text>
+                <text x="410" y="327" text-anchor="middle" class="small">Push Notifs</text>
+
+                <rect x="500" y="280" width="120" height="60" class="box" />
+                <text x="560" y="310" text-anchor="middle" class="label">SendGrid</text>
+                <text x="560" y="327" text-anchor="middle" class="small">Email</text>
+
+                <rect x="650" y="280" width="120" height="60" class="box" />
+                <text x="710" y="310" text-anchor="middle" class="label">Vimeo/Mux</text>
+                <text x="710" y="327" text-anchor="middle" class="small">Video</text>
+
+                <!-- Arrows -->
+                <path d="M180 85 L350 85" class="arrow" />
+                <path d="M670 85 L550 85" class="arrow" />
+                <path d="M450 130 L450 180" class="arrow" />
+                <path d="M200 240 L110 280" class="arrow" />
+                <path d="M300 240 L260 280" class="arrow" />
+                <path d="M450 240 L410 280" class="arrow" />
+                <path d="M450 240 L560 280" class="arrow" />
+                <path d="M600 240 L710 280" class="arrow" />
+            </svg>
+            <div id="arch-diagram-title" class="sr-only">System architecture diagram</div>
+            <div class="diagram-caption">Full-stack architecture with React Native mobile app, Node.js backend, React admin dashboard, and integrated third-party services for payments, storage, and communications.</div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Intentional Movement is a mobile-first social fitness platform that combines community features with digital program sales. Built with the philosophy of "Planted Mind, Moving Body," the platform enables users to connect, share their wellness journey, purchase fitness programs, and track their progress through achievements and challenges.</p>
+
+            <p>The platform consists of three major components: a React Native mobile application with PWA capabilities, a Node.js REST API backend with real-time messaging, and a comprehensive React admin dashboard for platform management.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Deployable Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Database Models</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Screen Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">API Endpoints</div>
+                </div>
+            </div>
+
+            <h2>Key Features</h2>
+
+            <h3>Social Community Features</h3>
+            <ul>
+                <li><strong>User Profiles:</strong> Customizable profiles with display names, bios, avatars, and activity feeds</li>
+                <li><strong>Social Feed:</strong> Post creation with image uploads, likes, comments, and engagement tracking</li>
+                <li><strong>Follow System:</strong> Follow/unfollow users, view followers and following lists</li>
+                <li><strong>Real-Time Messaging:</strong> Direct messaging with Socket.io for instant communication</li>
+                <li><strong>Notifications:</strong> Push notifications via Firebase for likes, comments, follows, and messages</li>
+            </ul>
+
+            <h3>Program & Commerce Features</h3>
+            <ul>
+                <li><strong>Program Catalog:</strong> Browse fitness and wellness programs with detailed descriptions and video previews</li>
+                <li><strong>Stripe Integration:</strong> Secure payment processing for one-time purchases and subscriptions</li>
+                <li><strong>Purchase Management:</strong> Track owned programs, payment history, and billing</li>
+                <li><strong>Progress Tracking:</strong> Monitor completion status across purchased programs</li>
+                <li><strong>Video Playback:</strong> Integrated video player using Expo AV with support for Vimeo and Mux</li>
+            </ul>
+
+            <h3>Gamification & Engagement</h3>
+            <ul>
+                <li><strong>Achievements System:</strong> Earn badges for milestones like completing programs, posting streaks, and community engagement</li>
+                <li><strong>Challenges:</strong> Participate in community challenges with leaderboards and competition tracking</li>
+                <li><strong>Goals:</strong> Set personal fitness and wellness goals with progress monitoring</li>
+                <li><strong>Subscription Tiers:</strong> Tiered access control for premium content and features</li>
+            </ul>
+
+            <h3>Admin Dashboard Capabilities</h3>
+            <ul>
+                <li><strong>User Management:</strong> View, search, edit, and moderate user accounts</li>
+                <li><strong>Content Moderation:</strong> Review and moderate posts, comments, and reports</li>
+                <li><strong>Analytics:</strong> Real-time metrics with Recharts visualizations for user growth, engagement, and revenue</li>
+                <li><strong>Program Management:</strong> Create, edit, and manage fitness programs and pricing</li>
+                <li><strong>Daily Content:</strong> Schedule and publish daily motivational content for user engagement</li>
+                <li><strong>Settings:</strong> Configure platform settings, features, and system parameters</li>
+            </ul>
+
+            <h2>Technical Implementation</h2>
+
+            <h3>Mobile Application (React Native + Expo)</h3>
+            <ul>
+                <li><strong>Architecture:</strong> Built with Expo SDK ~50.0.0 for cross-platform iOS, Android, and web deployment</li>
+                <li><strong>State Management:</strong> Redux Toolkit with organized slices for auth, posts, messages, programs, achievements, and challenges</li>
+                <li><strong>Navigation:</strong> React Navigation v6 with stack, tab, and drawer navigators for intuitive UX</li>
+                <li><strong>Forms & Validation:</strong> Formik and Yup for robust form handling and client-side validation</li>
+                <li><strong>Real-Time:</strong> Socket.io client for instant messaging and live notifications</li>
+                <li><strong>Payments:</strong> Stripe React Native SDK for secure in-app purchases</li>
+                <li><strong>PWA:</strong> Progressive Web App configuration with service workers for offline capabilities and installability</li>
+                <li><strong>Design System:</strong> Custom theme with hot pink (#ec4899) primary color and light pink (#fdf2f8) backgrounds</li>
+            </ul>
+
+            <h3>Backend API (Node.js + Express)</h3>
+            <ul>
+                <li><strong>RESTful API:</strong> Express.js with organized route structure (auth, users, posts, programs, messages, admin)</li>
+                <li><strong>Database:</strong> PostgreSQL in production, SQLite for development with Sequelize ORM</li>
+                <li><strong>Authentication:</strong> JWT-based authentication with secure token storage and refresh mechanisms</li>
+                <li><strong>Real-Time Server:</strong> Socket.io server attached to HTTP server for bidirectional communication</li>
+                <li><strong>File Storage:</strong> AWS S3 integration for profile images, post media, and program content</li>
+                <li><strong>Payment Processing:</strong> Stripe server-side integration with webhook handling for payment events</li>
+                <li><strong>Email Service:</strong> SendGrid integration for transactional emails (password reset, notifications)</li>
+                <li><strong>Push Notifications:</strong> Firebase Cloud Messaging for cross-platform push notifications</li>
+                <li><strong>Security:</strong> Rate limiting, input validation, SQL injection protection via Sequelize, CORS configuration</li>
+                <li><strong>Logging:</strong> Winston logger for structured logging and error tracking</li>
+            </ul>
+
+            <h3>Database Schema Design</h3>
+            <ul>
+                <li><strong>Core Models:</strong> User, Post, Comment, Like, Follow, Message</li>
+                <li><strong>Commerce Models:</strong> Program, Purchase, Subscription, Progress</li>
+                <li><strong>Gamification Models:</strong> Achievement, UserAchievement, Challenge, ChallengeParticipant</li>
+                <li><strong>Moderation Models:</strong> Report</li>
+                <li><strong>Relationships:</strong> Complex associations with one-to-many, many-to-many, and self-referential relationships</li>
+            </ul>
+
+            <h3>Admin Dashboard (React)</h3>
+            <ul>
+                <li><strong>Framework:</strong> React 18 with React Router v6 for client-side routing</li>
+                <li><strong>Styling:</strong> Tailwind CSS with custom configuration and dark mode support</li>
+                <li><strong>Data Visualization:</strong> Recharts library for analytics charts and graphs</li>
+                <li><strong>State Management:</strong> React Context API for authentication and theme management</li>
+                <li><strong>UI Feedback:</strong> React Hot Toast for elegant notifications</li>
+                <li><strong>Theme System:</strong> Dark/light mode toggle with localStorage persistence and system preference detection</li>
+            </ul>
+
+            <div class="tech-stack">
+                <h3>Complete Tech Stack</h3>
+
+                <div class="tech-category">
+                    <h4>Frontend (Mobile)</h4>
+                    <div class="tech-list">React Native, Expo SDK 50, Redux Toolkit, React Navigation, Formik, Yup, Stripe React Native, Socket.io Client, Expo AV, Expo Notifications</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Backend</h4>
+                    <div class="tech-list">Node.js, Express.js, Sequelize ORM, PostgreSQL, SQLite, JWT, Socket.io, Winston Logger</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Admin Dashboard</h4>
+                    <div class="tech-list">React 18, React Router v6, Tailwind CSS, Recharts, React Context API, React Hot Toast</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Third-Party Services</h4>
+                    <div class="tech-list">Stripe (Payments), AWS S3 (Storage), Firebase (Auth & Push), SendGrid (Email), Vimeo/Mux (Video), Mixpanel (Analytics)</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Deployment</h4>
+                    <div class="tech-list">Netlify (PWA & Admin), Railway (Backend), Vercel (Alternative), PostgreSQL (Production DB)</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Development Tools</h4>
+                    <div class="tech-list">Git, GitHub, Puppeteer (Screenshots), Jest (Testing), Concurrently (Dev Servers)</div>
+                </div>
+            </div>
+
+            <h2>Development Process with Claude AI</h2>
+            <p>This project showcases the power of AI-assisted development with Claude Code. The entire monorepo structure, including the mobile app, backend API, and admin dashboard, was architected and implemented through collaborative development with Claude AI.</p>
+
+            <p>Key aspects of the AI-assisted development process:</p>
+            <ul>
+                <li><strong>Rapid Prototyping:</strong> Quickly scaffolded the entire application structure with proper separation of concerns</li>
+                <li><strong>Best Practices:</strong> Implemented industry-standard patterns for authentication, state management, and API design</li>
+                <li><strong>Code Organization:</strong> Maintained clean, modular code structure across three separate applications</li>
+                <li><strong>Documentation:</strong> Comprehensive documentation including CLAUDE.md for development guidance, deployment guides, and feature roadmaps</li>
+                <li><strong>Problem Solving:</strong> Addressed complex challenges like CORS configuration, Socket.io integration, and PWA setup with AI assistance</li>
+                <li><strong>Deployment:</strong> Successfully deployed to production with proper environment configuration and continuous deployment setup</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+
+            <p><strong>Challenge:</strong> Implementing real-time messaging across React Native and web platforms while maintaining connection stability.</p>
+            <p><strong>Solution:</strong> Configured Socket.io with proper CORS settings, connection handling, and event namespacing. Implemented reconnection logic and state synchronization through Redux.</p>
+
+            <p><strong>Challenge:</strong> Managing complex database relationships between users, posts, programs, purchases, and achievements.</p>
+            <p><strong>Solution:</strong> Designed comprehensive Sequelize models with proper associations, including self-referential relationships for the follow system and many-to-many relationships for purchases and achievements.</p>
+
+            <p><strong>Challenge:</strong> Creating a PWA from React Native that works seamlessly on web browsers while maintaining mobile app features.</p>
+            <p><strong>Solution:</strong> Leveraged Expo's web support, configured service workers for offline functionality, implemented responsive design patterns, and added platform-specific code paths where needed.</p>
+
+            <p><strong>Challenge:</strong> Securing payment processing while keeping the client-side implementation simple.</p>
+            <p><strong>Solution:</strong> Implemented Stripe integration with server-side checkout session creation, webhook handling for payment events, and proper secret key management through environment variables.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully launched a production-ready social fitness platform with three deployed applications. The platform demonstrates full-stack development capabilities, including:</p>
+            <ul>
+                <li>Complex state management across a mobile application</li>
+                <li>Real-time communication infrastructure</li>
+                <li>Secure payment processing and subscription management</li>
+                <li>Comprehensive admin dashboard with analytics</li>
+                <li>Scalable backend architecture with proper separation of concerns</li>
+                <li>Modern deployment pipeline using Netlify and Railway</li>
+            </ul>
+
+            <p>The project serves as a comprehensive demonstration of modern full-stack development skills, showcasing expertise in React Native, Node.js, database design, third-party integrations, and production deployment workflows.</p>
+
+            <h2>Future Enhancements</h2>
+            <ul>
+                <li>Daily content and check-in system with streak tracking</li>
+                <li>Podcast integration with offline playback</li>
+                <li>Meditation and visualization library</li>
+                <li>Content bundles and program packages</li>
+                <li>In-app community events with RSVP system</li>
+                <li>Personalized recommendation engine</li>
+                <li>Program ratings and review system</li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

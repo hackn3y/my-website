@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I built a complete social fitness platform with React Native, Node.js, and PostgreSQL using Claude AI. A deep dive into AI-assisted full-stack development.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/blog-post-ai-development.html">
+    <meta property="og:title" content="Building a Full-Stack Social Platform with Claude AI - Ryan Hackney">
+    <meta property="og:description" content="From concept to production: How AI assistance accelerated development of a complex mobile-first platform with real-time features and payment processing.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/blog-post-ai-development.html">
+    <meta property="twitter:title" content="Building a Full-Stack Social Platform with Claude AI - Ryan Hackney">
+    <meta property="twitter:description" content="From concept to production: How AI assistance accelerated development of a complex mobile-first platform with real-time features and payment processing.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>Building a Full-Stack Social Platform with Claude AI - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .blog-post {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .blog-post h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .blog-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-content h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .blog-content h3 {
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .blog-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .blog-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .blog-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-content strong {
+            color: var(--text-primary);
+        }
+
+        .highlight-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight-box h3 {
+            margin-top: 0;
+            color: var(--accent-primary);
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-inline {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .blog-post h1 {
+                font-size: 2rem;
+            }
+
+            .blog-content {
+                font-size: 1rem;
+            }
+
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .stats-inline {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="blog-post">
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+
+        <h1>Building a Full-Stack Social Platform with Claude AI: From Concept to Production</h1>
+
+        <div class="blog-meta">
+            <strong>Published:</strong> January 2025 • <strong>Category:</strong> Development • <strong>Read Time:</strong> 8 min
+        </div>
+
+        <div class="blog-content">
+            <p>Over the past few months, I've been working on Intentional Movement, a mobile-first social fitness platform. What started as an idea for a community-driven wellness app evolved into a comprehensive full-stack application with three deployed components: a React Native mobile app, a Node.js backend API, and a React admin dashboard.</p>
+
+            <p>The most remarkable aspect? The entire development process was accelerated through AI-assisted development using Claude Code. Here's how I leveraged AI to build a production-ready platform with complex features like real-time messaging, payment processing, and social networking capabilities.</p>
+
+            <div class="stats-inline">
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Deployed Apps</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">14</span>
+                    <span class="stat-label">Database Models</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">API Endpoints</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Production Ready</span>
+                </div>
+            </div>
+
+            <h2>The Project: Intentional Movement</h2>
+
+            <p>Intentional Movement is a social fitness platform built on the philosophy of "Planted Mind, Moving Body." It combines social networking features with digital program sales, allowing users to:</p>
+
+            <ul>
+                <li>Connect with like-minded individuals through a social feed</li>
+                <li>Purchase and access fitness and wellness programs</li>
+                <li>Track progress through achievements and challenges</li>
+                <li>Communicate via real-time direct messaging</li>
+                <li>Receive push notifications for engagement</li>
+            </ul>
+
+            <p>The platform consists of three major components, all built and deployed to production:</p>
+
+            <ul>
+                <li><strong>Mobile App (PWA):</strong> React Native application built with Expo, deployed on Netlify</li>
+                <li><strong>Backend API:</strong> Node.js + Express with PostgreSQL, deployed on Railway</li>
+                <li><strong>Admin Dashboard:</strong> React application with Tailwind CSS, deployed on Netlify</li>
+            </ul>
+
+            <h2>Why AI-Assisted Development?</h2>
+
+            <p>Building a full-stack application from scratch traditionally takes months of development time. With AI assistance, I was able to dramatically accelerate the process while maintaining code quality and best practices. Here's what made the difference:</p>
+
+            <div class="highlight-box">
+                <h3>Key Benefits of AI-Assisted Development</h3>
+                <ul>
+                    <li><strong>Rapid Scaffolding:</strong> Quickly generated project structure, boilerplate code, and configuration files</li>
+                    <li><strong>Best Practices:</strong> Implemented industry-standard patterns for authentication, state management, and API design</li>
+                    <li><strong>Problem Solving:</strong> Got instant help with complex challenges like Socket.io configuration and CORS setup</li>
+                    <li><strong>Documentation:</strong> Generated comprehensive docs including deployment guides and development instructions</li>
+                    <li><strong>Code Organization:</strong> Maintained clean, modular code structure across three separate applications</li>
+                </ul>
+            </div>
+
+            <h2>The Technical Stack</h2>
+
+            <p>The platform leverages modern technologies across the full stack:</p>
+
+            <h3>Frontend (Mobile App)</h3>
+            <ul>
+                <li><strong>React Native + Expo:</strong> Cross-platform mobile development with PWA support</li>
+                <li><strong>Redux Toolkit:</strong> Predictable state management with organized slices</li>
+                <li><strong>React Navigation:</strong> Intuitive navigation with stack, tab, and drawer navigators</li>
+                <li><strong>Socket.io Client:</strong> Real-time messaging and notifications</li>
+                <li><strong>Stripe React Native:</strong> Secure in-app payment processing</li>
+                <li><strong>Formik + Yup:</strong> Robust form handling and validation</li>
+            </ul>
+
+            <h3>Backend API</h3>
+            <ul>
+                <li><strong>Node.js + Express:</strong> RESTful API with organized route structure</li>
+                <li><strong>PostgreSQL + Sequelize:</strong> Relational database with ORM</li>
+                <li><strong>JWT Authentication:</strong> Secure token-based auth</li>
+                <li><strong>Socket.io Server:</strong> Real-time bidirectional communication</li>
+                <li><strong>AWS S3:</strong> Scalable file storage for media</li>
+                <li><strong>Stripe API:</strong> Payment processing with webhook handling</li>
+                <li><strong>Firebase:</strong> Push notifications and authentication</li>
+            </ul>
+
+            <h3>Admin Dashboard</h3>
+            <ul>
+                <li><strong>React 18:</strong> Modern React with hooks and context</li>
+                <li><strong>Tailwind CSS:</strong> Utility-first styling with dark mode</li>
+                <li><strong>Recharts:</strong> Data visualization for analytics</li>
+                <li><strong>React Router v6:</strong> Client-side routing</li>
+            </ul>
+
+            <h2>How AI Accelerated Development</h2>
+
+            <h3>1. Architecture and Planning</h3>
+
+            <p>The first step was architecting the entire system. With Claude AI, I was able to:</p>
+
+            <ul>
+                <li>Design a comprehensive database schema with 14 models and complex relationships</li>
+                <li>Plan the monorepo structure with proper separation of concerns</li>
+                <li>Define API endpoints across 8 resource categories</li>
+                <li>Map out the Redux state management architecture</li>
+            </ul>
+
+            <p>This planning phase, which could take days of manual work, was completed in hours through collaborative discussions with AI.</p>
+
+            <h3>2. Code Generation and Implementation</h3>
+
+            <p>Once the architecture was defined, AI assistance helped generate:</p>
+
+            <ul>
+                <li><strong>Database Models:</strong> Complete Sequelize models with associations, validations, and hooks</li>
+                <li><strong>API Controllers:</strong> CRUD operations for users, posts, programs, messages, and more</li>
+                <li><strong>React Components:</strong> Reusable UI components like PostCard, ProgramCard, AchievementBadge</li>
+                <li><strong>Redux Slices:</strong> State management for auth, posts, messages, programs, achievements</li>
+                <li><strong>Navigation Structure:</strong> Complete React Navigation setup with multiple navigators</li>
+            </ul>
+
+            <h3>3. Complex Feature Implementation</h3>
+
+            <p>Several features required intricate implementation that AI helped streamline:</p>
+
+            <div class="highlight-box">
+                <h3>Real-Time Messaging with Socket.io</h3>
+                <p>Implementing bidirectional real-time communication required:</p>
+                <ul>
+                    <li>Server-side Socket.io configuration with proper CORS settings</li>
+                    <li>Client-side connection management with reconnection logic</li>
+                    <li>Event handling for messages, typing indicators, and read receipts</li>
+                    <li>State synchronization between Socket.io events and Redux</li>
+                </ul>
+                <p>AI assistance helped navigate the complexities of Socket.io setup, connection handling, and event namespacing.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Stripe Payment Integration</h3>
+                <p>The payment flow required:</p>
+                <ul>
+                    <li>Client-side Stripe SDK integration for payment UI</li>
+                    <li>Server-side checkout session creation with proper product/price handling</li>
+                    <li>Webhook endpoint to process payment events</li>
+                    <li>Database updates for purchases and subscriptions</li>
+                </ul>
+                <p>With AI guidance, I implemented secure payment processing while keeping sensitive operations server-side.</p>
+            </div>
+
+            <h3>4. Progressive Web App (PWA) Configuration</h3>
+
+            <p>Converting the React Native app to a PWA involved:</p>
+
+            <ul>
+                <li>Service worker configuration for offline capabilities</li>
+                <li>Web manifest setup for installability</li>
+                <li>Platform-specific code paths for web vs. mobile</li>
+                <li>Responsive design patterns that work across devices</li>
+            </ul>
+
+            <p>AI helped configure Expo's web support and implement the necessary service worker logic for offline functionality.</p>
+
+            <h3>5. Deployment and DevOps</h3>
+
+            <p>Deploying three separate applications required careful configuration:</p>
+
+            <ul>
+                <li><strong>Netlify Deployment:</strong> PWA and admin dashboard with environment variables</li>
+                <li><strong>Railway Deployment:</strong> Backend API with PostgreSQL database</li>
+                <li><strong>DNS Configuration:</strong> Custom domain setup for production</li>
+                <li><strong>CORS Setup:</strong> Proper cross-origin configuration across deployments</li>
+                <li><strong>Environment Variables:</strong> Secure key management across platforms</li>
+            </ul>
+
+            <p>AI assistance helped create comprehensive deployment guides and troubleshoot configuration issues.</p>
+
+            <h2>Key Learnings and Best Practices</h2>
+
+            <h3>When AI Assistance Excels</h3>
+
+            <ul>
+                <li><strong>Boilerplate Generation:</strong> Creating repetitive code structures like CRUD operations</li>
+                <li><strong>Configuration Files:</strong> Setting up complex configs for build tools, linters, and frameworks</li>
+                <li><strong>Documentation:</strong> Generating comprehensive README files, API docs, and deployment guides</li>
+                <li><strong>Problem Solving:</strong> Debugging errors and understanding framework-specific issues</li>
+                <li><strong>Best Practices:</strong> Implementing industry-standard patterns and security measures</li>
+            </ul>
+
+            <h3>Where Human Oversight Matters</h3>
+
+            <ul>
+                <li><strong>Architecture Decisions:</strong> High-level system design and technology choices</li>
+                <li><strong>Business Logic:</strong> Domain-specific rules and workflows</li>
+                <li><strong>User Experience:</strong> UI/UX decisions and design aesthetics</li>
+                <li><strong>Testing:</strong> Defining test cases and validating functionality</li>
+                <li><strong>Security Review:</strong> Ensuring proper authentication, authorization, and data protection</li>
+            </ul>
+
+            <h2>The Results</h2>
+
+            <p>The final product is a production-ready platform with:</p>
+
+            <ul>
+                <li>Three deployed applications (mobile PWA, backend API, admin dashboard)</li>
+                <li>Complex features including social networking, real-time messaging, and payment processing</li>
+                <li>Scalable architecture with proper separation of concerns</li>
+                <li>Comprehensive documentation for future development</li>
+                <li>Modern deployment pipeline with continuous integration</li>
+            </ul>
+
+            <p>What traditionally would have taken 6-12 months of development was accomplished in a fraction of the time through AI-assisted development.</p>
+
+            <h2>Try It Yourself</h2>
+
+            <p>Want to see the platform in action? Check out the live deployments:</p>
+
+            <ul>
+                <li><a href="https://intentionalmovement.netlify.app/" target="_blank">Mobile App (PWA)</a> - Works on any device, installable as an app</li>
+                <li><a href="https://adminintentionalmovement.netlify.app/" target="_blank">Admin Dashboard</a> - Platform management and analytics</li>
+            </ul>
+
+            <p>For more technical details, check out the <a href="project-intentional-movement.html">full project writeup</a>.</p>
+
+            <h2>Conclusion</h2>
+
+            <p>AI-assisted development isn't about replacing developers—it's about augmenting our capabilities. By leveraging AI tools like Claude Code, I was able to:</p>
+
+            <ul>
+                <li>Focus on high-level architecture and business logic</li>
+                <li>Rapidly implement complex features with best practices</li>
+                <li>Maintain high code quality while moving quickly</li>
+                <li>Learn new technologies and patterns more efficiently</li>
+                <li>Ship a production-ready product in record time</li>
+            </ul>
+
+            <p>The future of software development is collaborative—humans providing vision and oversight, AI providing rapid implementation and best practices. This project demonstrates what's possible when we embrace this new paradigm.</p>
+
+            <p>If you're building something ambitious, consider how AI assistance could accelerate your development process. The tools are here, and the results speak for themselves.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

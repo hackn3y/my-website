@@ -57,6 +57,16 @@ The site uses a **dynamic header injection** system:
 - `js/theme.js` manages toggle and persistence
 - Body class `.light-mode` controls appearance
 - Preference saved to localStorage as `theme` key
+- **Seasonal Themes**: Automatically changes accent colors based on season/holiday
+  - Halloween (Oct): Orange theme
+  - Thanksgiving (Nov): Brown/chocolate theme
+  - Christmas (Dec-Jan 6): Red theme
+  - Valentine's (Feb 1-14): Pink theme
+  - St. Patrick's (Mar 1-17): Green theme
+  - Spring (Mar 18-May): Pink theme
+  - Summer (Jun-Aug): Orange theme
+  - Fall (Sep): Brown theme
+  - See `SEASONAL_THEMES.md` for full details
 
 ### Shopping Cart Flow
 1. Products defined in `index.html` JavaScript array (~line 1181)

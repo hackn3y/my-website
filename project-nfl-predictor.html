@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NFL game prediction platform combining machine learning ensemble models with gematria analysis. React Native mobile app with Python ML service and Node.js backend.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-nfl-predictor.html">
+    <meta property="og:title" content="NFL Predictor - AI-Powered Game Predictions - Ryan Hackney">
+    <meta property="og:description" content="Machine learning platform combining ensemble models with gematria numerology for NFL predictions. Full-stack app with React Native, Python ML, and Node.js.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-nfl-predictor.html">
+    <meta property="twitter:title" content="NFL Predictor - AI-Powered Game Predictions - Ryan Hackney">
+    <meta property="twitter:description" content="Machine learning platform combining ensemble models with gematria numerology for NFL predictions. Full-stack app with React Native, Python ML, and Node.js.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>NFL Predictor - AI-Powered Predictions - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .svg-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .svg-diagram svg { width: 100%; height: auto; display: block; }
+
+        .diagram-caption {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .document-links {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-links h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .document-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .document-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-links a:hover {
+            text-decoration: underline;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .tech-stack {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tech-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .tech-category h4 {
+            color: var(--accent-primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-list {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>NFL Predictor - AI-Powered Game Predictions</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Full-Stack Developer • <strong>Year:</strong> 2025 • <strong>Status:</strong> Production
+            <div class="project-tags">
+                <span class="tag">React Native</span>
+                <span class="tag">Python/FastAPI</span>
+                <span class="tag">Machine Learning</span>
+                <span class="tag">Node.js</span>
+                <span class="tag">PostgreSQL</span>
+                <span class="tag">MongoDB</span>
+                <span class="tag">Redis</span>
+            </div>
+        </div>
+
+        <div class="document-links">
+            <h3>Live Deployment</h3>
+            <ul>
+                <li><a href="https://nfly.netlify.app/" target="_blank">→ NFL Predictor Web App</a></li>
+            </ul>
+        </div>
+
+        <div class="svg-diagram" role="img" aria-labelledby="arch-diagram-title arch-diagram-desc">
+            <svg viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 z" fill="#ff6b35" />
+                    </marker>
+                    <style>
+                        .box { fill: #111; stroke: #333; stroke-width:1; rx:8; }
+                        .label { fill: #e0e0e0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:13px; }
+                        .small { font-size:11px; fill: #bdbdbd; }
+                        .arrow { stroke: #ff6b35; stroke-width:2; fill: none; marker-end: url(#arrow); }
+                        .title { font-size:15px; font-weight:600; fill: #ff6b35; }
+                    </style>
+                </defs>
+
+                <!-- Mobile App -->
+                <text x="90" y="25" text-anchor="middle" class="title">Mobile App</text>
+                <rect x="20" y="40" width="140" height="80" class="box" />
+                <text x="90" y="70" text-anchor="middle" class="label">React Native</text>
+                <text x="90" y="87" text-anchor="middle" class="small">Redux Toolkit</text>
+                <text x="90" y="104" text-anchor="middle" class="small">React Navigation</text>
+
+                <!-- Backend API -->
+                <text x="380" y="25" text-anchor="middle" class="title">Backend API</text>
+                <rect x="290" y="40" width="180" height="80" class="box" />
+                <text x="380" y="70" text-anchor="middle" class="label">Node.js/Express</text>
+                <text x="380" y="87" text-anchor="middle" class="small">JWT Auth</text>
+                <text x="380" y="104" text-anchor="middle" class="small">Stripe Subscriptions</text>
+
+                <!-- ML Service -->
+                <text x="710" y="25" text-anchor="middle" class="title">ML Service</text>
+                <rect x="620" y="40" width="180" height="80" class="box" />
+                <text x="710" y="70" text-anchor="middle" class="label">Python/FastAPI</text>
+                <text x="710" y="87" text-anchor="middle" class="small">scikit-learn</text>
+                <text x="710" y="104" text-anchor="middle" class="small">XGBoost, TensorFlow</text>
+
+                <!-- Databases -->
+                <rect x="150" y="180" width="140" height="60" class="box" />
+                <text x="220" y="210" text-anchor="middle" class="label">PostgreSQL</text>
+                <text x="220" y="227" text-anchor="middle" class="small">Games, Stats, Users</text>
+
+                <rect x="320" y="180" width="140" height="60" class="box" />
+                <text x="390" y="210" text-anchor="middle" class="label">MongoDB</text>
+                <text x="390" y="227" text-anchor="middle" class="small">Gematria Cache</text>
+
+                <rect x="490" y="180" width="140" height="60" class="box" />
+                <text x="560" y="210" text-anchor="middle" class="label">Redis</text>
+                <text x="560" y="227" text-anchor="middle" class="small">Prediction Cache</text>
+
+                <!-- ML Models -->
+                <rect x="150" y="300" width="130" height="60" class="box" />
+                <text x="215" y="330" text-anchor="middle" class="label">Random Forest</text>
+                <text x="215" y="347" text-anchor="middle" class="small">Feature Engineering</text>
+
+                <rect x="310" y="300" width="130" height="60" class="box" />
+                <text x="375" y="330" text-anchor="middle" class="label">XGBoost</text>
+                <text x="375" y="347" text-anchor="middle" class="small">Gradient Boosting</text>
+
+                <rect x="470" y="300" width="130" height="60" class="box" />
+                <text x="535" y="330" text-anchor="middle" class="label">Neural Network</text>
+                <text x="535" y="347" text-anchor="middle" class="small">Deep Learning</text>
+
+                <!-- External Services -->
+                <rect x="650" y="300" width="140" height="60" class="box" />
+                <text x="720" y="330" text-anchor="middle" class="label">Stripe</text>
+                <text x="720" y="347" text-anchor="middle" class="small">Payments</text>
+
+                <!-- Arrows -->
+                <path d="M160 80 L290 80" class="arrow" />
+                <path d="M470 80 L620 80" class="arrow" />
+                <path d="M380 120 L220 180" class="arrow" />
+                <path d="M380 120 L390 180" class="arrow" />
+                <path d="M380 120 L560 180" class="arrow" />
+                <path d="M710 120 L220 180" class="arrow" />
+                <path d="M710 120 L560 180" class="arrow" />
+                <path d="M710 240 L215 300" class="arrow" />
+                <path d="M710 240 L375 300" class="arrow" />
+                <path d="M710 240 L535 300" class="arrow" />
+                <path d="M380 120 L720 300" class="arrow" />
+            </svg>
+            <div id="arch-diagram-title" class="sr-only">System architecture diagram</div>
+            <div class="diagram-caption">Multi-tier architecture with React Native mobile app, Node.js API orchestration layer, Python ML service with ensemble models, and multi-database storage strategy.</div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>NFL Predictor is a sophisticated sports analytics platform that combines advanced machine learning models with gematria numerology to generate NFL game predictions. The application features an ensemble of ML models (Random Forest, XGBoost, Neural Networks) trained on historical NFL data, complemented by gematria analysis using multiple cipher systems.</p>
+
+            <p>The platform is built as a monorepo with three distinct services: a React Native mobile application, a Node.js backend API for orchestration and business logic, and a Python-based ML service for predictions and data science operations.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Services (Mobile, API, ML)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">ML Models (Ensemble)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Subscription Tiers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Engineered Features</div>
+                </div>
+            </div>
+
+            <h2>Key Features</h2>
+
+            <h3>Multi-Model Machine Learning System</h3>
+            <ul>
+                <li><strong>Ensemble Predictions:</strong> Combines Random Forest, XGBoost, and Neural Networks for robust predictions</li>
+                <li><strong>Feature Engineering:</strong> 15+ features including team stats, historical performance, head-to-head records, situational factors</li>
+                <li><strong>Confidence Scoring:</strong> Transparent confidence levels based on model agreement and historical accuracy</li>
+                <li><strong>Game Analysis:</strong> Detailed breakdowns with key factors influencing predictions</li>
+                <li><strong>Weekly Predictions:</strong> Complete coverage of all NFL games with spread and over/under predictions</li>
+                <li><strong>Parlay Optimizer:</strong> Advanced algorithm to optimize multi-game parlays (Pro tier)</li>
+            </ul>
+
+            <h3>Gematria Analysis Engine</h3>
+            <ul>
+                <li><strong>Multiple Cipher Systems:</strong> English Gematria, Pythagorean, and Chaldean numerology</li>
+                <li><strong>Team/Player Analysis:</strong> Numerological insights for team names and player names</li>
+                <li><strong>Pattern Recognition:</strong> Identifies numerical patterns and master numbers</li>
+                <li><strong>Game Correlations:</strong> Analyzes numerological relationships between teams and game dates</li>
+                <li><strong>Interactive Calculator:</strong> Real-time gematria calculations with detailed explanations</li>
+            </ul>
+
+            <h3>Subscription System</h3>
+            <ul>
+                <li><strong>Three-Tier Model:</strong> Free (3 predictions/day), Premium ($9.99 - 20 predictions/day), Pro ($29.99 - unlimited)</li>
+                <li><strong>Stripe Integration:</strong> Secure payment processing with subscription management</li>
+                <li><strong>Feature Gating:</strong> Tier-based access control enforced via middleware</li>
+                <li><strong>Customer Portal:</strong> Self-service subscription management through Stripe portal</li>
+                <li><strong>Payment History:</strong> Complete transaction tracking and invoice management</li>
+                <li><strong>Webhook Automation:</strong> Real-time subscription updates via Stripe webhooks</li>
+            </ul>
+
+            <h3>User Features</h3>
+            <ul>
+                <li><strong>Authentication System:</strong> JWT-based auth with age verification (21+)</li>
+                <li><strong>Prediction History:</strong> Track personal prediction accuracy over time</li>
+                <li><strong>Statistics Dashboard:</strong> Detailed performance metrics and model accuracy</li>
+                <li><strong>Favorite Teams:</strong> Personalized predictions for selected teams</li>
+                <li><strong>Profile Management:</strong> Customizable preferences and settings</li>
+            </ul>
+
+            <h2>Technical Implementation</h2>
+
+            <h3>Mobile Application (React Native + Expo)</h3>
+            <ul>
+                <li><strong>Cross-Platform:</strong> Single codebase for iOS, Android, and web deployment</li>
+                <li><strong>State Management:</strong> Redux Toolkit with organized slices for auth, predictions, gematria, and user data</li>
+                <li><strong>Navigation:</strong> React Navigation with separate auth and main app flows</li>
+                <li><strong>UI Components:</strong> React Native Paper for consistent Material Design</li>
+                <li><strong>API Integration:</strong> Axios-based service layer with interceptors for auth and error handling</li>
+                <li><strong>Theme System:</strong> Centralized theme configuration with colors, typography, and spacing</li>
+            </ul>
+
+            <h3>Backend API (Node.js + Express)</h3>
+            <ul>
+                <li><strong>RESTful Architecture:</strong> Organized routes for auth, predictions, gematria, subscriptions, and admin</li>
+                <li><strong>Authentication:</strong> JWT tokens with secure token storage and refresh mechanism</li>
+                <li><strong>Authorization:</strong> Middleware-based access control with role and subscription tier checks</li>
+                <li><strong>Service Orchestration:</strong> Coordinates between mobile app and ML service</li>
+                <li><strong>Caching Strategy:</strong> Redis caching for predictions with 15-30 minute TTL</li>
+                <li><strong>Rate Limiting:</strong> Tier-based rate limits to prevent abuse</li>
+                <li><strong>Webhook Handling:</strong> Stripe webhook processing for subscription events</li>
+                <li><strong>Job Scheduling:</strong> Cron jobs for data updates and model retraining</li>
+            </ul>
+
+            <h3>ML Service (Python + FastAPI)</h3>
+            <ul>
+                <li><strong>FastAPI Framework:</strong> High-performance async API with automatic OpenAPI documentation</li>
+                <li><strong>Model Ensemble:</strong> Combines predictions from multiple ML models with weighted averaging</li>
+                <li><strong>Random Forest:</strong> Trained on 15+ engineered features for robust predictions</li>
+                <li><strong>XGBoost:</strong> Gradient boosting for improved accuracy on complex patterns</li>
+                <li><strong>Neural Networks:</strong> Deep learning model for non-linear relationships (TensorFlow/Keras)</li>
+                <li><strong>Feature Engineering:</strong> Automated feature extraction pipeline including rolling averages, situational factors, and advanced metrics</li>
+                <li><strong>Data Pipeline:</strong> Extensible framework for ingesting data from ESPN, The Odds API, and OpenWeather</li>
+                <li><strong>Model Training:</strong> Automated retraining with performance tracking</li>
+                <li><strong>Gematria Engine:</strong> Efficient calculation of numerological values with multiple cipher systems</li>
+            </ul>
+
+            <h3>Database Architecture</h3>
+            <ul>
+                <li><strong>PostgreSQL:</strong> Primary database for structured data (games, teams, users, subscriptions, predictions)</li>
+                <li><strong>MongoDB:</strong> Document store for gematria calculations with flexible schema</li>
+                <li><strong>Redis:</strong> High-performance caching layer for predictions and session data</li>
+                <li><strong>Connection Pooling:</strong> Optimized database connections for high throughput</li>
+            </ul>
+
+            <div class="tech-stack">
+                <h3>Complete Tech Stack</h3>
+
+                <div class="tech-category">
+                    <h4>Frontend (Mobile)</h4>
+                    <div class="tech-list">React Native, Expo SDK, Redux Toolkit, React Navigation, React Native Paper, Axios, AsyncStorage</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Backend API</h4>
+                    <div class="tech-list">Node.js, Express.js, PostgreSQL (pg), MongoDB (mongoose), Redis (ioredis), JWT (jsonwebtoken), Stripe SDK</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>ML Service</h4>
+                    <div class="tech-list">Python 3.10+, FastAPI, scikit-learn, XGBoost, TensorFlow/Keras, Pandas, NumPy, SQLAlchemy, Redis (redis-py)</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>External Services</h4>
+                    <div class="tech-list">Stripe (Payments), ESPN API (Game Data), The Odds API (Betting Lines), OpenWeather API (Weather Data)</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Deployment</h4>
+                    <div class="tech-list">Netlify (Mobile PWA), Railway (Backend + ML Service), Docker, PostgreSQL (Managed), MongoDB Atlas, Redis Cloud</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Development Tools</h4>
+                    <div class="tech-list">Docker Compose, npm workspaces, Git, Nodemon, Python venv, Jupyter Notebooks (Model Development)</div>
+                </div>
+            </div>
+
+            <h2>Machine Learning Pipeline</h2>
+
+            <h3>Feature Engineering</h3>
+            <p>The prediction system leverages 15+ engineered features extracted from historical NFL data:</p>
+            <ul>
+                <li><strong>Team Performance:</strong> Offensive and defensive ratings, points per game, yards per game</li>
+                <li><strong>Recent Form:</strong> Rolling averages over last 5 games</li>
+                <li><strong>Head-to-Head:</strong> Historical matchup records and trends</li>
+                <li><strong>Situational Factors:</strong> Week number, divisional games, primetime games, rest days</li>
+                <li><strong>Environmental:</strong> Weather conditions, temperature, wind speed</li>
+                <li><strong>Injury Impact:</strong> Key player availability and injury severity scores</li>
+                <li><strong>Home Field Advantage:</strong> Stadium-specific performance metrics</li>
+                <li><strong>Betting Markets:</strong> Vegas lines and public betting percentages</li>
+            </ul>
+
+            <h3>Model Training Process</h3>
+            <ul>
+                <li><strong>Data Collection:</strong> Historical game data from multiple seasons</li>
+                <li><strong>Feature Extraction:</strong> Automated pipeline for feature calculation</li>
+                <li><strong>Train/Test Split:</strong> Time-series aware splitting to prevent data leakage</li>
+                <li><strong>Hyperparameter Tuning:</strong> Grid search for optimal model parameters</li>
+                <li><strong>Cross-Validation:</strong> K-fold validation for robust performance estimates</li>
+                <li><strong>Ensemble Weighting:</strong> Dynamic weights based on recent performance</li>
+                <li><strong>Performance Tracking:</strong> Continuous monitoring of prediction accuracy</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+
+            <p><strong>Challenge:</strong> Coordinating three distinct services (mobile, backend, ML) with different tech stacks and ensuring reliable communication.</p>
+            <p><strong>Solution:</strong> Implemented a clear service boundary architecture with the Node.js backend acting as an orchestration layer. Used Redis for shared caching and implemented comprehensive error handling with retries for ML service calls.</p>
+
+            <p><strong>Challenge:</strong> Managing subscription tiers and enforcing feature access across all endpoints.</p>
+            <p><strong>Solution:</strong> Created reusable middleware functions that check subscription status and tier-specific limits. Implemented a centralized subscription service that handles all Stripe interactions and maintains consistent state across databases.</p>
+
+            <p><strong>Challenge:</strong> Handling expensive ML predictions while maintaining responsive API performance.</p>
+            <p><strong>Solution:</strong> Implemented multi-layer caching strategy using Redis with different TTLs for different prediction types. Pre-computed predictions for upcoming games and cached individual game predictions for 30 minutes.</p>
+
+            <p><strong>Challenge:</strong> Training ML models with limited historical data while avoiding overfitting.</p>
+            <p><strong>Solution:</strong> Used ensemble learning to combine multiple model types, implemented cross-validation, and engineered robust features based on domain knowledge. Weighted recent games more heavily to adapt to changing team dynamics.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully launched a production-ready NFL prediction platform with:</p>
+            <ul>
+                <li>Multi-service architecture demonstrating expertise in full-stack development</li>
+                <li>Machine learning implementation with ensemble modeling and feature engineering</li>
+                <li>Complete payment processing and subscription management system</li>
+                <li>Advanced caching strategies for performance optimization</li>
+                <li>Cross-platform mobile application with professional UI</li>
+                <li>Unique combination of ML and gematria analysis for differentiation</li>
+            </ul>
+
+            <p>The project showcases advanced skills in machine learning, backend architecture, mobile development, payment processing, and system design - demonstrating the ability to build complex, production-ready applications from concept to deployment.</p>
+
+            <h2>Future Enhancements</h2>
+            <ul>
+                <li>Player prop predictions using individual player statistics</li>
+                <li>Live in-game predictions with real-time score updates</li>
+                <li>Social features including leaderboards and prediction sharing</li>
+                <li>Enhanced model training with transfer learning</li>
+                <li>Integration with sports books for automatic bet placement</li>
+                <li>Advanced visualizations for feature importance and model explanations</li>
+                <li>Mobile push notifications for prediction updates</li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

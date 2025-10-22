@@ -4,6 +4,115 @@
     if (initTheme._inited) return;
     initTheme._inited = true;
 
+    // Seasonal/Holiday theme detection
+    function getSeasonalTheme() {
+      const now = new Date();
+      const month = now.getMonth(); // 0-11
+      const day = now.getDate();
+
+      // Halloween (October 1-31)
+      if (month === 9) {
+        return {
+          name: 'halloween',
+          primary: '#ff6600',
+          secondary: '#ff8533',
+          hover: '#cc5200'
+        };
+      }
+
+      // Thanksgiving (November 1 - Last Thursday of November)
+      if (month === 10) {
+        return {
+          name: 'thanksgiving',
+          primary: '#d2691e',
+          secondary: '#e07a2e',
+          hover: '#a0501e'
+        };
+      }
+
+      // Christmas/Winter (December 1 - January 6)
+      if (month === 11 || (month === 0 && day <= 6)) {
+        return {
+          name: 'christmas',
+          primary: '#c41e3a',
+          secondary: '#d63e56',
+          hover: '#9a182e'
+        };
+      }
+
+      // Valentine's Day (February 1-14)
+      if (month === 1 && day <= 14) {
+        return {
+          name: 'valentines',
+          primary: '#ff1493',
+          secondary: '#ff69b4',
+          hover: '#c71585'
+        };
+      }
+
+      // St. Patrick's Day (March 1-17)
+      if (month === 2 && day <= 17) {
+        return {
+          name: 'stpatricks',
+          primary: '#228b22',
+          secondary: '#32cd32',
+          hover: '#006400'
+        };
+      }
+
+      // Spring (March 18 - May 31)
+      if ((month === 2 && day >= 18) || month === 3 || month === 4) {
+        return {
+          name: 'spring',
+          primary: '#ff69b4',
+          secondary: '#ff85c1',
+          hover: '#ff1493'
+        };
+      }
+
+      // Summer (June 1 - August 31)
+      if (month >= 5 && month <= 7) {
+        return {
+          name: 'summer',
+          primary: '#ffa500',
+          secondary: '#ffb733',
+          hover: '#ff8c00'
+        };
+      }
+
+      // Fall (September 1-30)
+      if (month === 8) {
+        return {
+          name: 'fall',
+          primary: '#d2691e',
+          secondary: '#e07a2e',
+          hover: '#a0501e'
+        };
+      }
+
+      // Default theme (January 7 - February 28 non-valentines)
+      return {
+        name: 'default',
+        primary: '#ff6b35',
+        secondary: '#ff8c42',
+        hover: '#ff4500'
+      };
+    }
+
+    function applySeasonalColors() {
+      const theme = getSeasonalTheme();
+      const root = document.documentElement;
+
+      root.style.setProperty('--accent-primary', theme.primary);
+      root.style.setProperty('--accent-secondary', theme.secondary);
+      root.style.setProperty('--accent-hover', theme.hover);
+
+      // Store theme name for potential future use
+      try {
+        localStorage.setItem('current-season', theme.name);
+      } catch (e) {}
+    }
+
     function setThemeState(isLight) {
       const body = document.body;
       const themeIcon = document.getElementById('theme-icon');
@@ -23,6 +132,9 @@
         if (themeBtn) themeBtn.setAttribute('aria-pressed', 'false');
         try { localStorage.setItem('theme', 'dark'); } catch (e) {}
       }
+
+      // Apply seasonal colors
+      applySeasonalColors();
     }
 
     window.toggleTheme = function () {
@@ -36,6 +148,9 @@
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'light') {
         setThemeState(true);
+      } else {
+        // Apply seasonal colors even if staying in dark mode
+        applySeasonalColors();
       }
     } catch (e) { /* ignore */ }
 

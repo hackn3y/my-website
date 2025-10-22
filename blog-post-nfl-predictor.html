@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building an NFL prediction platform with machine learning ensemble models and gematria analysis. A technical deep dive into Python ML, Node.js backend, and React Native.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/blog-post-nfl-predictor.html">
+    <meta property="og:title" content="Building an NFL Prediction Platform with Machine Learning - Ryan Hackney">
+    <meta property="og:description" content="From sports analytics to production: How I built a full-stack NFL prediction platform combining ensemble ML models with gematria numerology.">
+    <meta property="og:image" content="https://ryanhackney.com/nfl-predictor-blog.svg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/blog-post-nfl-predictor.html">
+    <meta property="twitter:title" content="Building an NFL Prediction Platform with Machine Learning - Ryan Hackney">
+    <meta property="twitter:description" content="From sports analytics to production: How I built a full-stack NFL prediction platform combining ensemble ML models with gematria numerology.">
+    <meta property="twitter:image" content="https://ryanhackney.com/nfl-predictor-blog.svg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>Building an NFL Prediction Platform with Machine Learning - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .blog-post {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .blog-post h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .blog-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-content h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .blog-content h3 {
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .blog-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .blog-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .blog-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-content strong {
+            color: var(--text-primary);
+        }
+
+        .highlight-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight-box h3 {
+            margin-top: 0;
+            color: var(--accent-primary);
+        }
+
+        .stats-inline {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .blog-post h1 {
+                font-size: 2rem;
+            }
+
+            .blog-content {
+                font-size: 1rem;
+            }
+
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .stats-inline {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="blog-post">
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+
+        <h1>Building an NFL Prediction Platform with Machine Learning and Gematria</h1>
+
+        <div class="blog-meta">
+            <strong>Published:</strong> October 22, 2025 • <strong>Category:</strong> Machine Learning • <strong>Read Time:</strong> 7 min
+        </div>
+
+        <div class="blog-content">
+            <p>Sports prediction has always fascinated me - the intersection of data science, statistics, and the unpredictability of human competition. So I decided to build a comprehensive NFL game prediction platform that combines cutting-edge machine learning with an unconventional twist: gematria numerology.</p>
+
+            <p>The result is a production-ready application featuring ensemble ML models, multi-database architecture, subscription-based monetization, and a unique analytical approach that sets it apart from traditional sports betting platforms.</p>
+
+            <div class="stats-inline">
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Services</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">ML Models</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Features</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Databases</span>
+                </div>
+            </div>
+
+            <h2>The Challenge: Multi-Service Architecture</h2>
+
+            <p>Unlike a typical full-stack app, this project required coordinating three distinct services with different technology stacks:</p>
+
+            <ul>
+                <li><strong>Mobile App (React Native):</strong> Cross-platform user interface with Redux state management</li>
+                <li><strong>Backend API (Node.js):</strong> Orchestration layer handling auth, subscriptions, and caching</li>
+                <li><strong>ML Service (Python):</strong> FastAPI-based prediction engine with ensemble models</li>
+            </ul>
+
+            <p>Each service needed to be independently deployable while maintaining seamless communication. The Node.js backend acts as a middleware layer, managing authentication, subscription tiers, and caching expensive ML predictions in Redis.</p>
+
+            <h2>The Machine Learning Pipeline</h2>
+
+            <p>The prediction system uses an ensemble approach combining three different model types, each with its own strengths:</p>
+
+            <h3>1. Random Forest Classifier</h3>
+            <p>Excellent for handling non-linear relationships and providing feature importance rankings. This model identifies which factors (home field advantage, recent form, injuries) matter most for each matchup.</p>
+
+            <h3>2. XGBoost Gradient Boosting</h3>
+            <p>Powerful for capturing complex interactions between features. XGBoost excels at finding subtle patterns in how different factors combine to influence game outcomes.</p>
+
+            <h3>3. Neural Network (TensorFlow)</h3>
+            <p>Capable of learning abstract representations from the data. The neural network captures non-obvious patterns that traditional statistical models might miss.</p>
+
+            <div class="highlight-box">
+                <h3>Feature Engineering</h3>
+                <p>The models are trained on 15+ engineered features, including:</p>
+                <ul>
+                    <li><strong>Team Performance Metrics:</strong> Offensive/defensive ratings, points per game, yards gained/allowed</li>
+                    <li><strong>Recent Form:</strong> Rolling averages over the last 5 games to capture momentum</li>
+                    <li><strong>Head-to-Head History:</strong> Historical matchup results and trends</li>
+                    <li><strong>Situational Factors:</strong> Divisional games, primetime games, rest days between games</li>
+                    <li><strong>Environmental Conditions:</strong> Weather, temperature, wind speed at game time</li>
+                    <li><strong>Injury Impact:</strong> Key player availability weighted by position importance</li>
+                    <li><strong>Betting Market Data:</strong> Vegas lines and public betting percentages</li>
+                </ul>
+            </div>
+
+            <h2>The Gematria Twist</h2>
+
+            <p>Here's where things get interesting. While ML provides the statistical foundation, I added gematria analysis - an ancient numerological system that assigns numerical values to letters. This creates a unique value proposition that differentiates the platform from purely statistical betting tools.</p>
+
+            <p>The gematria engine calculates values using three cipher systems (English, Pythagorean, Chaldean) and analyzes:</p>
+
+            <ul>
+                <li>Team name numerology and pattern matching</li>
+                <li>Player name analysis with master number identification</li>
+                <li>Game date correlations with team values</li>
+                <li>Numerological "alignment" between opposing teams</li>
+            </ul>
+
+            <p>Users can explore both the ML predictions and gematria insights, appealing to both data-driven bettors and those interested in alternative analytical approaches.</p>
+
+            <h2>Subscription Architecture & Monetization</h2>
+
+            <p>The platform implements a three-tier subscription model powered by Stripe:</p>
+
+            <ul>
+                <li><strong>Free Tier:</strong> 3 predictions per day, basic features</li>
+                <li><strong>Premium ($9.99/month):</strong> 20 predictions per day, ML model access</li>
+                <li><strong>Pro ($29.99/month):</strong> Unlimited predictions, parlay optimizer, advanced stats</li>
+            </ul>
+
+            <p>The technical implementation was challenging but rewarding:</p>
+
+            <h3>Middleware-Based Access Control</h3>
+            <p>Created reusable middleware functions that check subscription status before allowing access to premium features. Each API endpoint is protected with appropriate tier checks, ensuring users only access features they've paid for.</p>
+
+            <h3>Stripe Webhook Integration</h3>
+            <p>Implemented comprehensive webhook handlers for all subscription lifecycle events - creation, updates, cancellations, payment failures. This ensures subscription status stays synchronized across the database even when users manage their subscriptions through Stripe's customer portal.</p>
+
+            <h3>Daily Rate Limiting</h3>
+            <p>Built a custom rate limiter that tracks daily prediction counts per user, resetting at midnight. This required careful consideration of timezones and edge cases like users near midnight boundaries.</p>
+
+            <h2>The Multi-Database Strategy</h2>
+
+            <p>Different data types required different database solutions:</p>
+
+            <ul>
+                <li><strong>PostgreSQL:</strong> Structured data like games, teams, users, subscriptions. Perfect for relational queries and ACID compliance.</li>
+                <li><strong>MongoDB:</strong> Gematria calculations with flexible schema. Document storage allowed easy iteration on gematria calculation methods.</li>
+                <li><strong>Redis:</strong> High-performance caching for ML predictions. Predictions cached with 30-minute TTL to balance freshness with compute costs.</li>
+            </ul>
+
+            <p>This polyglot persistence approach uses each database's strengths while adding complexity in deployment and connection management.</p>
+
+            <h2>Performance Optimization</h2>
+
+            <p>ML predictions are computationally expensive. Running ensemble models for every request would be impractical. The solution: aggressive caching strategies.</p>
+
+            <h3>Multi-Layer Caching</h3>
+            <ul>
+                <li><strong>Prediction Cache:</strong> Individual game predictions cached in Redis for 30 minutes</li>
+                <li><strong>Batch Pre-computation:</strong> Upcoming games predicted in advance during off-peak hours</li>
+                <li><strong>Feature Cache:</strong> Engineered features cached to avoid re-calculation</li>
+            </ul>
+
+            <p>This reduced average response time from 2-3 seconds (cold) to under 100ms (cached) - a 20-30x improvement.</p>
+
+            <h2>Deployment & Infrastructure</h2>
+
+            <p>Deploying a multi-service application with different tech stacks required careful planning:</p>
+
+            <ul>
+                <li><strong>Mobile App:</strong> Deployed to Netlify as a Progressive Web App, accessible from any device</li>
+                <li><strong>Backend + ML Service:</strong> Deployed to Railway with Docker containers for isolation</li>
+                <li><strong>Databases:</strong> Managed PostgreSQL and MongoDB instances, Redis Cloud for caching</li>
+            </ul>
+
+            <p>Docker Compose handles local development with all three databases, making onboarding new developers straightforward.</p>
+
+            <h2>Key Technical Takeaways</h2>
+
+            <h3>1. Service Boundaries Matter</h3>
+            <p>Keeping ML logic in Python and business logic in Node.js created clear separation of concerns. The Node.js layer handles all the "plumbing" (auth, subscriptions, caching) while Python focuses purely on predictions.</p>
+
+            <h3>2. Feature Engineering > Model Complexity</h3>
+            <p>The ensemble models aren't particularly sophisticated architecturally. The real value comes from thoughtful feature engineering - understanding what factors actually influence NFL outcomes.</p>
+
+            <h3>3. Caching is Critical for ML Apps</h3>
+            <p>Without aggressive caching, the app would be unusably slow and prohibitively expensive to run. Redis caching was essential for production viability.</p>
+
+            <h3>4. Polyglot Persistence Has Costs</h3>
+            <p>Using three different databases provided technical benefits but added operational complexity. Each database requires monitoring, backups, and maintenance. The trade-off was worth it, but it's not free.</p>
+
+            <h2>What's Next?</h2>
+
+            <p>The platform is live and functional, but there are exciting enhancements planned:</p>
+
+            <ul>
+                <li><strong>Player Props:</strong> Individual player performance predictions using player-level ML models</li>
+                <li><strong>Live Predictions:</strong> Real-time updates during games based on current score and time remaining</li>
+                <li><strong>Social Features:</strong> Leaderboards, prediction sharing, and community competitions</li>
+                <li><strong>Model Transparency:</strong> Explainability features showing why models made specific predictions</li>
+            </ul>
+
+            <h2>Try It Yourself</h2>
+
+            <p>The NFL Predictor is live at <a href="https://nfly.netlify.app/" target="_blank">nfly.netlify.app</a>. Create a free account to explore predictions and see how ensemble ML models combined with gematria create a unique analytical tool.</p>
+
+            <p>For technical details and architecture diagrams, check out the <a href="project-nfl-predictor.html">full project writeup</a>.</p>
+
+            <h2>Conclusion</h2>
+
+            <p>Building a production ML application taught me that the real challenge isn't just training models - it's building the entire ecosystem around them. Authentication, subscriptions, caching, deployment, monitoring - all these "infrastructure" concerns are what separate a Jupyter notebook from a real product.</p>
+
+            <p>The combination of machine learning rigor with the novelty of gematria analysis created something unique in the sports prediction space. Whether users are drawn to the statistical models or the numerological insights, the platform provides value through a distinctive analytical approach.</p>
+
+            <p>Most importantly, this project demonstrates the full lifecycle of ML product development: from feature engineering and model training to deployment, monetization, and user management. It's one thing to train a model - it's another to ship it.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
