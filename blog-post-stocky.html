@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building a stock prediction platform with machine learning and technical analysis. A deep dive into Random Forest models, feature engineering, and full-stack ML deployment.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/blog-post-stocky.html">
+    <meta property="og:title" content="Predicting Stock Markets with Machine Learning - Ryan Hackney">
+    <meta property="og:description" content="Building Stocky: A full-stack ML platform for stock predictions using 30 technical indicators and Random Forest classification.">
+    <meta property="og:image" content="https://ryanhackney.com/stocky-blog.svg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/blog-post-stocky.html">
+    <meta property="twitter:title" content="Predicting Stock Markets with Machine Learning - Ryan Hackney">
+    <meta property="twitter:description" content="Building Stocky: A full-stack ML platform for stock predictions using 30 technical indicators and Random Forest classification.">
+    <meta property="twitter:image" content="https://ryanhackney.com/stocky-blog.svg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <title>Predicting Stock Markets with Machine Learning - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: gap 0.2s;
+        }
+
+        .back-link:hover {
+            gap: 1rem;
+        }
+
+        .article-header {
+            margin-bottom: 3rem;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .featured-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-secondary);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content ul, .article-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .code-block {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-block code {
+            color: var(--accent-secondary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .cta-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .article-title {
+                font-size: 2rem;
+            }
+
+            .article-content {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder"></div>
+
+    <main class="container">
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+
+        <article>
+            <header class="article-header">
+                <h1 class="article-title">Predicting Stock Markets with Machine Learning: Building Stocky</h1>
+                <div class="article-meta">
+                    <span class="meta-item">📅 October 23, 2025</span>
+                    <span class="meta-item">⏱️ 8 min read</span>
+                    <span class="meta-item">🏷️ Machine Learning</span>
+                </div>
+            </header>
+
+            <img src="stocky-blog.svg" alt="Stocky ML Stock Prediction Platform" class="featured-image">
+
+            <div class="article-content">
+                <p class="lead" style="font-size: 1.2rem; color: var(--text-secondary);">Can machine learning really predict stock market movements? I built a full-stack ML platform to find out. Spoiler alert: markets are harder to predict than you'd think—but the journey taught me invaluable lessons about feature engineering, model deployment, and realistic ML expectations.</p>
+
+                <h2>The Challenge</h2>
+                <p>Stock market prediction has captivated developers and data scientists for decades. The promise is tantalizing: use historical price data and technical indicators to forecast tomorrow's movements, potentially making profitable trading decisions. But the reality is far more nuanced.</p>
+
+                <p>I set out to build <strong>Stocky</strong>—an educational stock prediction platform that combines 30+ technical indicators with Random Forest machine learning to predict whether a stock will go UP or DOWN the next day. The goal wasn't to get rich (markets are efficient, after all), but to understand the full pipeline from data collection to model deployment in a production web application.</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">52%</div>
+                        <div class="stat-label">Model Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">Technical Indicators</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2,700+</div>
+                        <div class="stat-label">Training Days</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">300</div>
+                        <div class="stat-label">Decision Trees</div>
+                    </div>
+                </div>
+
+                <h2>Architecture: Full-Stack ML Pipeline</h2>
+                <p>Stocky is built as a complete machine learning web application with three main layers:</p>
+
+                <h3>1. Frontend: React + Tailwind CSS</h3>
+                <p>The user interface needed to be fast, responsive, and intuitive. I used React 19 with Tailwind CSS for rapid development and a modern look. Key features include:</p>
+                <ul>
+                    <li><strong>Lazy component loading:</strong> 12+ heavy components (Portfolio, Paper Trading, Risk Metrics) loaded on-demand using React.lazy() to keep initial bundle size small</li>
+                    <li><strong>Interactive charts:</strong> Recharts library for beautiful, responsive price history visualization</li>
+                    <li><strong>Real-time predictions:</strong> Instant feedback with confidence scores and probability breakdowns</li>
+                    <li><strong>Dark mode:</strong> Theme toggle with localStorage persistence for user preference</li>
+                    <li><strong>Error recovery:</strong> Comprehensive error boundaries and retry logic with exponential backoff</li>
+                </ul>
+
+                <h3>2. Backend: Flask + Python ML</h3>
+                <p>The Flask backend serves as the bridge between the frontend and machine learning models. I designed 14 REST API endpoints covering:</p>
+                <ul>
+                    <li><strong>Core predictions:</strong> Single and batch predictions with confidence scoring</li>
+                    <li><strong>Market data:</strong> Historical OHLCV data via yfinance API integration</li>
+                    <li><strong>Risk analytics:</strong> Sharpe ratio, volatility, Beta, max drawdown, VaR calculations</li>
+                    <li><strong>News integration:</strong> Real-time stock news feeds for context</li>
+                    <li><strong>User authentication:</strong> JWT-based auth with secure password hashing (werkzeug)</li>
+                    <li><strong>Search functionality:</strong> Stock symbol/name autocomplete</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+# Example: Intelligent Model Routing<br>
+def get_appropriate_model(symbol):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if '-USD' in symbol:  # Cryptocurrency<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return load_model('crypto_model.pkl')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;elif is_etf(symbol):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return load_model('spy_model.pkl')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else:  # Individual stocks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return load_model('enhanced_model.pkl')
+                    </code>
+                </div>
+
+                <h3>3. ML Models: Random Forest + Feature Engineering</h3>
+                <p>The heart of Stocky is its machine learning system. I trained multiple Random Forest classifiers on 10 years of market data (2015-2025), with each model specialized for different asset types.</p>
+
+                <h2>Feature Engineering: The Secret Sauce</h2>
+                <p>Raw price data alone isn't enough for meaningful predictions. The key is engineering features that capture market behavior patterns. I implemented 30 technical indicators across five categories:</p>
+
+                <h3>Price-Based Features</h3>
+                <ul>
+                    <li><strong>Returns:</strong> Daily, 2-day, and 5-day percentage changes</li>
+                    <li><strong>Momentum:</strong> 10-period price momentum and acceleration</li>
+                    <li><strong>Gaps:</strong> Opening price vs. previous close (market sentiment)</li>
+                    <li><strong>Intraday range:</strong> High-low spread relative to close</li>
+                </ul>
+
+                <h3>Moving Averages</h3>
+                <ul>
+                    <li><strong>Simple Moving Averages (SMA):</strong> 5, 20, and 50-period averages</li>
+                    <li><strong>Exponential Moving Averages (EMA):</strong> 12 and 26-period for trend detection</li>
+                    <li><strong>Ratio features:</strong> SMA_5/SMA_20 and SMA_20/SMA_50 to capture trend strength</li>
+                    <li><strong>Distance metrics:</strong> How far current price is from key moving averages</li>
+                </ul>
+
+                <h3>Volatility Indicators</h3>
+                <ul>
+                    <li><strong>Bollinger Bands:</strong> Upper, lower, and position within bands</li>
+                    <li><strong>ATR (Average True Range):</strong> Measures market volatility</li>
+                    <li><strong>Historical volatility:</strong> Standard deviation of returns</li>
+                </ul>
+
+                <h3>Momentum Oscillators</h3>
+                <ul>
+                    <li><strong>RSI (Relative Strength Index):</strong> Overbought/oversold conditions (0-100)</li>
+                    <li><strong>MACD:</strong> Moving Average Convergence Divergence with signal line and histogram</li>
+                    <li><strong>Stochastic Oscillator:</strong> Price position relative to range</li>
+                    <li><strong>Williams %R:</strong> Alternative momentum indicator</li>
+                    <li><strong>Rate of Change (ROC):</strong> Velocity of price changes</li>
+                </ul>
+
+                <h3>Volume Analysis</h3>
+                <ul>
+                    <li><strong>Volume Ratio:</strong> Current volume vs. 20-day average</li>
+                    <li><strong>On-Balance Volume (OBV):</strong> Cumulative volume-based pressure</li>
+                    <li><strong>Money Flow Index (MFI):</strong> Volume-weighted RSI</li>
+                    <li><strong>Volume Change:</strong> Day-over-day volume differences</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Pro Tip:</strong> Feature engineering is more impactful than model selection. I spent 70% of my time crafting features and only 30% tuning models. Quality features beat complex algorithms every time in finance ML.
+                </div>
+
+                <h2>The Hard Truth: 52% Accuracy</h2>
+                <p>After training on 2,700 days of SPY data with 300 decision trees and extensive hyperparameter tuning, my model achieved 51.88% test accuracy. That's barely better than a coin flip (50%). Why?</p>
+
+                <ul>
+                    <li><strong>Market efficiency:</strong> Public technical indicators are already priced in</li>
+                    <li><strong>External factors:</strong> News, earnings, macro events dominate short-term moves</li>
+                    <li><strong>Non-stationarity:</strong> Market behavior patterns change over time (2008 ≠ 2020 ≠ 2025)</li>
+                    <li><strong>Black swan events:</strong> COVID-19, financial crises aren't predictable from price patterns</li>
+                    <li><strong>Noise vs. signal:</strong> Intraday volatility is mostly random walk</li>
+                </ul>
+
+                <p>This was actually the most valuable lesson: <strong>realistic ML expectations</strong>. Media hype suggests AI can predict anything with 90%+ accuracy. Reality is messier. Financial markets are partially efficient, making consistent prediction nearly impossible using only technical analysis.</p>
+
+                <div class="highlight-box">
+                    <strong>What I Learned:</strong> The goal of Stocky isn't to make money—it's educational. Understanding WHY prediction is hard is more valuable than claiming false accuracy. Honest ML means acknowledging limitations.
+                </div>
+
+                <h2>Technical Challenges & Solutions</h2>
+
+                <h3>Challenge 1: Large Model File Deployment</h3>
+                <p><strong>Problem:</strong> scikit-learn models are 14-79 MB—too large for Git repositories without special handling.</p>
+                <p><strong>Solution:</strong> Implemented Git LFS (Large File Storage) with automatic fallback download from GitHub if model isn't found locally. Backend checks for .pkl files on startup and auto-downloads from LFS URL if missing.</p>
+
+                <h3>Challenge 2: API Rate Limiting</h3>
+                <p><strong>Problem:</strong> yfinance API throttles repeated requests for market data.</p>
+                <p><strong>Solution:</strong> Built intelligent caching system with symbol-timeframe keys (e.g., "AAPL-1mo"). Historical data cached after first request, providing instant subsequent loads. Added batch prediction endpoint to get multiple symbols with single API call.</p>
+
+                <h3>Challenge 3: Frontend Performance</h3>
+                <p><strong>Problem:</strong> Loading 20+ React components caused slow initial page load (3-4 seconds).</p>
+                <p><strong>Solution:</strong> Implemented React.lazy() for code splitting. Only core prediction UI loads initially; advanced panels (Portfolio, Paper Trading, Risk Metrics) loaded on-demand when user clicks tabs. Reduced initial bundle from 500KB to 180KB.</p>
+
+                <h3>Challenge 4: Cross-Origin Resource Sharing (CORS)</h3>
+                <p><strong>Problem:</strong> React frontend (Vercel) couldn't call Flask backend (Railway) due to CORS restrictions.</p>
+                <p><strong>Solution:</strong> Configured Flask-CORS with specific origin whitelist, credential support, and preflight headers. Added environment variable for dynamic API_URL configuration between local dev and production.</p>
+
+                <h2>Deployment: Railway + Vercel</h2>
+                <p>Stocky uses a dual-platform deployment strategy:</p>
+
+                <ul>
+                    <li><strong>Backend (Railway):</strong> Python Flask app with Gunicorn server, environment variables for database and secrets, automatic deployment on Git push</li>
+                    <li><strong>Frontend (Vercel):</strong> React app with optimized build, environment variable for API URL, serverless edge network for fast global access</li>
+                </ul>
+
+                <p>This separation allows independent scaling and deployment of frontend vs. backend, with clear separation of concerns.</p>
+
+                <h2>Key Features Beyond Predictions</h2>
+
+                <h3>Watchlist Management</h3>
+                <p>Users can save favorite stocks with bulk operations (add/remove multiple symbols), export to CSV, and automatic prediction updates when viewing watchlist.</p>
+
+                <h3>Paper Trading Simulator</h3>
+                <p>Practice trading strategies with virtual $10,000 account. Execute buy/sell orders, track P&L, and visualize performance—all without risking real money.</p>
+
+                <h3>Risk Analytics Dashboard</h3>
+                <p>Calculate professional risk metrics: Sharpe ratio (risk-adjusted returns), Beta (market correlation), maximum drawdown, volatility, and Value-at-Risk (VaR).</p>
+
+                <h3>Portfolio Tracking</h3>
+                <p>Monitor hypothetical holdings, calculate returns, track performance vs. benchmarks, and visualize asset allocation.</p>
+
+                <h2>Lessons Learned</h2>
+
+                <ol>
+                    <li><strong>Feature engineering > Model complexity:</strong> Random Forest with good features beats neural networks with raw data</li>
+                    <li><strong>Market prediction is inherently limited:</strong> 52% accuracy is realistic; beware anyone claiming 90%+</li>
+                    <li><strong>Production ML requires DevOps:</strong> Model versioning, caching, error handling, monitoring—not just training</li>
+                    <li><strong>User experience matters:</strong> Fast load times, error recovery, loading states, responsive design</li>
+                    <li><strong>Full-stack integration is hard:</strong> CORS, authentication, state management, deployment—lots of moving parts</li>
+                    <li><strong>Educational honesty:</strong> Acknowledge limitations; don't oversell capabilities</li>
+                </ol>
+
+                <h2>What's Next?</h2>
+                <p>Future enhancements I'm considering:</p>
+                <ul>
+                    <li><strong>LSTM/Transformer models:</strong> Deep learning for time-series prediction</li>
+                    <li><strong>Sentiment analysis:</strong> Integrate news/social media sentiment</li>
+                    <li><strong>Backtesting engine:</strong> Evaluate strategy performance over historical periods</li>
+                    <li><strong>Real-time WebSockets:</strong> Live market data updates</li>
+                    <li><strong>Advanced charting:</strong> TradingView integration for technical analysis</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+                <p>Building Stocky taught me that machine learning isn't magic—it's a tool with real limitations, especially in unpredictable domains like finance. The 52% accuracy is honest: barely better than random chance. But the journey was invaluable for learning:</p>
+
+                <ul>
+                    <li>Full-stack ML deployment (Flask + React + scikit-learn)</li>
+                    <li>Feature engineering and domain expertise importance</li>
+                    <li>Production-grade error handling and caching</li>
+                    <li>Realistic ML expectations and ethical communication</li>
+                    <li>User-focused application design</li>
+                </ul>
+
+                <p><strong>The real prediction?</strong> Markets will remain unpredictable. But understanding WHY through hands-on ML projects makes you a better developer and data scientist.</p>
+
+                <div class="cta-section">
+                    <h3 style="margin-bottom: 1rem;">Try Stocky</h3>
+                    <p>Explore stock predictions and see machine learning in action. Remember: for educational purposes only—not investment advice!</p>
+                    <div class="cta-buttons">
+                        <a href="https://stocky-mu.vercel.app/" target="_blank" class="btn">🚀 Live Demo</a>
+                        <a href="project-stocky.html" class="btn btn-secondary">📋 Technical Details</a>
+                        <a href="index.html#contact" class="btn btn-secondary">💬 Get in Touch</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

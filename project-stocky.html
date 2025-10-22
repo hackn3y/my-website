@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Full-stack machine learning stock prediction platform using Random Forest and technical indicators. Flask backend with React frontend deployed on Railway and Vercel.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-stocky.html">
+    <meta property="og:title" content="Stocky - ML Stock Prediction Platform - Ryan Hackney">
+    <meta property="og:description" content="Educational stock prediction platform combining 30+ technical indicators with Random Forest models. Full-stack ML web application with Flask and React.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-stocky.html">
+    <meta property="twitter:title" content="Stocky - ML Stock Prediction Platform - Ryan Hackney">
+    <meta property="twitter:description" content="Educational stock prediction platform combining 30+ technical indicators with Random Forest models. Full-stack ML web application with Flask and React.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Stocky - ML Stock Predictions - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: gap 0.2s;
+        }
+
+        .back-link:hover {
+            gap: 1rem;
+        }
+
+        .project-header {
+            margin-bottom: 3rem;
+        }
+
+        .project-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .tech-tag {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .links-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .content-section {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-secondary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tech-category {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tech-category h3 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tech-list li:last-child {
+            border-bottom: none;
+        }
+
+        .architecture-diagram {
+            background: var(--bg-tertiary);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-block code {
+            color: var(--accent-secondary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 2rem;
+            }
+
+            .project-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder"></div>
+
+    <main class="container">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <div class="project-header">
+            <h1 class="project-title">Stocky - ML Stock Prediction Platform</h1>
+            <p class="project-subtitle">Educational stock market prediction tool using machine learning and technical analysis</p>
+
+            <div class="tech-tags">
+                <span class="tech-tag">React 19</span>
+                <span class="tech-tag">Flask</span>
+                <span class="tech-tag">scikit-learn</span>
+                <span class="tech-tag">Random Forest</span>
+                <span class="tech-tag">Tailwind CSS</span>
+                <span class="tech-tag">SQLite</span>
+                <span class="tech-tag">JWT Auth</span>
+                <span class="tech-tag">Railway</span>
+                <span class="tech-tag">Vercel</span>
+            </div>
+
+            <div class="links-section">
+                <a href="https://stocky-mu.vercel.app/" target="_blank" class="btn">
+                    🚀 Live Demo
+                </a>
+                <a href="https://github.com/yourusername/stocky" target="_blank" class="btn btn-secondary">
+                    💻 View Code
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Technical Indicators</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">14+</div>
+                <div class="stat-label">REST API Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">52%</div>
+                <div class="stat-label">Model Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">React Components</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Project Overview</h2>
+            <p>Stocky is a full-stack machine learning web application that predicts next-day stock price movements using advanced technical analysis and Random Forest classification. The platform provides UP/DOWN directional predictions with confidence scores for stocks, ETFs, and cryptocurrencies, serving as an educational tool to understand market prediction limitations and machine learning applications in finance.</p>
+
+            <p style="margin-top: 1rem;">Built with a Python Flask backend and React frontend, Stocky demonstrates production-grade ML deployment, featuring intelligent model routing, real-time market data integration, and comprehensive risk analytics. The application supports user authentication, watchlist management, paper trading, and portfolio tracking, all wrapped in a mobile-responsive interface with dark mode support.</p>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Architecture Overview</h2>
+
+            <div class="architecture-diagram">
+                <svg width="100%" height="400" viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background -->
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#2a2a2a;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect width="1000" height="400" fill="url(#grad1)" rx="10"/>
+
+                    <!-- Frontend -->
+                    <rect x="50" y="50" width="200" height="300" fill="#ff6b35" rx="8"/>
+                    <text x="150" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Frontend</text>
+                    <text x="150" y="110" text-anchor="middle" fill="white" font-size="14">React 19</text>
+                    <text x="150" y="135" text-anchor="middle" fill="white" font-size="12">• Tailwind CSS</text>
+                    <text x="150" y="160" text-anchor="middle" fill="white" font-size="12">• Axios</text>
+                    <text x="150" y="185" text-anchor="middle" fill="white" font-size="12">• Recharts</text>
+                    <text x="150" y="210" text-anchor="middle" fill="white" font-size="12">• Lazy Loading</text>
+                    <text x="150" y="235" text-anchor="middle" fill="white" font-size="12">• Context API</text>
+                    <text x="150" y="280" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Vercel</text>
+
+                    <!-- Arrow 1 -->
+                    <line x1="250" y1="200" x2="350" y2="200" stroke="#ff8c42" stroke-width="3"/>
+                    <polygon points="350,200 340,195 340,205" fill="#ff8c42"/>
+                    <text x="300" y="190" text-anchor="middle" fill="#e0e0e0" font-size="11">REST API</text>
+
+                    <!-- Backend -->
+                    <rect x="350" y="50" width="200" height="300" fill="#ff8c42" rx="8"/>
+                    <text x="450" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">Backend</text>
+                    <text x="450" y="110" text-anchor="middle" fill="white" font-size="14">Flask + Gunicorn</text>
+                    <text x="450" y="135" text-anchor="middle" fill="white" font-size="12">• 14 Endpoints</text>
+                    <text x="450" y="160" text-anchor="middle" fill="white" font-size="12">• JWT Auth</text>
+                    <text x="450" y="185" text-anchor="middle" fill="white" font-size="12">• CORS</text>
+                    <text x="450" y="210" text-anchor="middle" fill="white" font-size="12">• Model Loader</text>
+                    <text x="450" y="235" text-anchor="middle" fill="white" font-size="12">• Peewee ORM</text>
+                    <text x="450" y="280" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Railway</text>
+
+                    <!-- Arrow 2 -->
+                    <line x1="550" y1="200" x2="650" y2="200" stroke="#ff4500" stroke-width="3"/>
+                    <polygon points="650,200 640,195 640,205" fill="#ff4500"/>
+                    <text x="600" y="190" text-anchor="middle" fill="#e0e0e0" font-size="11">Predictions</text>
+
+                    <!-- ML Service -->
+                    <rect x="650" y="50" width="200" height="300" fill="#ff4500" rx="8"/>
+                    <text x="750" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">ML Models</text>
+                    <text x="750" y="110" text-anchor="middle" fill="white" font-size="14">scikit-learn</text>
+                    <text x="750" y="135" text-anchor="middle" fill="white" font-size="12">• Random Forest</text>
+                    <text x="750" y="160" text-anchor="middle" fill="white" font-size="12">• Gradient Boost</text>
+                    <text x="750" y="185" text-anchor="middle" fill="white" font-size="12">• 30 Features</text>
+                    <text x="750" y="210" text-anchor="middle" fill="white" font-size="12">• yfinance API</text>
+                    <text x="750" y="235" text-anchor="middle" fill="white" font-size="12">• Model Routing</text>
+                    <text x="750" y="280" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Git LFS</text>
+
+                    <!-- Database -->
+                    <rect x="350" y="360" width="200" height="30" fill="#333" rx="5"/>
+                    <text x="450" y="380" text-anchor="middle" fill="white" font-size="12">SQLite + Peewee</text>
+                    <line x1="450" y1="350" x2="450" y2="360" stroke="#ff8c42" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <h3 class="subsection-title">System Flow</h3>
+            <ol>
+                <li><strong>User Request:</strong> Frontend sends prediction request with stock symbol</li>
+                <li><strong>API Routing:</strong> Flask backend receives request, validates symbol</li>
+                <li><strong>Data Fetching:</strong> yfinance API downloads latest market data</li>
+                <li><strong>Feature Engineering:</strong> Calculate 30 technical indicators (RSI, MACD, Bollinger Bands, etc.)</li>
+                <li><strong>Model Selection:</strong> Intelligent routing picks appropriate model (crypto vs stock)</li>
+                <li><strong>Prediction:</strong> Random Forest classifier generates UP/DOWN prediction with confidence</li>
+                <li><strong>Response:</strong> JSON payload returned with prediction, confidence, and metadata</li>
+                <li><strong>Visualization:</strong> React displays result with charts, risk metrics, and historical data</li>
+            </ol>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Key Features</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 Smart Predictions</h3>
+                    <p>UP/DOWN directional forecasts with probability-based confidence scores for stocks, ETFs, and cryptocurrencies using ensemble ML models.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📊 Technical Analysis</h3>
+                    <p>30+ indicators including RSI, MACD, Bollinger Bands, Stochastic Oscillator, ATR, MFI, OBV, and momentum-based features.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>👁️ Watchlist Manager</h3>
+                    <p>Save favorite stocks, bulk operations, export functionality, and automatic prediction updates for tracked symbols.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📈 Portfolio Tracking</h3>
+                    <p>Monitor hypothetical holdings, calculate returns, track performance metrics, and visualize portfolio allocation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📄 Paper Trading</h3>
+                    <p>Simulated trading environment with virtual account, order execution, and P&L tracking without risking real capital.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>⚠️ Risk Analytics</h3>
+                    <p>Calculate Sharpe ratio, volatility, maximum drawdown, Beta, and Value-at-Risk (VaR) for comprehensive risk assessment.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📰 Real-time News</h3>
+                    <p>Integrated news feeds for selected stocks with sentiment context to inform trading decisions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔐 User Authentication</h3>
+                    <p>JWT-based authentication system with secure password hashing, user profiles, and data persistence.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📱 Mobile Responsive</h3>
+                    <p>Fully optimized for mobile devices with touch-friendly interfaces and adaptive layouts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🌙 Dark Mode</h3>
+                    <p>Toggle between light and dark themes with smooth transitions and persistent user preferences.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>⚡ Performance</h3>
+                    <p>Lazy component loading, data caching, code splitting, and optimized bundle size for fast load times.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔄 Batch Processing</h3>
+                    <p>Get predictions for multiple symbols simultaneously with single API call for efficiency.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Technology Stack</h2>
+
+            <div class="tech-stack">
+                <div class="tech-category">
+                    <h3>Backend (Python)</h3>
+                    <ul class="tech-list">
+                        <li>Flask 2.3 - Web framework</li>
+                        <li>scikit-learn - ML models</li>
+                        <li>pandas/numpy - Data processing</li>
+                        <li>yfinance - Market data API</li>
+                        <li>Peewee - SQLite ORM</li>
+                        <li>PyJWT - Authentication</li>
+                        <li>Gunicorn - Production server</li>
+                        <li>XGBoost/CatBoost - Ensemble models</li>
+                    </ul>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Frontend (JavaScript)</h3>
+                    <ul class="tech-list">
+                        <li>React 19 - UI framework</li>
+                        <li>Tailwind CSS - Styling</li>
+                        <li>Axios - HTTP client</li>
+                        <li>Recharts - Data visualization</li>
+                        <li>Lucide React - Icons</li>
+                        <li>Context API - State management</li>
+                        <li>React.lazy - Code splitting</li>
+                        <li>localStorage - Persistence</li>
+                    </ul>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Machine Learning</h3>
+                    <ul class="tech-list">
+                        <li>Random Forest (300 estimators)</li>
+                        <li>Gradient Boosting</li>
+                        <li>Feature Selection (SelectKBest)</li>
+                        <li>Time-series Cross-Validation</li>
+                        <li>Class Balancing (market bias)</li>
+                        <li>Model Versioning</li>
+                        <li>Ensemble Voting</li>
+                        <li>Hyperparameter Tuning</li>
+                    </ul>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Deployment</h3>
+                    <ul class="tech-list">
+                        <li>Railway - Backend hosting</li>
+                        <li>Vercel - Frontend hosting</li>
+                        <li>Git LFS - Model file storage</li>
+                        <li>Environment Variables</li>
+                        <li>CORS Configuration</li>
+                        <li>Production Optimization</li>
+                        <li>Auto-deployment (CI/CD)</li>
+                        <li>Error Monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Machine Learning Implementation</h2>
+
+            <h3 class="subsection-title">Model Architecture</h3>
+            <p>Stocky uses a Random Forest Classifier with 300 decision trees, trained on approximately 2,700 days of SPY (S&P 500 ETF) historical data from 2015-2025. The model achieves 51.88% test accuracy, slightly better than random chance (50%), which is realistic given the inherent unpredictability of financial markets.</p>
+
+            <h3 class="subsection-title">Feature Engineering (30 Technical Indicators)</h3>
+
+            <div class="code-block">
+                <code>
+<strong>Price-Based Features:</strong><br>
+• Daily Returns, 2-day/5-day returns<br>
+• Price momentum (10-period)<br>
+• Price acceleration<br>
+• Gap detection (open vs previous close)<br>
+<br>
+<strong>Moving Averages:</strong><br>
+• SMA_5, SMA_20, SMA_50<br>
+• EMA_12, EMA_26<br>
+• Ratio-based (SMA_5_20_Ratio, SMA_20_50_Ratio)<br>
+• Distance metrics (Price_to_SMA5, Price_to_SMA20)<br>
+<br>
+<strong>Volatility Indicators:</strong><br>
+• Bollinger Bands (position, upper, lower)<br>
+• Average True Range (ATR)<br>
+• Historical volatility (std dev)<br>
+<br>
+<strong>Momentum Indicators:</strong><br>
+• RSI (Relative Strength Index)<br>
+• MACD + Signal + Histogram<br>
+• Stochastic Oscillator<br>
+• Williams %R<br>
+• Rate of Change (ROC)<br>
+<br>
+<strong>Volume Indicators:</strong><br>
+• Volume Ratio (current/20-day avg)<br>
+• On-Balance Volume (OBV)<br>
+• Money Flow Index (MFI)<br>
+• Volume Change
+                </code>
+            </div>
+
+            <h3 class="subsection-title">Intelligent Model Routing</h3>
+            <p>The system automatically selects the optimal prediction model based on asset type:</p>
+            <ul>
+                <li><strong>Cryptocurrencies (-USD suffix):</strong> Uses specialized high-volatility models trained on BTC/XRP data</li>
+                <li><strong>Stocks & ETFs:</strong> Uses enhanced SPY model with 300-tree Random Forest</li>
+                <li><strong>Fallback Mechanism:</strong> Auto-downloads from Git LFS if model not found locally</li>
+            </ul>
+
+            <h3 class="subsection-title">Model Performance Metrics</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">51.88%</div>
+                    <div class="stat-label">Test Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">46.9%</div>
+                    <div class="stat-label">Cross-Validation (5-fold)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2,708</div>
+                    <div class="stat-label">Training Days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">300</div>
+                    <div class="stat-label">Decision Trees</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 1rem;"><strong>Educational Note:</strong> The 52% accuracy reflects realistic market prediction limitations. Stock markets are influenced by countless factors beyond technical indicators—macro events, news, sentiment, and randomness. This project demonstrates ML application in finance while acknowledging prediction challenges.</p>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">API Endpoints</h2>
+
+            <h3 class="subsection-title">Core Prediction Endpoints</h3>
+            <div class="code-block">
+                <code>
+GET  /api/predict/&lt;symbol&gt;          - Get UP/DOWN prediction with confidence<br>
+GET  /api/historical/&lt;symbol&gt;       - OHLCV historical data<br>
+GET  /api/info/&lt;symbol&gt;             - Company information<br>
+POST /api/predict/batch             - Batch predictions (multiple symbols)<br>
+GET  /api/news/&lt;symbol&gt;             - Real-time stock news<br>
+GET  /api/search?q=&lt;query&gt;         - Search stocks by name/symbol
+                </code>
+            </div>
+
+            <h3 class="subsection-title">Advanced Features</h3>
+            <div class="code-block">
+                <code>
+GET  /api/risk-metrics/&lt;symbol&gt;     - Sharpe, volatility, beta, VaR, max drawdown<br>
+GET  /api/assets                    - List of supported assets<br>
+GET  /api/model/info                - Model metadata (type, features, estimators)<br>
+GET  /api/health                    - Health check with version info
+                </code>
+            </div>
+
+            <h3 class="subsection-title">Authentication Endpoints</h3>
+            <div class="code-block">
+                <code>
+POST /api/auth/register             - Create user account<br>
+POST /api/auth/login                - Login (returns JWT token)<br>
+GET  /api/auth/me                   - Get user profile (requires token)<br>
+PUT  /api/auth/update               - Update profile (requires token)<br>
+POST /api/auth/follow/&lt;user_id&gt;    - Follow user (requires token)<br>
+POST /api/auth/unfollow/&lt;user_id&gt;  - Unfollow user (requires token)
+                </code>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Technical Highlights</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎨 Lazy Component Loading</h3>
+                    <p>12+ React components loaded on-demand using React.lazy() and Suspense, reducing initial bundle size and improving page load performance significantly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>💾 Smart Data Caching</h3>
+                    <p>Historical data cached by symbol-timeframe keys, providing instant subsequent loads and reducing API calls to rate-limited yfinance endpoints.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔄 Error Recovery System</h3>
+                    <p>Comprehensive error handling with exponential backoff retry logic, network status detection, toast notifications, and error boundaries to prevent crashes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📱 Adaptive Charting</h3>
+                    <p>Dynamic interval selection based on timeframe (5-min for intraday, daily for months, weekly for years) with intelligent data point reduction.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔐 JWT Authentication</h3>
+                    <p>Token-based API authentication with secure password hashing (werkzeug), localStorage persistence, and Context API state management.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🚀 Production Deployment</h3>
+                    <p>Separate Railway (backend) and Vercel (frontend) deployments with environment variables, auto-deployment on Git push, and Git LFS for model files.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Development Process</h2>
+
+            <h3 class="subsection-title">Challenges & Solutions</h3>
+
+            <div class="feature-card" style="margin-bottom: 1rem;">
+                <h3>Challenge: Large Model File Deployment</h3>
+                <p><strong>Problem:</strong> ML model files (14-79 MB) too large for standard Git repositories<br>
+                <strong>Solution:</strong> Implemented Git LFS (Large File Storage) with automatic fallback download mechanism from GitHub on first API request</p>
+            </div>
+
+            <div class="feature-card" style="margin-bottom: 1rem;">
+                <h3>Challenge: Prediction Accuracy</h3>
+                <p><strong>Problem:</strong> Initial models showed only 46% accuracy (worse than random)<br>
+                <strong>Solution:</strong> Enhanced feature engineering with 30 indicators, class balancing, hyperparameter tuning, and specialized crypto models—reached 52% accuracy</p>
+            </div>
+
+            <div class="feature-card" style="margin-bottom: 1rem;">
+                <h3>Challenge: Frontend Performance</h3>
+                <p><strong>Problem:</strong> Heavy components caused slow initial page load<br>
+                <strong>Solution:</strong> Implemented lazy loading with React.lazy(), code splitting, data caching, and intelligent chart data reduction to max 200 points</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Challenge: API Rate Limiting</h3>
+                <p><strong>Problem:</strong> yfinance API throttles repeated requests<br>
+                <strong>Solution:</strong> Built caching system with symbol-timeframe keys, batch prediction endpoint, and intelligent data reuse across components</p>
+            </div>
+
+            <h3 class="subsection-title">Future Enhancements</h3>
+            <ul>
+                <li>Deep learning models (LSTM, Transformer) for time-series prediction</li>
+                <li>Sentiment analysis integration from news/social media</li>
+                <li>Backtesting system to evaluate strategy performance</li>
+                <li>Real-time WebSocket updates for live market data</li>
+                <li>Advanced charting with TradingView integration</li>
+                <li>Multi-timeframe analysis (1min, 5min, hourly, daily)</li>
+                <li>Options pricing and Greeks calculations</li>
+                <li>Portfolio optimization algorithms</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">Lessons Learned</h2>
+            <ul>
+                <li><strong>Market Prediction is Hard:</strong> Even with 30 features and advanced ML, achieving >55% accuracy is extremely difficult—markets are inherently unpredictable</li>
+                <li><strong>Feature Engineering Matters:</strong> Quality indicators (RSI, MACD, Bollinger) more impactful than model complexity</li>
+                <li><strong>Production Deployment Challenges:</strong> Git LFS, environment variables, CORS, and model file management require careful planning</li>
+                <li><strong>Performance Optimization:</strong> Lazy loading, caching, and code splitting essential for React apps with heavy components</li>
+                <li><strong>User Experience:</strong> Error recovery, loading states, and responsive design crucial for production applications</li>
+                <li><strong>Authentication Security:</strong> JWT tokens + secure hashing + HTTPS required for protecting user data</li>
+                <li><strong>API Design:</strong> RESTful endpoints, batch processing, and versioning important for scalable backend architecture</li>
+            </ul>
+        </div>
+
+        <div class="links-section">
+            <a href="https://stocky-mu.vercel.app/" target="_blank" class="btn">
+                🚀 Try Live Demo
+            </a>
+            <a href="index.html#projects" class="btn btn-secondary">
+                ← Back to Projects
+            </a>
+        </div>
+    </main>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

@@ -1336,6 +1336,18 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
+                <a href="project-stocky.html" class="project-card" data-category="ml software">
+                    <h3>Stocky - ML Stock Prediction Platform</h3>
+                    <p>Full-stack machine learning web application predicting stock movements with 30+ technical indicators and Random Forest models. Features React frontend, Flask backend, JWT authentication, real-time market data, and comprehensive risk analytics.</p>
+                    <div class="project-tags">
+                        <span class="tag">React</span>
+                        <span class="tag">Flask/Python</span>
+                        <span class="tag">scikit-learn</span>
+                        <span class="tag">Machine Learning</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
                 <a href="project-landing-page.html" class="project-card" data-category="software">
                     <h3>Premium Landing Page</h3>
                     <p>Modern React landing page designed for Fiverr portfolio with conversion-focused design, responsive layouts, and professional UI components. Built with Tailwind CSS and Lucide icons.</p>
@@ -1455,6 +1467,17 @@
         <div class="container">
             <h2 class="section-title">Latest Posts</h2>
             <div class="blog-grid">
+                <article class="blog-card">
+                    <a href="blog-post-stocky.html" class="card-link">
+                        <img src="stocky-blog.svg" alt="Stock Prediction with Machine Learning">
+                        <div class="blog-card-content">
+                            <h3>Predicting Stock Markets with Machine Learning: Building Stocky</h3>
+                            <p class="date">October 23, 2025</p>
+                            <p>Can machine learning predict stock movements? I built a full-stack ML platform with 30 technical indicators and Random Forest models to find out. The results might surprise you...</p>
+                            <span class="read-more">Read More →</span>
+                        </div>
+                    </a>
+                </article>
                 <article class="blog-card">
                     <a href="blog-post-nfl-predictor.html" class="card-link">
                         <img src="nfl-predictor-blog.svg" alt="NFL Prediction Platform">
@@ -1839,6 +1862,31 @@
             const filterButtons = document.querySelectorAll('.filter-btn');
             const projectCards = document.querySelectorAll('.project-card');
 
+            function filterProjects(filter) {
+                projectCards.forEach(card => {
+                    const categories = card.getAttribute('data-category');
+
+                    if (filter === 'all') {
+                        // Show all projects
+                        card.classList.remove('hidden');
+                    } else if (filter === 'featured') {
+                        // Show only featured projects
+                        if (categories && categories.includes('featured')) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    } else {
+                        // Show projects matching the selected category
+                        if (categories && categories.includes(filter)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const filter = button.getAttribute('data-filter');
@@ -1848,30 +1896,12 @@
                     button.classList.add('active');
 
                     // Filter projects
-                    projectCards.forEach(card => {
-                        const categories = card.getAttribute('data-category');
-
-                        if (filter === 'all') {
-                            // Show all projects
-                            card.classList.remove('hidden');
-                        } else if (filter === 'featured') {
-                            // Show only featured projects
-                            if (categories && categories.includes('featured')) {
-                                card.classList.remove('hidden');
-                            } else {
-                                card.classList.add('hidden');
-                            }
-                        } else {
-                            // Show projects matching the selected category
-                            if (categories && categories.includes(filter)) {
-                                card.classList.remove('hidden');
-                            } else {
-                                card.classList.add('hidden');
-                            }
-                        }
-                    });
+                    filterProjects(filter);
                 });
             });
+
+            // Apply default filter on page load (featured)
+            filterProjects('featured');
 
             // Product Gallery Lightbox setup - must be before event delegation
             const lightbox = document.getElementById('product-lightbox');
