@@ -427,17 +427,69 @@
             gap: 2rem;
         }
 
+        .project-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
         .project-card {
+            position: relative;
             background: var(--bg-primary);
             border-radius: 10px;
             padding: 2rem;
             box-shadow: 0 4px 6px var(--shadow);
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
             border: 1px solid var(--border-color);
             cursor: pointer;
             text-decoration: none;
             color: inherit;
             display: block;
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
         }
 
         .project-card:hover {
@@ -1233,9 +1285,20 @@
     <section id="projects">
         <div class="container">
             <h2 class="section-title">Technical Projects</h2>
+
+            <!-- Project Filter Tabs -->
+            <div class="project-filters">
+                <button class="filter-btn active" data-filter="featured">Featured</button>
+                <button class="filter-btn" data-filter="software">Software & Web</button>
+                <button class="filter-btn" data-filter="ml">Machine Learning</button>
+                <button class="filter-btn" data-filter="embedded">Hardware & IoT</button>
+                <button class="filter-btn" data-filter="all">View All</button>
+            </div>
+
             <div class="projects-grid">
-                <!-- Software Development -->
-                <a href="project-nfl-predictor.html" class="project-card">
+                <!-- Featured & ML Projects -->
+                <a href="project-nfl-predictor.html" class="project-card" data-category="featured ml">
+                    <span class="featured-badge">Featured</span>
                     <h3>NFL Predictor - AI-Powered Game Predictions</h3>
                     <p>Machine learning platform combining ensemble models (Random Forest, XGBoost, Neural Networks) with gematria analysis. Multi-service architecture with Python ML service, Node.js backend, and React Native mobile app. Subscription-based with Stripe integration.</p>
                     <div class="project-tags">
@@ -1247,7 +1310,8 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <a href="project-intentional-movement.html" class="project-card">
+                <a href="project-intentional-movement.html" class="project-card" data-category="featured software">
+                    <span class="featured-badge">Featured</span>
                     <h3>Intentional Movement - Social Fitness Platform</h3>
                     <p>Full-stack mobile-first platform with React Native app, Node.js backend, and admin dashboard. Features real-time messaging, Stripe payments, social networking, and PWA capabilities. Built with AI assistance.</p>
                     <div class="project-tags">
@@ -1259,7 +1323,8 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <a href="project-portfolio.html" class="project-card">
+                <a href="project-portfolio.html" class="project-card" data-category="featured software">
+                    <span class="featured-badge">Featured</span>
                     <h3>Portfolio E-Commerce Website</h3>
                     <p>Built this full-stack website from scratch with integrated Stripe payments, Netlify serverless
                         functions, and custom domain setup. Showcases both technical and business capabilities.</p>
@@ -1271,7 +1336,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <a href="project-landing-page.html" class="project-card">
+                <a href="project-landing-page.html" class="project-card" data-category="software">
                     <h3>Premium Landing Page</h3>
                     <p>Modern React landing page designed for Fiverr portfolio with conversion-focused design, responsive layouts, and professional UI components. Built with Tailwind CSS and Lucide icons.</p>
                     <div class="project-tags">
@@ -1282,8 +1347,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Cybersecurity -->
-                <a href="project-security.html" class="project-card">
+                <a href="project-security.html" class="project-card" data-category="software">
                     <h3>Google Cybersecurity Certificate</h3>
                     <p>Completed Google's professional Cybersecurity Certificate, gaining hands-on experience with security frameworks, network analysis, threat detection, and incident response.</p>
                     <div class="project-tags">
@@ -1294,8 +1358,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Robotics & Computer Vision -->
-                <a href="project-rubiks.html" class="project-card">
+                <a href="project-rubiks.html" class="project-card" data-category="embedded ml">
                     <h3>Rubik's Cube Solving Robot</h3>
                     <p>Autonomous robot that solves Rubik's Cubes using 3D-printed parts, servo motors, and computer vision. Demonstrates robotics, computer vision, and systems integration skills.</p>
                     <div class="project-tags">
@@ -1306,8 +1369,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Embedded Systems -->
-                <a href="project-quadcopter.html" class="project-card">
+                <a href="project-quadcopter.html" class="project-card" data-category="embedded">
                     <h3>FPV Racing Quadcopter</h3>
                     <p>Custom-built racing drone with DIY flight controller PCB assembly, FPV video system, telemetry, and real-time embedded programming. Features immersive cockpit-view flying experience.</p>
                     <div class="project-tags">
@@ -1318,7 +1380,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <a href="project-embedded.html" class="project-card">
+                <a href="project-embedded.html" class="project-card" data-category="embedded">
                     <h3>Embedded Systems Project</h3>
                     <p>Hardware/software integration project from OSU showcasing microcontroller programming, circuit design, and systems engineering skills.</p>
                     <div class="project-tags">
@@ -1329,8 +1391,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Manufacturing & Design -->
-                <a href="project-3dprinter.html" class="project-card">
+                <a href="project-3dprinter.html" class="project-card" data-category="embedded">
                     <h3>3D Printer Assembly & CAD Design</h3>
                     <p>Built MicroMax 3D printer from kit, configured firmware and slicing software, added self-leveling, and designed custom CAD components for various projects. Printed functional upgrades and prototypes.</p>
                     <div class="project-tags">
@@ -1341,8 +1402,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Signal Processing & Audio Engineering -->
-                <a href="project-audio.html" class="project-card">
+                <a href="project-audio.html" class="project-card" data-category="embedded">
                     <h3>Car Audio Build - 2015 Honda Civic</h3>
                     <p>Complete audio system with sound deadening, component speakers, amplifier, DSP, and 15-inch subwoofer. Used measurement software and calibration mic for scientific DSP tuning and frequency response optimization.</p>
                     <div class="project-tags">
@@ -1353,8 +1413,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <!-- Automotive Engineering -->
-                <a href="project-bmw.html" class="project-card">
+                <a href="project-bmw.html" class="project-card" data-category="embedded">
                     <h3>BMW 335i Performance Build</h3>
                     <p>Full bolt-on build with custom tuning. Demonstrates hands-on technical skills, troubleshooting,
                         and systematic problem-solving in a complex mechanical/electrical system.</p>
@@ -1366,7 +1425,7 @@
                     <span class="project-link">View Details →</span>
                 </a>
 
-                <a href="project-camaro.html" class="project-card">
+                <a href="project-camaro.html" class="project-card" data-category="embedded">
                     <h3>Camaro Build Project</h3>
                     <p>Complete build and restoration of a Camaro from the ground up. Showcases fabrication, electrical systems, project management, and systematic problem-solving skills.</p>
                     <div class="project-tags">
@@ -1378,7 +1437,7 @@
                 </a>
 
                 <!-- Business & Agriculture -->
-                <a href="project-farm.html" class="project-card">
+                <a href="project-farm.html" class="project-card" data-category="other">
                     <h3>Farm & Animals</h3>
                     <p>Operating a small farm with goats, chickens, and honeybees. Producing raw local honey, eggs, and handmade products. Demonstrates animal husbandry, beekeeping, and sustainable agriculture practices.</p>
                     <div class="project-tags">
@@ -1775,6 +1834,44 @@
                     }
                 }
             } catch (e) { /* ignore */ }
+
+            // Project Filtering System
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.getAttribute('data-filter');
+
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Filter projects
+                    projectCards.forEach(card => {
+                        const categories = card.getAttribute('data-category');
+
+                        if (filter === 'all') {
+                            // Show all projects
+                            card.classList.remove('hidden');
+                        } else if (filter === 'featured') {
+                            // Show only featured projects
+                            if (categories && categories.includes('featured')) {
+                                card.classList.remove('hidden');
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        } else {
+                            // Show projects matching the selected category
+                            if (categories && categories.includes(filter)) {
+                                card.classList.remove('hidden');
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        }
+                    });
+                });
+            });
 
             // Product Gallery Lightbox setup - must be before event delegation
             const lightbox = document.getElementById('product-lightbox');
