@@ -469,4 +469,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Click outside to close modals
+    const checkoutModal = document.getElementById('checkout-modal');
+    const quickviewModal = document.getElementById('quickview-modal');
+
+    if (checkoutModal) {
+        checkoutModal.addEventListener('click', (e) => {
+            if (e.target === checkoutModal) {
+                closeCheckout();
+            }
+        });
+    }
+
+    if (quickviewModal) {
+        quickviewModal.addEventListener('click', (e) => {
+            if (e.target === quickviewModal) {
+                closeQuickView();
+            }
+        });
+    }
 });
