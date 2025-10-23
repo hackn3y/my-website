@@ -286,12 +286,107 @@
             color: var(--nav-link-visited);
         }
 
+        /* Zoom container for hero section */
+        .zoom-container {
+            height: 300vh;
+            position: relative;
+        }
+
+        .zoom-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+            transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+        }
+
+        /* Grid background */
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 107, 53, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 53, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        /* Floating cards */
+        .floating-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.05s ease-out;
+            z-index: 1;
+            max-width: 200px;
+        }
+
+        .floating-card-1 {
+            top: 15%;
+            left: 8%;
+        }
+
+        .floating-card-2 {
+            top: 25%;
+            right: 10%;
+        }
+
+        .floating-card-3 {
+            bottom: 20%;
+            left: 10%;
+        }
+
+        .floating-card-4 {
+            bottom: 15%;
+            right: 8%;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--accent-primary);
+        }
+
+        .card-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
         .hero {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: white;
             padding: 6rem 5%;
             text-align: center;
             border-bottom: 3px solid var(--accent-primary);
+            position: relative;
+            z-index: 2;
         }
 
         body.light-mode .hero {
@@ -985,6 +1080,16 @@
                 font-size: 1.1rem;
             }
 
+            /* Hide floating cards on mobile */
+            .floating-card {
+                display: none;
+            }
+
+            /* Reduce zoom container height on mobile */
+            .zoom-container {
+                height: 200vh;
+            }
+
             .theme-toggle {
                 top: 0.5rem;
                 right: 0.5rem;
@@ -1207,29 +1312,65 @@
     <!-- Header will be loaded dynamically from partials/header.html -->
     <div id="site-header-placeholder" aria-hidden="true"></div>
 
-    <section id="home" class="hero">
-        <h1>Hi, I'm Ryan Hackney</h1>
-        <p>ECE Grad • Cybersecurity • Developer</p>
-        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="#shop" class="btn">Check Out My Shop</a>
-            <a href="resume.pdf" class="btn" style="background: #28a745; color: white;" download>Download Resume</a>
+    <!-- Zoom container wrapper -->
+    <div class="zoom-container">
+        <div class="zoom-sticky">
+            <div class="zoom-content" id="heroZoomContent">
+                <!-- Background grid pattern -->
+                <div class="grid-background"></div>
+
+                <!-- Floating feature cards -->
+                <div class="floating-card floating-card-1">
+                    <div class="card-icon">🔒</div>
+                    <div class="card-title">Cybersecurity</div>
+                    <div class="card-text">Google certified with expertise in security</div>
+                </div>
+
+                <div class="floating-card floating-card-2">
+                    <div class="card-icon">💻</div>
+                    <div class="card-title">Full-Stack Dev</div>
+                    <div class="card-text">React, Node.js, Python, and more</div>
+                </div>
+
+                <div class="floating-card floating-card-3">
+                    <div class="card-icon">🤖</div>
+                    <div class="card-title">Machine Learning</div>
+                    <div class="card-text">Building intelligent prediction systems</div>
+                </div>
+
+                <div class="floating-card floating-card-4">
+                    <div class="card-icon">🌾</div>
+                    <div class="card-title">Farm Life</div>
+                    <div class="card-text">Raising goats, bees & making honey</div>
+                </div>
+
+                <!-- Main hero content -->
+                <section id="home" class="hero">
+                    <h1>Hi, I'm Ryan Hackney</h1>
+                    <p>ECE Grad • Cybersecurity • Developer</p>
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="#shop" class="btn">Check Out My Shop</a>
+                        <a href="resume.pdf" class="btn" style="background: #28a745; color: white;" download>Download Resume</a>
+                    </div>
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; justify-content: center;">
+                        <a href="https://github.com/hackn3y" style="color: white; font-size: 1.5rem;" target="_blank">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/" style="color: white; font-size: 1.5rem;"
+                            target="_blank">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                        </a>
+                    </div>
+                </section>
+            </div>
         </div>
-        <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; justify-content: center;">
-            <a href="https://github.com/hackn3y" style="color: white; font-size: 1.5rem;" target="_blank">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/" style="color: white; font-size: 1.5rem;"
-                target="_blank">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-            </a>
-        </div>
-    </section>
+    </div>
 
     <section id="about">
         <div class="container">
@@ -1657,6 +1798,55 @@
     <script src="js/header.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/shop.js" defer></script>
+
+    <!-- Zoom effect script -->
+    <script>
+        (function() {
+            const zoomContainer = document.querySelector('.zoom-container');
+            const zoomContent = document.getElementById('heroZoomContent');
+            const floatingCards = document.querySelectorAll('.floating-card');
+
+            if (!zoomContainer || !zoomContent) return;
+
+            function updateHeroZoom() {
+                const rect = zoomContainer.getBoundingClientRect();
+                const scrollProgress = -rect.top / (rect.height - window.innerHeight);
+                const progress = Math.max(0, Math.min(1, scrollProgress));
+
+                // Zoom from 1 to 0.4
+                const scale = 1 - (progress * 0.6);
+
+                // Fade from 1 to 0.2
+                const opacity = 1 - (progress * 0.8);
+
+                zoomContent.style.transform = `scale(${scale})`;
+                zoomContent.style.opacity = opacity;
+
+                // Parallax floating cards
+                floatingCards.forEach((card, index) => {
+                    const speed = (index + 1) * 40;
+                    const yOffset = progress * speed;
+                    const rotation = progress * (index % 2 === 0 ? 3 : -3);
+                    card.style.transform = `translateY(${yOffset}px) rotate(${rotation}deg)`;
+                });
+            }
+
+            // Update on scroll with throttling for performance
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        updateHeroZoom();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            // Initial update
+            updateHeroZoom();
+        })();
+    </script>
 </body>
 
 </html>
