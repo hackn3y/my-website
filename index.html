@@ -313,38 +313,6 @@
             transition: transform 0.05s ease-out, opacity 0.05s ease-out;
         }
 
-        /* Layered background images */
-        .zoom-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-        }
-
-        .zoom-bg-img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: cover;
-            filter: brightness(0.3) blur(0px);
-            transition: transform 0.05s ease-out, filter 0.3s ease-out;
-        }
-
-        /* Layer stacking and initial scales */
-        .zoom-layer-1 { z-index: 1; }
-        .zoom-layer-2 { z-index: 2; }
-        .zoom-layer-3 { z-index: 3; }
-
         /* Grid background */
         .grid-background {
             position: absolute;
@@ -356,8 +324,9 @@
                 linear-gradient(rgba(255, 107, 53, 0.08) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 107, 53, 0.08) 1px, transparent 1px);
             background-size: 40px 40px;
-            z-index: 4;
+            z-index: 1;
             opacity: 0.3;
+            pointer-events: none;
         }
 
         /* Floating cards */
@@ -371,6 +340,7 @@
             transition: transform 0.05s ease-out;
             z-index: 1;
             max-width: 200px;
+            pointer-events: none;
         }
 
         .floating-card-1 {
@@ -418,7 +388,7 @@
             text-align: center;
             border-bottom: 3px solid var(--accent-primary);
             position: relative;
-            z-index: 2;
+            z-index: 10;
         }
 
         body.light-mode .hero {
@@ -1348,17 +1318,6 @@
     <div class="zoom-container">
         <div class="zoom-sticky">
             <div class="zoom-content" id="heroZoomContent">
-                <!-- Layered background images that zoom at different speeds -->
-                <div class="zoom-layer zoom-layer-1">
-                    <img src="camaro.jpg" alt="Camaro Build" class="zoom-bg-img">
-                </div>
-                <div class="zoom-layer zoom-layer-2">
-                    <img src="quadcopter.jpg" alt="Quadcopter Project" class="zoom-bg-img">
-                </div>
-                <div class="zoom-layer zoom-layer-3">
-                    <img src="dyno.png" alt="Dyno Tuning" class="zoom-bg-img">
-                </div>
-
                 <!-- Background grid pattern -->
                 <div class="grid-background"></div>
 
@@ -1848,8 +1807,6 @@
             const zoomContainer = document.querySelector('.zoom-container');
             const zoomContent = document.getElementById('heroZoomContent');
             const floatingCards = document.querySelectorAll('.floating-card');
-            const zoomLayers = document.querySelectorAll('.zoom-layer');
-            const zoomBgImages = document.querySelectorAll('.zoom-bg-img');
 
             if (!zoomContainer || !zoomContent) return;
 
@@ -1866,29 +1823,6 @@
 
                 zoomContent.style.transform = `scale(${scale})`;
                 zoomContent.style.opacity = opacity;
-
-                // Animate background layers at different speeds
-                zoomLayers.forEach((layer, index) => {
-                    // Layer 1 (camaro): Shows early, zooms out fast
-                    // Layer 2 (quadcopter): Shows mid, medium zoom
-                    // Layer 3 (dyno): Shows late, slow zoom
-
-                    const layerDelay = index * 0.3; // Stagger the appearance
-                    const layerProgress = Math.max(0, Math.min(1, (progress - layerDelay) * 2));
-
-                    // Fade in each layer
-                    layer.style.opacity = layerProgress < 0.5 ? layerProgress * 2 : 1 - ((layerProgress - 0.5) * 2);
-
-                    // Zoom each layer at different speeds
-                    const img = layer.querySelector('.zoom-bg-img');
-                    if (img) {
-                        const zoomSpeed = 1 + (index * 0.3); // Different zoom speeds
-                        const imgScale = 1 + (progress * zoomSpeed * 0.5);
-                        const blur = progress * 3; // Subtle blur as we zoom
-                        img.style.transform = `translate(-50%, -50%) scale(${imgScale})`;
-                        img.style.filter = `brightness(0.3) blur(${blur}px)`;
-                    }
-                });
 
                 // Parallax floating cards
                 floatingCards.forEach((card, index) => {
