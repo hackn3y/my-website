@@ -10,6 +10,9 @@
     "sharp": "^0.34.4"
   },
   "scripts": {
-    "test:smoke": "npx playwright test tests/smoke.spec.js --browser=chromium"
+    "test:smoke": "npx playwright test tests/smoke.spec.js --browser=chromium",
+    "test:comprehensive": "npx playwright test tests/comprehensive-test.js --browser=chromium",
+    "test:fixed": "npx playwright test tests/fixed-comprehensive-test.spec.js --browser=chromium",
+    "test:all": "npx playwright test --browser=chromium"
   }
 }

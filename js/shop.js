@@ -37,6 +37,27 @@ const products = [
 
 let cart = [];
 
+// Global modal management to prevent conflicts
+function closeAllModals() {
+    const modals = document.querySelectorAll('.modal, .lightbox');
+    modals.forEach(modal => {
+        modal.classList.remove('active', 'open');
+        modal.style.display = 'none';
+    });
+    document.body.style.overflow = '';
+}
+
+// Ensure only one modal is open at a time
+function openModal(modalId) {
+    closeAllModals();
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
 function loadProducts() {
     const container = document.getElementById('products-container');
     container.innerHTML = products.map(product => {
@@ -158,11 +179,18 @@ function openQuickView(productId) {
     document.getElementById('quickview-description').textContent = product.description;
     document.getElementById('quickview-price').textContent = `$${product.price.toFixed(2)}`;
 
-    document.getElementById('quickview-modal').classList.add('active');
+    openModal('quickview-modal');
 }
 
 function closeQuickView() {
-    document.getElementById('quickview-modal').classList.remove('active');
+    const modal = document.getElementById('quickview-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        // Clear any active states
+        modal.style.display = 'none';
+        // Ensure no other modals are interfering
+        document.body.style.overflow = '';
+    }
 }
 
 function addToCartFromQuickView() {

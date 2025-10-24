@@ -251,11 +251,32 @@
 
   // Run initTheme when header is injected or if header already exists on load
   window.addEventListener('header:loaded', initTheme);
+  
+  // Also try to initialize immediately and on DOM ready
+  function tryInitTheme() {
+    if (document.getElementById('theme-toggle') || document.querySelector('nav')) {
+      initTheme();
+      return true;
+    }
+    return false;
+  }
+  
+  // Try multiple times to ensure theme toggle is available
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      if (document.getElementById('theme-toggle') || document.querySelector('nav')) initTheme();
+      if (!tryInitTheme()) {
+        // Retry after a short delay if not found immediately
+        setTimeout(() => {
+          if (!tryInitTheme()) {
+            console.log('Theme toggle not found, will retry when header loads');
+          }
+        }, 1000);
+      }
     });
   } else {
-    if (document.getElementById('theme-toggle') || document.querySelector('nav')) initTheme();
+    if (!tryInitTheme()) {
+      // Retry after a short delay
+      setTimeout(tryInitTheme, 500);
+    }
   }
 })();

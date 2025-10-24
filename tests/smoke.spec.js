@@ -11,6 +11,9 @@ test('theme toggle smoke test', async ({ page }) => {
   const body = await page.$('body');
   expect(body).toBeTruthy();
 
+  // Wait for header to be loaded dynamically
+  await page.waitForSelector('#theme-toggle', { timeout: 10000 });
+
   // get initial theme state
   const initialIsLight = await page.evaluate(() => document.body.classList.contains('light-mode'));
 
@@ -23,6 +26,7 @@ test('theme toggle smoke test', async ({ page }) => {
 
   // reload and ensure persisted state
   await page.reload();
+  await page.waitForSelector('#theme-toggle', { timeout: 10000 });
   const persistedIsLight = await page.evaluate(() => document.body.classList.contains('light-mode'));
   expect(persistedIsLight).toBe(toggledIsLight);
 });
