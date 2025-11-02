@@ -18,20 +18,30 @@
         const tryPaths = ['/partials/header.html', './partials/header.html', 'partials/header.html'];
         try {
             const html = await tryFetch(tryPaths);
-            const container = document.createElement('div');
-            container.innerHTML = html;
-            // insert at top of body
-            document.body.insertBefore(container, document.body.firstChild);
-            
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = html;
+
+            // Extract the nav element directly (don't wrap in a div)
+            const navElement = tempContainer.querySelector('nav');
+            if (navElement) {
+                // insert nav directly at top of body (not wrapped in div)
+                document.body.insertBefore(navElement, document.body.firstChild);
+            } else {
+                // Fallback: insert all content
+                while (tempContainer.firstChild) {
+                    document.body.insertBefore(tempContainer.firstChild, document.body.firstChild);
+                }
+            }
+
             // Wait a bit for DOM to update
             await new Promise(resolve => setTimeout(resolve, 100));
-            
+
             // dispatch event so other scripts can initialize
             window.dispatchEvent(new CustomEvent('header:loaded'));
 
             // Initialize hamburger menu
             initHamburgerMenu();
-            
+
             console.log('Header loaded successfully');
         } catch (err) {
             console.error('Failed to load header partial:', err);

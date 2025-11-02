@@ -107,6 +107,9 @@ function addToCart(productId, btn) {
     cart.push(product);
     updateCartCount();
 
+    // persist cart to localStorage
+    try { localStorage.setItem('cart', JSON.stringify(cart.map(i => i.id))); } catch (e) { /* ignore */ }
+
     if (btn) {
         const originalText = btn.textContent;
         btn.textContent = 'Added!';
@@ -197,6 +200,10 @@ function addToCartFromQuickView() {
     if (currentQuickViewProduct) {
         cart.push(currentQuickViewProduct);
         updateCartCount();
+
+        // persist cart to localStorage
+        try { localStorage.setItem('cart', JSON.stringify(cart.map(i => i.id))); } catch (e) { /* ignore */ }
+
         closeQuickView();
         alert(`${currentQuickViewProduct.name} added to cart!`);
     }
