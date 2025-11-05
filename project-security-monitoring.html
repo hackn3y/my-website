@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time security monitoring dashboard using AWS Lambda, DynamoDB Streams, and CloudWatch. Event-driven serverless architecture with 11 threat detection rules and Slack/SNS notifications.">
+    <meta name="author" content="Ryan Hackney">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-security-monitoring.html">
+    <meta property="og:title" content="Serverless Security Monitoring Dashboard - Real-Time Threat Detection - Ryan Hackney">
+    <meta property="og:description" content="Real-time security monitoring using event-driven serverless architecture with AWS Lambda & DynamoDB Streams. 11 threat detection rules, CloudWatch dashboards, and automated Slack/SNS notifications.">
+    <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-security-monitoring.html">
+    <meta property="twitter:title" content="Serverless Security Monitoring Dashboard - Real-Time Threat Detection - Ryan Hackney">
+    <meta property="twitter:description" content="Real-time security monitoring using event-driven serverless architecture with AWS Lambda & DynamoDB Streams. 11 threat detection rules, CloudWatch dashboards, and automated Slack/SNS notifications.">
+    <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff6b35">
+
+    <title>Serverless Security Monitoring Dashboard - Real-Time Threat Detection - Ryan Hackney</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-K468SLPJ33');
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8c42;
+            --accent-hover: #ff4500;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #site-header-placeholder {
+            display: none;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: color 0.2s, transform 0.12s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 0.5rem 5%;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+
+        nav ul { list-style: none; display: flex; gap: 2rem; flex-wrap: wrap; }
+
+        .control-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .cart-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .cart-btn:hover { color: var(--accent-primary); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+
+        .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+
+        :root { --nav-link-color: var(--accent-primary); --nav-link-visited: #c85a00; }
+        nav a { color: var(--nav-link-color); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: var(--nav-link-visited); }
+
+        .project-detail {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 5%;
+        }
+
+        .back-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-detail h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .project-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .project-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-content h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .project-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .project-content li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content a {
+            color: var(--accent-primary);
+            text-decoration-color: #c85a00;
+        }
+
+        .svg-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .svg-diagram svg { width: 100%; height: auto; display: block; }
+
+        .diagram-caption {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .document-links {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-links h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .document-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .document-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .document-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-links a:hover {
+            text-decoration: underline;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .tech-stack {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tech-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .tech-category h4 {
+            color: var(--accent-primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-list {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: transparent;
+                border-bottom: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul {
+                flex-direction: column;
+                gap: 0;
+                padding: 0;
+            }
+
+            .nav-center ul li {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-center ul li a {
+                display: block;
+                padding: 1rem 5%;
+                font-size: 1rem;
+            }
+
+            .nav-inner {
+                gap: 0.5rem;
+            }
+
+            .project-detail h1 {
+                font-size: 2rem;
+            }
+
+            .project-content {
+                font-size: 1rem;
+            }
+
+            .control-group {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+
+        <h1>Serverless Security Monitoring Dashboard</h1>
+
+        <div class="project-meta">
+            <strong>Role:</strong> Cloud Architect & Developer • <strong>Year:</strong> 2025 • <strong>Status:</strong> Production
+            <div class="project-tags">
+                <span class="tag">AWS Lambda</span>
+                <span class="tag">DynamoDB</span>
+                <span class="tag">CloudWatch</span>
+                <span class="tag">Python 3.13</span>
+                <span class="tag">Serverless</span>
+                <span class="tag">Security</span>
+                <span class="tag">IaC</span>
+            </div>
+        </div>
+
+        <div class="document-links">
+            <h3>GitHub & Demo</h3>
+            <ul>
+                <li><a href="https://github.com/hackn3y/security-monitor-dash" target="_blank">→ GitHub Repository</a></li>
+                <li><a href="https://youtu.be/ilQ55ZIacQ8" target="_blank">→ Demo Video</a></li>
+            </ul>
+        </div>
+
+        <div class="svg-diagram" role="img" aria-labelledby="arch-diagram-title arch-diagram-desc">
+            <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 z" fill="#ff6b35" />
+                    </marker>
+                    <style>
+                        .box { fill: #111; stroke: #333; stroke-width:1; rx:8; }
+                        .label { fill: #e0e0e0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size:13px; }
+                        .small { font-size:11px; fill: #bdbdbd; }
+                        .arrow { stroke: #ff6b35; stroke-width:2; fill: none; marker-end: url(#arrow); }
+                        .title { font-size:15px; font-weight:600; fill: #ff6b35; }
+                    </style>
+                </defs>
+
+                <!-- Event Sources -->
+                <text x="90" y="25" text-anchor="middle" class="title">Event Sources</text>
+                <rect x="20" y="40" width="140" height="80" class="box" />
+                <text x="90" y="70" text-anchor="middle" class="label">CloudWatch Logs</text>
+                <text x="90" y="87" text-anchor="middle" class="small">S3 Events</text>
+                <text x="90" y="104" text-anchor="middle" class="small">Custom Events</text>
+
+                <!-- DynamoDB Streams -->
+                <text x="380" y="25" text-anchor="middle" class="title">Event Processing</text>
+                <rect x="290" y="40" width="180" height="80" class="box" />
+                <text x="380" y="70" text-anchor="middle" class="label">DynamoDB Streams</text>
+                <text x="380" y="87" text-anchor="middle" class="small">Lambda Triggers</text>
+                <text x="380" y="104" text-anchor="middle" class="small">Real-Time Pipeline</text>
+
+                <!-- Lambda Functions -->
+                <text x="710" y="25" text-anchor="middle" class="title">Lambda Functions</text>
+                <rect x="620" y="40" width="180" height="80" class="box" />
+                <text x="710" y="70" text-anchor="middle" class="label">Threat Detection</text>
+                <text x="710" y="87" text-anchor="middle" class="small">11 Detection Rules</text>
+                <text x="710" y="104" text-anchor="middle" class="small">Python 3.13</text>
+
+                <!-- DynamoDB Tables -->
+                <rect x="120" y="190" width="130" height="60" class="box" />
+                <text x="185" y="220" text-anchor="middle" class="label">DynamoDB</text>
+                <text x="185" y="237" text-anchor="middle" class="small">Events (30-day TTL)</text>
+
+                <rect x="290" y="190" width="130" height="60" class="box" />
+                <text x="355" y="220" text-anchor="middle" class="label">DynamoDB</text>
+                <text x="355" y="237" text-anchor="middle" class="small">Detections</text>
+
+                <rect x="460" y="190" width="130" height="60" class="box" />
+                <text x="525" y="220" text-anchor="middle" class="label">DynamoDB</text>
+                <text x="525" y="237" text-anchor="middle" class="small">Metrics</text>
+
+                <!-- Notifications -->
+                <rect x="150" y="310" width="120" height="60" class="box" />
+                <text x="210" y="340" text-anchor="middle" class="label">Slack</text>
+                <text x="210" y="357" text-anchor="middle" class="small">Notifications</text>
+
+                <rect x="310" y="310" width="120" height="60" class="box" />
+                <text x="370" y="340" text-anchor="middle" class="label">SNS</text>
+                <text x="370" y="357" text-anchor="middle" class="small">Alerts</text>
+
+                <rect x="470" y="310" width="120" height="60" class="box" />
+                <text x="530" y="340" text-anchor="middle" class="label">CloudWatch</text>
+                <text x="530" y="357" text-anchor="middle" class="small">Dashboards</text>
+
+                <!-- Monitoring -->
+                <rect x="630" y="310" width="140" height="60" class="box" />
+                <text x="700" y="340" text-anchor="middle" class="label">API Gateway</text>
+                <text x="700" y="357" text-anchor="middle" class="small">Query Interface</text>
+
+                <!-- Arrows -->
+                <path d="M160 80 L290 80" class="arrow" />
+                <path d="M470 80 L620 80" class="arrow" />
+                <path d="M355 120 L185 190" class="arrow" />
+                <path d="M380 120 L355 190" class="arrow" />
+                <path d="M420 120 L525 190" class="arrow" />
+                <path d="M650 120 L210 310" class="arrow" />
+                <path d="M700 120 L370 310" class="arrow" />
+                <path d="M700 120 L530 310" class="arrow" />
+                <path d="M700 120 L700 310" class="arrow" />
+            </svg>
+            <div id="arch-diagram-title" class="sr-only">Serverless security monitoring architecture</div>
+            <div class="diagram-caption">Event-driven serverless pipeline: CloudWatch Logs and custom events trigger DynamoDB Streams, which invoke Lambda functions running 11 threat detection rules. Real-time detections trigger Slack/SNS notifications and CloudWatch metrics.</div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>Serverless Security Monitoring Dashboard is a real-time threat detection platform built on AWS Lambda and DynamoDB Streams. This event-driven architecture processes security events in real-time, applying 11 detection rules to identify threats including brute force attempts, SQL injection, privilege escalation, and data exfiltration. Detections trigger instant Slack and SNS notifications with custom CloudWatch dashboards for visualization.</p>
+
+            <p>Built with Infrastructure as Code using AWS SAM, the system is cost-effective ($15-40/month), scalable, and requires minimal operational overhead. The architecture leverages DynamoDB Streams to process events as they occur, with Lambda functions executing threat detection algorithms in real-time.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Threat Detection Rules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Lambda Functions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$15-40</div>
+                    <div class="stat-label">Monthly Cost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">30 Days</div>
+                    <div class="stat-label">Event TTL</div>
+                </div>
+            </div>
+
+            <h2>Key Features</h2>
+
+            <h3>Real-Time Threat Detection</h3>
+            <ul>
+                <li><strong>11 Detection Rules:</strong> Brute force, SQL injection, privilege escalation, data exfiltration, unusual access patterns, failed authentication clusters, rapid API calls, geo-anomalies, permission changes, resource limits, and lateral movement</li>
+                <li><strong>Millisecond Processing:</strong> Lambda functions process events through DynamoDB Streams with minimal latency</li>
+                <li><strong>Event Correlation:</strong> In-memory caching enables efficient correlation of events across time windows</li>
+                <li><strong>Confidence Scoring:</strong> Each detection includes confidence levels and supporting evidence</li>
+                <li><strong>Contextual Alerts:</strong> Detections include full event context for rapid investigation</li>
+            </ul>
+
+            <h3>Intelligent Notification System</h3>
+            <ul>
+                <li><strong>Slack Notifications:</strong> Real-time alerts sent to dedicated Slack channels with formatted threat details</li>
+                <li><strong>SNS Alerts:</strong> Email/SMS notifications for critical security threats</li>
+                <li><strong>Customizable Severity Levels:</strong> Route alerts based on threat severity and type</li>
+                <li><strong>Alert Enrichment:</strong> Detections include attack vector, affected resources, and recommended actions</li>
+                <li><strong>Threshold-Based Filtering:</strong> Avoid alert fatigue with configurable detection thresholds</li>
+            </ul>
+
+            <h3>CloudWatch Integration</h3>
+            <ul>
+                <li><strong>Custom Metrics:</strong> Track detection counts, processing latency, and false positive rates</li>
+                <li><strong>Dashboard Visualization:</strong> Real-time dashboards showing threat trends and system health</li>
+                <li><strong>Log Aggregation:</strong> Centralized logging for all Lambda functions and detections</li>
+                <li><strong>Alarms & Automation:</strong> CloudWatch alarms trigger automated response workflows</li>
+                <li><strong>Performance Monitoring:</strong> Track Lambda execution time, memory usage, and costs</li>
+            </ul>
+
+            <h3>Cost Optimization</h3>
+            <ul>
+                <li><strong>30-Day TTL:</strong> DynamoDB items automatically expire, reducing storage costs</li>
+                <li><strong>Event-Driven Architecture:</strong> Lambda functions only execute when needed, paying only for invocations</li>
+                <li><strong>Efficient Caching:</strong> In-memory caching reduces database lookups and Lambda CPU time</li>
+                <li><strong>Estimated Monthly Cost:</strong> $15-40 depending on event volume and detection frequency</li>
+                <li><strong>Pay-Per-Use Model:</strong> No upfront infrastructure costs or maintenance overhead</li>
+            </ul>
+
+            <h2>Technical Implementation</h2>
+
+            <h3>AWS Lambda Functions</h3>
+            <ul>
+                <li><strong>Python 3.13 Runtime:</strong> Modern Python version with optimized performance and latest libraries</li>
+                <li><strong>Event Stream Processor:</strong> Consumes DynamoDB Stream records and invokes threat detection</li>
+                <li><strong>Detection Engine:</strong> Implements 11 threat detection algorithms with pattern matching and correlation</li>
+                <li><strong>Notification Handler:</strong> Sends formatted alerts to Slack and SNS based on detection severity</li>
+                <li><strong>Metrics Aggregator:</strong> Collects and publishes custom CloudWatch metrics for monitoring</li>
+                <li><strong>Efficient Cold Starts:</strong> Optimized for minimal cold start latency using lightweight dependencies</li>
+            </ul>
+
+            <h3>DynamoDB Design</h3>
+            <ul>
+                <li><strong>Event Table:</strong> Stores raw security events with composite key (source#timestamp) and TTL of 30 days</li>
+                <li><strong>Detection Table:</strong> Records all threat detections with severity, confidence score, and timestamp</li>
+                <li><strong>Metrics Table:</strong> Aggregates detection metrics for dashboard visualization and trending</li>
+                <li><strong>DynamoDB Streams:</strong> Triggers Lambda functions immediately upon new event insertion</li>
+                <li><strong>Partition Key Design:</strong> Optimized to distribute load across partitions and minimize hot partitions</li>
+                <li><strong>Global Secondary Indexes:</strong> Enables querying by severity, detection type, and timestamp ranges</li>
+            </ul>
+
+            <h3>Detection Algorithms</h3>
+            <ul>
+                <li><strong>Brute Force Detection:</strong> Tracks failed authentication attempts per user with exponential backoff</li>
+                <li><strong>SQL Injection:</strong> Pattern matching for common SQL keywords and payloads in request parameters</li>
+                <li><strong>Privilege Escalation:</strong> Detects permission changes and unauthorized access to elevated roles</li>
+                <li><strong>Data Exfiltration:</strong> Identifies unusual data access patterns and bulk downloads</li>
+                <li><strong>Anomaly Detection:</strong> Machine learning-based detection of unusual access patterns and geo-anomalies</li>
+                <li><strong>Rate Limiting Violations:</strong> Detects API calls exceeding configured thresholds</li>
+                <li><strong>Lateral Movement:</strong> Identifies suspicious account-to-account access chains</li>
+                <li><strong>Permission Changes:</strong> Flags unauthorized modifications to IAM policies or security groups</li>
+                <li><strong>Resource Limit Violations:</strong> Detects attempts to exceed quota or resource limits</li>
+                <li><strong>Geo-Anomalies:</strong> Identifies logins from impossible geographic locations</li>
+                <li><strong>Failed Auth Clusters:</strong> Groups failed authentications to detect coordinated attacks</li>
+            </ul>
+
+            <h3>API Gateway</h3>
+            <ul>
+                <li><strong>Query Endpoint:</strong> REST API for retrieving detections, events, and metrics</li>
+                <li><strong>Custom Authorizers:</strong> Lambda-based authorization with API key validation</li>
+                <li><strong>Request Logging:</strong> CloudWatch integration for all API requests and responses</li>
+                <li><strong>Rate Limiting:</strong> Prevents API abuse with configurable throttling</li>
+                <li><strong>CORS Configuration:</strong> Enables integration with web dashboards and external tools</li>
+            </ul>
+
+            <div class="tech-stack">
+                <h3>Complete Tech Stack</h3>
+
+                <div class="tech-category">
+                    <h4>Core Services</h4>
+                    <div class="tech-list">AWS Lambda, DynamoDB, DynamoDB Streams, API Gateway, CloudWatch, SNS, IAM</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Detection & Processing</h4>
+                    <div class="tech-list">Python 3.13, boto3, DynamoDB client, event filtering, pattern matching algorithms</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Notifications & Alerting</h4>
+                    <div class="tech-list">Slack API, AWS SNS, CloudWatch Alarms, custom metric publishing</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Infrastructure as Code</h4>
+                    <div class="tech-list">AWS SAM, CloudFormation, SAM CLI, Serverless Application Model</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Monitoring & Observability</h4>
+                    <div class="tech-list">CloudWatch Logs, CloudWatch Metrics, CloudWatch Dashboards, CloudWatch Insights</div>
+                </div>
+
+                <div class="tech-category">
+                    <h4>Development & Deployment</h4>
+                    <div class="tech-list">Git, AWS CLI, SAM CLI, Docker, pytest, Python virtual environments</div>
+                </div>
+            </div>
+
+            <h2>Architecture & Design</h2>
+
+            <h3>Event-Driven Design Pattern</h3>
+            <p>The security monitoring dashboard uses an event-driven serverless architecture to achieve real-time threat detection with minimal operational overhead. Security events flow through the system in the following sequence:</p>
+            <ul>
+                <li><strong>Event Ingestion:</strong> CloudWatch Logs, S3 bucket events, and custom event sources feed security events into DynamoDB tables</li>
+                <li><strong>Stream Processing:</strong> DynamoDB Streams automatically capture change data, triggering Lambda functions with millisecond latency</li>
+                <li><strong>Threat Detection:</strong> Lambda functions apply 11 detection rules to each event, correlating with historical data from in-memory caches</li>
+                <li><strong>Alert Generation:</strong> Detected threats trigger immediate notifications to Slack and SNS, with customizable severity routing</li>
+                <li><strong>Metrics Publishing:</strong> All detections are tracked as custom CloudWatch metrics for trending and alerting</li>
+                <li><strong>Query Interface:</strong> API Gateway provides REST endpoints for querying detections, events, and historical metrics</li>
+            </ul>
+
+            <h3>Efficient Correlation & Caching</h3>
+            <ul>
+                <li><strong>In-Memory Event Cache:</strong> Lambda functions maintain local caches of recent events from DynamoDB to enable fast pattern matching</li>
+                <li><strong>Time-Window Correlation:</strong> Detection rules evaluate events within configurable time windows (e.g., last 5 minutes for brute force detection)</li>
+                <li><strong>DynamoDB Queries:</strong> Global Secondary Indexes enable efficient queries by user, severity, and time range</li>
+                <li><strong>Cold Start Optimization:</strong> Lambda functions pre-load frequently accessed data during initialization</li>
+            </ul>
+
+            <h3>Cost Optimization Strategies</h3>
+            <ul>
+                <li><strong>30-Day TTL:</strong> DynamoDB items automatically expire, eliminating manual cleanup and reducing storage costs</li>
+                <li><strong>Lambda Provisioned Concurrency:</strong> Optional provisioning for predictable workloads to eliminate cold starts</li>
+                <li><strong>DynamoDB On-Demand Pricing:</strong> Pay-per-request billing for unpredictable traffic patterns</li>
+                <li><strong>CloudWatch Log Retention:</strong> Configured retention policies to manage storage costs</li>
+                <li><strong>Reserved Capacity:</strong> Optional DynamoDB reserved capacity for baseline load</li>
+            </ul>
+
+            <h2>Challenges & Solutions</h2>
+
+            <p><strong>Challenge:</strong> Processing security events in real-time while maintaining sub-second latency for alert generation.</p>
+            <p><strong>Solution:</strong> Leveraged DynamoDB Streams to trigger Lambda functions immediately upon event arrival. Implemented in-memory caching of recent events within Lambda functions to avoid repeated database queries for correlation logic. Optimized detection algorithms to complete execution within 5 seconds on average.</p>
+
+            <p><strong>Challenge:</strong> Avoiding alert fatigue from false positives and ensuring critical threats are never missed.</p>
+            <p><strong>Solution:</strong> Implemented configurable confidence thresholds for each detection rule. Created severity-based alert routing to deduplicate similar detections. Added machine learning anomaly detection alongside rule-based detection to catch novel attack patterns. Included alert context in notifications to enable rapid triage.</p>
+
+            <p><strong>Challenge:</strong> Managing storage costs for long-term event retention while maintaining query performance.</p>
+            <p><strong>Solution:</strong> Configured 30-day TTL on DynamoDB items to automatically purge old events. Used Global Secondary Indexes for efficient historical queries. Aggregated metrics separately to enable long-term trend analysis without retaining raw events indefinitely.</p>
+
+            <p><strong>Challenge:</strong> Ensuring the system scales efficiently with variable traffic patterns and event volumes.</p>
+            <p><strong>Solution:</strong> Used DynamoDB on-demand pricing to handle traffic spikes without pre-provisioning capacity. Implemented Lambda concurrent execution limits to prevent runaway costs. Configured CloudWatch alarms to trigger automatic scaling and cost alerts.</p>
+
+            <h2>Results & Impact</h2>
+            <p>Successfully deployed a production-ready serverless security monitoring system achieving:</p>
+            <ul>
+                <li>Real-time threat detection with millisecond processing latency</li>
+                <li>11 comprehensive threat detection rules covering major attack vectors</li>
+                <li>Cost-effective operation at $15-40/month regardless of infrastructure complexity</li>
+                <li>Fully automated deployment using Infrastructure as Code (AWS SAM)</li>
+                <li>Zero-ops serverless architecture requiring minimal maintenance</li>
+                <li>Integrated notifications via Slack and SNS for immediate incident response</li>
+                <li>Custom CloudWatch dashboards for security monitoring and compliance</li>
+            </ul>
+
+            <p>The project demonstrates expertise in AWS serverless architecture, event-driven design patterns, security best practices, and cost optimization. The combination of real-time detection with automated alerting enables rapid incident response and threat mitigation.</p>
+
+            <h2>Future Enhancements</h2>
+            <ul>
+                <li>Machine learning-based anomaly detection for unknown attack patterns</li>
+                <li>Integration with AWS GuardDuty and Security Hub for enriched threat intelligence</li>
+                <li>Automated remediation workflows triggered by critical detections</li>
+                <li>Multi-account monitoring across AWS organizations</li>
+                <li>Custom detection rule builder for organization-specific threats</li>
+                <li>Long-term trend analysis and predictive threat detection</li>
+                <li>Integration with SIEM platforms (Splunk, ELK) for centralized monitoring</li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2025 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        function redirectToIndexAndOpenCart() {
+            try { localStorage.setItem('openCart', '1'); } catch (e) {}
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
