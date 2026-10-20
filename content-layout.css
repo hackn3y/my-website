@@ -1,0 +1,11 @@
+.blog-post,
+.project-detail,
+main.container {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 5vw, 3rem);
+    padding-right: clamp(1rem, 5vw, 3rem);
+}

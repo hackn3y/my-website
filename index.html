@@ -4,22 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ryan Hackney - ECE Graduate from Ohio State, Cybersecurity Professional, Developer. Shop handmade farm products including raw honey, soy candles, and handmade soap. Follow my Camaro build and technical projects.">
-    <meta name="keywords" content="Ryan Hackney, Cybersecurity, ECE, Ohio State, Web Developer, Raw Honey, Handmade Soap, Camaro Build">
+    <meta name="description" content="Ryan Hackney is an Ohio State Electrical and Computer Engineering graduate pursuing IT support and help desk roles, with a long-term interest in cybersecurity and SOC analysis.">
+    <meta name="keywords" content="Ryan Hackney, IT support, help desk, cybersecurity, SOC analyst, electrical engineering, computer engineering, Ohio State">
     <meta name="author" content="Ryan Hackney">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ryanhackney.com/">
-    <meta property="og:title" content="Ryan Hackney - Portfolio & Shop">
-    <meta property="og:description" content="ECE Grad • Cybersecurity • Developer • Farmer. Shop handmade products and follow my technical projects.">
+    <meta property="og:title" content="Ryan Hackney - IT Support & Engineering Portfolio">
+    <meta property="og:description" content="Ohio State ECE graduate pursuing IT support, with a long-term interest in cybersecurity and SOC analysis.">
     <meta property="og:image" content="https://ryanhackney.com/profile.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://ryanhackney.com/">
-    <meta property="twitter:title" content="Ryan Hackney - Portfolio & Shop">
-    <meta property="twitter:description" content="ECE Grad • Cybersecurity • Developer • Farmer. Shop handmade products and follow my technical projects.">
+    <meta property="twitter:title" content="Ryan Hackney - IT Support & Engineering Portfolio">
+    <meta property="twitter:description" content="Ohio State ECE graduate pursuing IT support, with a long-term interest in cybersecurity and SOC analysis.">
     <meta property="twitter:image" content="https://ryanhackney.com/profile.jpg">
     
     <!-- Favicon -->
@@ -42,7 +42,7 @@
     <!-- Preload critical above-the-fold image -->
     <link rel="preload" as="image" href="profile.webp" type="image/webp" fetchpriority="high">
 
-    <title>Ryan Hackney - Portfolio & Shop</title>
+    <title>Ryan Hackney - IT Support, Cybersecurity & Engineering</title>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K468SLPJ33"></script>
@@ -290,16 +290,14 @@
             color: var(--nav-link-visited);
         }
 
-        /* Zoom container for hero section */
         .zoom-container {
-            height: 300vh;
             position: relative;
+            min-height: calc(100vh - 52px);
+            min-height: calc(100svh - 52px);
         }
 
         .zoom-sticky {
-            position: sticky;
-            top: 0;
-            height: 100vh;
+            min-height: inherit;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -309,12 +307,20 @@
         .zoom-content {
             position: relative;
             width: 100%;
-            height: 100%;
+            min-height: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
-            transform-origin: center center;
-            transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+        }
+
+        @keyframes hero-enter {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes card-enter {
+            from { opacity: 0; translate: 0 12px; }
+            to { opacity: 1; translate: 0 0; }
         }
 
         /* Grid background */
@@ -341,7 +347,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 1.5rem;
-            transition: transform 0.05s ease-out;
+            animation: card-enter 650ms ease-out both;
             z-index: 1;
             max-width: 200px;
             pointer-events: none;
@@ -350,21 +356,25 @@
         .floating-card-1 {
             top: 15%;
             left: 8%;
+            animation-delay: 100ms;
         }
 
         .floating-card-2 {
             top: 25%;
             right: 10%;
+            animation-delay: 200ms;
         }
 
         .floating-card-3 {
             bottom: 20%;
             left: 10%;
+            animation-delay: 300ms;
         }
 
         .floating-card-4 {
             bottom: 15%;
             right: 8%;
+            animation-delay: 400ms;
         }
 
         .card-icon {
@@ -388,11 +398,13 @@
         .hero {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: white;
-            padding: 6rem 5%;
+            width: min(760px, calc(100% - 2rem));
+            padding: clamp(3rem, 8vh, 6rem) 5%;
             text-align: center;
             border-bottom: 3px solid var(--accent-primary);
             position: relative;
             z-index: 10;
+            animation: hero-enter 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
         }
 
         body.light-mode .hero {
@@ -408,6 +420,13 @@
         .hero p {
             font-size: 1.3rem;
             margin-bottom: 2rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero,
+            .floating-card {
+                animation: none;
+            }
         }
 
         .btn {
@@ -1091,11 +1110,6 @@
                 display: none;
             }
 
-            /* Reduce zoom container height on mobile */
-            .zoom-container {
-                height: 200vh;
-            }
-
             .theme-toggle {
                 top: 0.5rem;
                 right: 0.5rem;
@@ -1318,7 +1332,7 @@
     <!-- Header will be loaded dynamically from partials/header.html -->
     <div id="site-header-placeholder" aria-hidden="true"></div>
 
-    <!-- Zoom container wrapper -->
+    <!-- Compact hero with a subtle entrance animation -->
     <div class="zoom-container">
         <div class="zoom-sticky">
             <div class="zoom-content" id="heroZoomContent">
@@ -1328,20 +1342,20 @@
                 <!-- Floating feature cards -->
                 <div class="floating-card floating-card-1">
                     <div class="card-icon">🔒</div>
-                    <div class="card-title">Cybersecurity</div>
-                    <div class="card-text">Google certified with expertise in security</div>
+                    <div class="card-title">IT Support</div>
+                    <div class="card-text">Windows systems, hardware & troubleshooting</div>
                 </div>
 
                 <div class="floating-card floating-card-2">
                     <div class="card-icon">💻</div>
-                    <div class="card-title">Full-Stack Dev</div>
-                    <div class="card-text">React, Node.js, Python, and more</div>
+                    <div class="card-title">Cybersecurity</div>
+                    <div class="card-text">Security monitoring & threat detection</div>
                 </div>
 
                 <div class="floating-card floating-card-3">
                     <div class="card-icon">🤖</div>
-                    <div class="card-title">Machine Learning</div>
-                    <div class="card-text">Building intelligent prediction systems</div>
+                    <div class="card-title">ECE Engineering</div>
+                    <div class="card-text">Hardware, software & systems integration</div>
                 </div>
 
                 <div class="floating-card floating-card-4">
@@ -1353,10 +1367,11 @@
                 <!-- Main hero content -->
                 <section id="home" class="hero">
                     <h1>Hi, I'm Ryan Hackney</h1>
-                    <p>ECE Grad • Cybersecurity • Developer</p>
+                    <p>IT Support &amp; Help Desk • ECE Graduate<br>Long-term interest in cybersecurity</p>
                     <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="#shop" class="btn">Check Out My Shop</a>
+                        <a href="#projects" class="btn">View My Projects</a>
                         <a href="resume.pdf" class="btn" style="background: #28a745; color: white;" download>Download Resume</a>
+                        <a href="#contact" class="btn">Contact Me</a>
                     </div>
                     <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; justify-content: center;">
                         <a href="https://github.com/hackn3y" style="color: white; font-size: 1.5rem;" target="_blank">
@@ -1387,18 +1402,24 @@
                     <img src="profile.jpg" alt="Ryan Hackney" width="400" height="400" fetchpriority="high" decoding="async">
                 </picture>
                 <p>I'm an Electrical and Computer Engineering graduate from The Ohio State University with a Google
-                    Cybersecurity Certificate, passionate about technology, security, and building things - whether it's
-                    secure systems, performance cars, or a thriving farm.</p>
+                    Cybersecurity Professional Certificate. I'm pursuing entry-level IT support and help desk roles,
+                    building on my engineering education and hands-on technical projects.</p>
 
-                <p><strong>Currently seeking opportunities in cybersecurity and software development.</strong></p>
+                <p><strong>My immediate goal is to grow in IT support, with a longer-term interest in SOC analysis and
+                    cybersecurity. I'm also open to electrical and computer engineering opportunities.</strong></p>
 
-                <p>When I'm not coding or studying security, you'll find me working on my farm raising goats, chickens,
+                <p>My projects include a Windows desktop tool for detecting commercial breaks in live sports, a cloud
+                    security monitoring system, and embedded and hardware/software integration work. They reflect the
+                    kind of methodical troubleshooting I enjoy: understanding how systems behave, isolating problems,
+                    and refining a practical solution.</p>
+
+                <p>Outside of technology, you'll find me working on my farm raising goats, chickens,
                     and bees (that's where the honey comes from!), building high-performance cars (full bolt-on BMW 335i
                     and a Camaro project), or playing guitar with my German Shepherd by my side.</p>
 
                 <p>I started this site to showcase my technical projects and sell products from my farm. Everything in
-                    the shop is handmade and the honey is locally sourced. Check out my blog for updates on my Camaro build and tech
-                    projects!</p>
+                    the shop is handmade and the honey is locally sourced. The blog shares the process and lessons
+                    behind projects ranging from engineering builds to security and desktop automation.</p>
 
                 <p><strong>Education & Certifications:</strong><br>
                     B.S. Electrical and Computer Engineering - The Ohio State University<br>
@@ -1412,21 +1433,21 @@
             <h2 class="section-title">Technical Skills</h2>
             <div class="skills-grid">
                 <div class="skill-card">
-                    <h3>🔒 Cybersecurity</h3>
+                    <h3>🖥️ IT Support & Systems</h3>
                     <ul>
-                        <li>Network Security</li>
-                        <li>Threat Analysis</li>
-                        <li>Security Auditing</li>
-                        <li>Incident Response</li>
+                        <li>Windows desktop systems</li>
+                        <li>Hardware/software troubleshooting</li>
+                        <li>Display and audio configuration</li>
+                        <li>Systems integration</li>
                     </ul>
                 </div>
                 <div class="skill-card">
-                    <h3>💻 Development</h3>
+                    <h3>🔒 Cybersecurity</h3>
                     <ul>
-                        <li>Python</li>
-                        <li>JavaScript</li>
-                        <li>Web Development</li>
-                        <li>Linux/Unix</li>
+                        <li>Network security</li>
+                        <li>Threat analysis</li>
+                        <li>Security monitoring</li>
+                        <li>Incident response fundamentals</li>
                     </ul>
                 </div>
                 <div class="skill-card">
@@ -1439,12 +1460,12 @@
                     </ul>
                 </div>
                 <div class="skill-card">
-                    <h3>🔧 Other Skills</h3>
+                    <h3>💻 Software & Automation</h3>
                     <ul>
-                        <li>Automotive Performance Tuning</li>
-                        <li>Agriculture & Beekeeping</li>
-                        <li>Business Operations</li>
-                        <li>Problem Solving</li>
+                        <li>Python</li>
+                        <li>OpenCV and OCR</li>
+                        <li>Linux/Unix</li>
+                        <li>JavaScript</li>
                     </ul>
                 </div>
             </div>
@@ -1466,6 +1487,20 @@
 
             <div class="projects-grid">
                 <!-- Featured & ML Projects -->
+                <a href="project-sports-ad-blocker.html" class="project-card" data-category="featured software">
+                    <span class="featured-badge">Featured</span>
+                    <h3>Live Sports Commercial Blackout Tool</h3>
+                    <p>Windows 11 desktop app that detects baseball and football broadcasts using visual templates and football scoreboard OCR, then covers the display and mutes the browser during commercial breaks.</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">OpenCV</span>
+                        <span class="tag">OCR</span>
+                        <span class="tag">Windows</span>
+                        <span class="tag">PyQt6</span>
+                    </div>
+                    <span class="project-link">View Details →</span>
+                </a>
+
                 <a href="project-security-monitoring.html" class="project-card" data-category="featured software">
                     <span class="featured-badge">Featured</span>
                     <h3>Serverless Security Monitoring Dashboard</h3>
@@ -1651,6 +1686,17 @@
             <h2 class="section-title">Latest Posts</h2>
             <div class="blog-grid">
                 <article class="blog-card">
+                    <a href="blog-post-sports-ad-blocker.html" class="card-link">
+                        <img src="sports-ad-blocker.svg" alt="Illustration of a live sports display with a commercial blackout overlay" loading="lazy">
+                        <div class="blog-card-content">
+                            <h3>Building a Live Sports Commercial Blackout Tool</h3>
+                            <p class="date">October 18, 2026</p>
+                            <p>How I built a Windows desktop app that recognizes live sports broadcasts, then blacks out the display and mutes the browser during commercials...</p>
+                            <span class="read-more">Read More →</span>
+                        </div>
+                    </a>
+                </article>
+                <article class="blog-card">
                     <a href="blog-post-security-monitoring.html" class="card-link">
                         <img src="security-monitoring-dashboard.png" alt="Serverless Security Monitoring Dashboard" loading="lazy">
                         <div class="blog-card-content">
@@ -1830,55 +1876,6 @@
     <script src="js/theme.js"></script>
     <script src="js/shop.js" defer></script>
 
-    <!-- Zoom effect script -->
-    <script>
-        (function() {
-            const zoomContainer = document.querySelector('.zoom-container');
-            const zoomContent = document.getElementById('heroZoomContent');
-            const floatingCards = document.querySelectorAll('.floating-card');
-
-            if (!zoomContainer || !zoomContent) return;
-
-            function updateHeroZoom() {
-                const rect = zoomContainer.getBoundingClientRect();
-                // Faster scroll: divide by smaller value for quicker progress
-                const scrollProgress = -rect.top / ((rect.height - window.innerHeight) * 0.6);
-                const progress = Math.max(0, Math.min(1, scrollProgress));
-
-                // Zoom from 1 to 0.4
-                const scale = 1 - (progress * 0.6);
-
-                // Fade from 1 to 0.2
-                const opacity = 1 - (progress * 0.8);
-
-                zoomContent.style.transform = `scale(${scale})`;
-                zoomContent.style.opacity = opacity;
-
-                // Parallax floating cards
-                floatingCards.forEach((card, index) => {
-                    const speed = (index + 1) * 40;
-                    const yOffset = progress * speed;
-                    const rotation = progress * (index % 2 === 0 ? 3 : -3);
-                    card.style.transform = `translateY(${yOffset}px) rotate(${rotation}deg)`;
-                });
-            }
-
-            // Update on scroll with throttling for performance
-            let ticking = false;
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    window.requestAnimationFrame(function() {
-                        updateHeroZoom();
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
-
-            // Initial update
-            updateHeroZoom();
-        })();
-    </script>
 </body>
 
 </html>

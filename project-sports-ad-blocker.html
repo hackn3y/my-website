@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical overview of a Windows 11 desktop tool that detects live sports broadcasts and blacks out the display while muting the browser during commercial breaks.">
+    <meta name="author" content="Ryan Hackney">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/project-sports-ad-blocker.html">
+    <meta property="og:title" content="Live Sports Commercial Blackout Tool - Ryan Hackney">
+    <meta property="og:description" content="Explore the Python, OpenCV, OCR, and PyQt6 design behind a desktop tool for detecting commercial breaks in live sports.">
+    <meta property="og:image" content="https://ryanhackney.com/sports-ad-blocker.svg">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/project-sports-ad-blocker.html">
+    <meta property="twitter:title" content="Live Sports Commercial Blackout Tool - Ryan Hackney">
+    <meta property="twitter:description" content="Explore the Python, OpenCV, OCR, and PyQt6 design behind a desktop tool for detecting commercial breaks in live sports.">
+    <meta property="twitter:image" content="https://ryanhackney.com/sports-ad-blocker.svg">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>Live Sports Commercial Blackout Tool - Ryan Hackney</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+        }
+
+        #site-header-placeholder { display: none; }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.5rem 5%;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex: 0 0 auto; min-width: 60px; }
+        nav ul { display: flex; flex-wrap: wrap; gap: 2rem; margin: 0; padding: 0; list-style: none; }
+        nav a { color: var(--accent-primary); text-decoration: none; transition: color 0.2s; }
+        nav a:hover { color: var(--accent-hover); }
+        nav a:visited { color: #c85a00; }
+        .theme-toggle, .cart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            color: var(--text-primary);
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0.5rem;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .hamburger-line { width: 24px; height: 2px; background: var(--text-primary); }
+        .hamburger.active .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active .hamburger-line:nth-child(2) { opacity: 0; }
+        .hamburger.active .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
+        .cart-badge { position: relative; }
+        .cart-badge .badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            color: white;
+            background: var(--accent-primary);
+            border-radius: 999px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .project-detail { max-width: 1000px; margin: 4rem auto; padding: 0 5%; }
+        .back-link, .project-content a { color: var(--accent-primary); }
+        .back-link { display: inline-block; margin-bottom: 2rem; font-weight: 600; }
+        .project-detail h1 { font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.2; margin-bottom: 1rem; }
+        .project-meta {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .tag {
+            padding: 0.25rem 0.75rem;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            font-size: 0.9rem;
+        }
+        .project-content { font-size: 1.05rem; }
+        .project-content p, .project-content li { color: var(--text-secondary); }
+        .project-content h2 { margin: 2.5rem 0 1rem; }
+        .project-content h3 { margin: 1.5rem 0 0.75rem; }
+        .project-content ul { padding-left: 2rem; }
+        .project-content li { margin-bottom: 0.5rem; }
+        .highlight-box {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 8px 8px 0;
+        }
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+        .social-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.75rem; }
+        .social-links a { color: var(--accent-primary); }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-center {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                max-height: 0;
+                overflow: hidden;
+                background: transparent;
+                transition: max-height 0.3s ease, background 0.3s ease;
+                z-index: 1000;
+            }
+            .nav-center.active {
+                max-height: 500px;
+                overflow-y: auto;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+            }
+            .nav-center ul { flex-direction: column; gap: 0; }
+            .nav-center ul li { border-bottom: 1px solid var(--border-color); }
+            .nav-center ul li a { display: block; padding: 1rem 5%; }
+            .nav-inner { gap: 0.5rem; }
+            .project-detail { margin: 2rem auto; }
+        }
+    </style>
+    <link rel="stylesheet" href="content-layout.css">
+</head>
+<body>
+    <div id="site-header-placeholder" aria-hidden="true"></div>
+
+    <article class="project-detail">
+        <a href="index.html#projects" class="back-link">← Back to Projects</a>
+        <h1>Live Sports Commercial Blackout Tool</h1>
+        <div class="project-meta">
+            <strong>Platform:</strong> Windows 11 • <strong>Type:</strong> Desktop automation
+            <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">OpenCV</span>
+                <span class="tag">OCR</span>
+                <span class="tag">MSS</span>
+                <span class="tag">PyQt6</span>
+                <span class="tag">Windows</span>
+            </div>
+        </div>
+
+        <div class="project-content">
+            <h2>Project Overview</h2>
+            <p>This Windows desktop application detects when a live baseball or football broadcast goes to a commercial break. It covers the selected display with a black overlay and mutes the target browser, then restores the picture and audio when live coverage returns.</p>
+
+            <div class="highlight-box">
+                <strong>Technical summary</strong>
+                <ul>
+                    <li>Captures a selected monitor using MSS and analyzes frames with OpenCV.</li>
+                    <li>Matches configured scoreboard and broadcast-watermark regions against calibrated templates.</li>
+                    <li>Uses football scoreboard OCR as a second signal for recognizing live play.</li>
+                    <li>Shows a borderless PyQt6 overlay and controls audio for a selected browser process.</li>
+                </ul>
+            </div>
+
+            <h2>Detection Architecture</h2>
+            <p>The detector samples the selected display and checks regions of interest for visual anchors that indicate live game coverage. Templates, regions, and confidence thresholds are configurable, allowing the profiles to be tuned for different broadcast graphics and display layouts.</p>
+            <p>Football mode supplements image matching with OCR. It looks for a game clock alongside a period or down-and-distance cue, providing another indication that the broadcast is showing live play. The app includes baseball and football profiles and can switch between them after confirming the alternate sport over multiple frames.</p>
+            <p>A separate badge-detection mode supports on-demand content by looking for an on-screen ad or commercial indicator.</p>
+
+            <h2>Reliable State Changes</h2>
+            <p>Broadcast graphics are not always present: scoreboards can disappear during replays, while a channel logo may remain visible through an ad break. The app uses debounce and grace periods to handle brief changes without rapidly switching states.</p>
+            <p>Returning from a blackout requires stronger evidence than keeping the picture visible. Recovery requires a confirmed scoreboard match or football OCR rather than relying on a familiar channel logo alone. This helps avoid restoring the picture prematurely when the broadcast is still in a commercial.</p>
+
+            <h2>Windows Integration and Configuration</h2>
+            <p>When a break is confirmed, a borderless, always-on-top PyQt6 window covers the target display and the audio component mutes the selected browser process, such as Chrome, Brave, or Edge. Once live content is confirmed, the overlay is removed and audio is restored.</p>
+            <p>Monitor selection, browser executables, capture rate, templates, and detection thresholds are configurable. Calibration commands and status logs help inspect detection behavior and troubleshoot missed or premature transitions.</p>
+
+            <h2>Limitations</h2>
+            <p>This is visual detection, not a universal way to identify every advertisement. Broadcast layouts vary by sport and network, and OCR or template matching can miss unfamiliar graphics or mistake similar ones for a match. Additional broadcasts may require their own calibrated templates and tuning.</p>
+
+            <h2>Project Links</h2>
+            <ul>
+                <li><a href="https://github.com/hackn3y/sports-ad-blocker" target="_blank" rel="noopener noreferrer">View the source code and setup instructions on GitHub</a></li>
+                <li><a href="blog-post-sports-ad-blocker.html">Read the blog post about building the tool</a></li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

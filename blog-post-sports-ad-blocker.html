@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I built a Windows 11 Python desktop app that detects live sports broadcasts and blacks out the display while muting the browser during commercial breaks.">
+    <meta name="author" content="Ryan Hackney">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/blog-post-sports-ad-blocker.html">
+    <meta property="og:title" content="Building a Live Sports Commercial Blackout Tool - Ryan Hackney">
+    <meta property="og:description" content="A Windows desktop project combining screen capture, OpenCV, OCR, a Qt overlay, and browser audio control to detect commercial breaks in live sports.">
+    <meta property="og:image" content="https://ryanhackney.com/sports-ad-blocker.svg">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/blog-post-sports-ad-blocker.html">
+    <meta property="twitter:title" content="Building a Live Sports Commercial Blackout Tool - Ryan Hackney">
+    <meta property="twitter:description" content="A Windows desktop project combining screen capture, OpenCV, OCR, a Qt overlay, and browser audio control to detect commercial breaks in live sports.">
+    <meta property="twitter:image" content="https://ryanhackney.com/sports-ad-blocker.svg">
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>Building a Live Sports Commercial Blackout Tool - Ryan Hackney</title>
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode {
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.5rem 5%;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; }
+        nav ul { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+        nav a { color: var(--accent-primary); text-decoration: none; }
+        nav a:hover { color: var(--accent-hover); }
+        .theme-toggle, .cart-btn {
+            color: var(--text-primary);
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0.5rem;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .hamburger-line { width: 24px; height: 2px; background: var(--text-primary); }
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .blog-post { max-width: 900px; margin: 4rem auto; padding: 0 5%; }
+        .back-link { display: inline-block; margin-bottom: 2rem; color: var(--accent-primary); font-weight: 600; }
+        .blog-post h1 { font-size: clamp(2rem, 5vw, 2.7rem); line-height: 1.2; margin-bottom: 1rem; }
+        .blog-meta { margin-bottom: 2rem; padding-bottom: 1rem; color: var(--text-secondary); border-bottom: 2px solid var(--border-color); }
+        .blog-content { font-size: 1.08rem; }
+        .blog-content p, .blog-content li { color: var(--text-secondary); }
+        .blog-content h2 { margin: 2rem 0 1rem; }
+        .blog-content h3 { margin: 1.5rem 0 0.75rem; }
+        .blog-content ul { padding-left: 2rem; }
+        .blog-content li { margin-bottom: 0.5rem; }
+        .blog-content a { color: var(--accent-primary); }
+        .highlight-box {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .social-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.75rem; }
+        .social-links a { color: var(--accent-primary); }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: 1rem 5%;
+                background: var(--bg-secondary);
+            }
+            .nav-center.active { display: block; }
+            .nav-center ul { flex-direction: column; gap: 0.75rem; padding: 0; }
+            .hamburger { display: flex; }
+            .blog-post { margin: 2rem auto; }
+        }
+    </style>
+    <link rel="stylesheet" href="content-layout.css">
+</head>
+<body>
+    <article class="blog-post">
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+        <h1>Building a Live Sports Commercial Blackout Tool</h1>
+        <div class="blog-meta">
+            <strong>Published:</strong> October 18, 2026 • <strong>Category:</strong> Windows Desktop Automation • <strong>Read Time:</strong> 4 min
+        </div>
+
+        <div class="blog-content">
+            <p>I built a Windows desktop tool to make watching live sports more enjoyable: when it detects that a game has gone to a commercial break, it covers the selected display with a black overlay and mutes the target browser. When the broadcast returns, it restores the picture and audio.</p>
+
+            <p>What began as an ad-blocking idea turned into a systems problem. Live sports do not consistently display a simple “Ad” label, and the on-screen graphics can change during replays, camera cuts, and breaks in play. The app therefore looks for signs that the broadcast is still live instead of relying on one commercial badge.</p>
+
+            <div class="highlight-box">
+                <strong>Project at a glance</strong>
+                <ul>
+                    <li>Windows 11 desktop application built with Python</li>
+                    <li>Screen capture and visual matching with MSS and OpenCV</li>
+                    <li>Baseball and football profiles, with automatic sport switching</li>
+                    <li>Football scoreboard OCR as an additional detection signal</li>
+                    <li>Configurable, borderless blackout overlay and browser audio control</li>
+                </ul>
+            </div>
+
+            <h2>How the detection works</h2>
+            <p>In sports mode, the app captures frames from a selected monitor and checks configured regions for two visual anchors: the scoreboard and the broadcast watermark or channel bug. OpenCV compares those regions with calibrated templates. The settings file stores sport-specific templates, regions of interest, and confidence thresholds, so the detection can be tuned for the graphics and display being used.</p>
+
+            <p>Football broadcasts also have an OCR fallback. It looks for a game clock together with a period or down-and-distance cue. This gives the football profile a second way to recognize live play when a fixed scoreboard image is not a good match.</p>
+
+            <p>The application includes baseball and football profiles and can switch between them after confirming the alternate sport over multiple frames. There is also a separate badge-detection mode for on-demand content that uses an on-screen ad or commercial indicator.</p>
+
+            <h2>Avoiding false blackouts and premature recovery</h2>
+            <p>A scoreboard can disappear during a replay, and broadcast logos can remain on screen during commercials. Treating either one as a definitive answer would cause distracting flashes or restore the picture at the wrong time.</p>
+
+            <p>While the picture is visible, the sports detector can keep it visible when the scoreboard or broadcast bug indicates game coverage. It uses debounce and grace periods to tolerate brief changes. Once the display has blacked out, recovery is stricter: the detector requires a confirmed scoreboard match (or football OCR), rather than reopening the picture just because a familiar channel logo appears.</p>
+
+            <p>These rules are configurable. That made it possible to tune the trade-off between reacting quickly and avoiding false transitions, while keeping the code adaptable to different broadcast layouts.</p>
+
+            <h2>Windows display and audio integration</h2>
+            <p>Detection is only one part of the tool. When a commercial break is confirmed, a PyQt6 overlay creates a borderless, always-on-top blackout on the target display. The audio component mutes the selected browser process, such as Chrome, Brave, or Edge. When live content is confirmed again, the overlay and mute are cleared.</p>
+
+            <p>Monitor selection, browser executables, capture rate, templates, and detection settings are kept in configuration rather than being hard-coded into the detection logic. Calibration commands and status logs help inspect what the detector sees and diagnose missed or premature transitions.</p>
+
+            <h2>Limitations and lessons</h2>
+            <p>This is visual detection, not a universal way to identify every advertisement. Broadcast graphics vary by sport, network, and layout, and OCR or template matching can miss unfamiliar graphics or mistake similar ones for a match. The app currently includes baseball and football sports profiles; other broadcasts may need their own calibrated templates and tuning.</p>
+
+            <p>The project gave me practical experience connecting screen capture, image processing, OCR, Windows audio control, display configuration, and a desktop UI into one application. It also reinforced a troubleshooting habit that applies beyond this project: make system state observable, isolate the signal that caused a transition, and tune one variable at a time.</p>
+
+            <h2>Source code</h2>
+            <p>The project source and setup instructions are available on <a href="https://github.com/hackn3y/sports-ad-blocker" target="_blank" rel="noopener noreferrer">GitHub: sports-ad-blocker</a>.</p>
+
+            <p>This project sits at the intersection of IT support and engineering: it has to work with real Windows processes, displays, and audio devices, while the detection logic has to stay reliable as the broadcast changes.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

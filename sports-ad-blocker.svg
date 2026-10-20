@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Live sports commercial blackout tool</title>
+  <desc id="desc">A generic sports scoreboard on a display transitioning to a black commercial overlay.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17212b"/>
+      <stop offset="1" stop-color="#090d12"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect x="125" y="88" width="950" height="420" rx="28" fill="#202a33" stroke="#ff6b35" stroke-width="5"/>
+  <rect x="165" y="128" width="870" height="340" rx="12" fill="#080b0f"/>
+  <rect x="196" y="158" width="348" height="94" rx="12" fill="#1a2630"/>
+  <circle cx="225" cy="190" r="10" fill="#ff6b35"/>
+  <text x="250" y="199" fill="#e6edf3" font-family="Arial, sans-serif" font-size="28" font-weight="700">LIVE GAME</text>
+  <text x="220" y="232" fill="#9ba9b5" font-family="Arial, sans-serif" font-size="22">HOME  3  -  2  AWAY</text>
+  <rect x="578" y="158" width="425" height="94" rx="12" fill="#080b0f" stroke="#ff6b35" stroke-width="3" stroke-dasharray="10 10"/>
+  <path d="M620 205h335" fill="none" stroke="#ff6b35" stroke-width="8" stroke-linecap="round"/>
+  <text x="600" y="305" fill="#e6edf3" font-family="Arial, sans-serif" font-size="40" font-weight="700">SPORTS AD BLACKOUT</text>
+  <text x="600" y="358" fill="#aebbc6" font-family="Arial, sans-serif" font-size="25">Windows • Python • OpenCV • OCR</text>
+  <path d="M465 512h270l42 40H423z" fill="#36434e"/>
+</svg>
