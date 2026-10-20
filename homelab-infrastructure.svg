@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Segmented virtualized homelab</title>
+  <desc id="desc">A Proxmox server connects through a managed switch and firewall to segmented networks, virtual machines, and local AI services.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101216"/>
+      <stop offset="1" stop-color="#20242b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff6b35"/>
+      <stop offset="1" stop-color="#ff9b57"/>
+    </linearGradient>
+    <style>
+      .label { fill: #f3f4f6; font: 600 24px system-ui, sans-serif; }
+      .detail { fill: #b8bec8; font: 18px system-ui, sans-serif; }
+      .small { fill: #d8dde5; font: 16px system-ui, sans-serif; }
+      .box { fill: #191d24; stroke: #454b56; stroke-width: 2; }
+      .line { fill: none; stroke: url(#accent); stroke-width: 4; }
+    </style>
+  </defs>
+  <rect width="1200" height="675" rx="24" fill="url(#background)"/>
+  <path d="M0 520H1200" stroke="#ff6b35" stroke-opacity=".18" stroke-width="2"/>
+  <text x="64" y="76" fill="#ff8c42" font-family="system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="3">HOMELAB / LOCAL AI</text>
+  <text x="64" y="122" class="label" font-size="32">Virtualized infrastructure, segmented by design</text>
+
+  <rect x="70" y="220" width="250" height="160" rx="16" class="box"/>
+  <text x="195" y="270" text-anchor="middle" class="label">Proxmox VE</text>
+  <text x="195" y="308" text-anchor="middle" class="detail">Dell Precision 7810</text>
+  <text x="195" y="340" text-anchor="middle" class="small">VMs · GPU passthrough</text>
+  <path d="M320 300H425" class="line"/>
+
+  <rect x="425" y="220" width="250" height="160" rx="16" class="box"/>
+  <text x="550" y="270" text-anchor="middle" class="label">OPNsense + Aruba</text>
+  <text x="550" y="308" text-anchor="middle" class="detail">Firewall · managed switch</text>
+  <text x="550" y="340" text-anchor="middle" class="small">Five VLANs</text>
+  <path d="M675 300H780" class="line"/>
+
+  <rect x="780" y="180" width="350" height="240" rx="16" class="box"/>
+  <text x="955" y="224" text-anchor="middle" class="label">Virtual services</text>
+  <text x="825" y="274" class="small">Jellyfin · NFS media</text>
+  <text x="825" y="316" class="small">Ollama · Open WebUI</text>
+  <text x="825" y="358" class="small">Windows Server · Kali</text>
+  <g fill="#ff6b35">
+    <circle cx="1090" cy="268" r="7"/>
+    <circle cx="1090" cy="310" r="7"/>
+    <circle cx="1090" cy="352" r="7"/>
+  </g>
+
+  <g transform="translate(70 470)">
+    <rect width="190" height="82" rx="12" fill="#242a33"/>
+    <text x="95" y="34" text-anchor="middle" class="small">Management</text>
+    <text x="95" y="60" text-anchor="middle" class="detail">VLAN 10</text>
+  </g>
+  <g transform="translate(290 470)">
+    <rect width="190" height="82" rx="12" fill="#242a33"/>
+    <text x="95" y="34" text-anchor="middle" class="small">Servers</text>
+    <text x="95" y="60" text-anchor="middle" class="detail">VLAN 20</text>
+  </g>
+  <g transform="translate(510 470)">
+    <rect width="190" height="82" rx="12" fill="#242a33"/>
+    <text x="95" y="34" text-anchor="middle" class="small">Clients</text>
+    <text x="95" y="60" text-anchor="middle" class="detail">VLAN 30</text>
+  </g>
+  <g transform="translate(730 470)">
+    <rect width="190" height="82" rx="12" fill="#242a33"/>
+    <text x="95" y="34" text-anchor="middle" class="small">Attack lab</text>
+    <text x="95" y="60" text-anchor="middle" class="detail">VLAN 40</text>
+  </g>
+  <g transform="translate(950 470)">
+    <rect width="180" height="82" rx="12" fill="#242a33"/>
+    <text x="90" y="34" text-anchor="middle" class="small">DMZ</text>
+    <text x="90" y="60" text-anchor="middle" class="detail">VLAN 50</text>
+  </g>
+  <text x="600" y="620" text-anchor="middle" fill="#9da5b1" font-family="system-ui, sans-serif" font-size="17">Build · troubleshoot · recover · document</text>
+</svg>
