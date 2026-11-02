@@ -1,4 +1,7 @@
 (function () {
+  const THEME_VERSION_KEY = 'theme-preference-version';
+  const THEME_VERSION = 'dark-default-v1';
+
   // Initialize theme + header-related bindings. Guarded to run once.
   function initTheme() {
     if (initTheme._inited) return;
@@ -143,14 +146,19 @@
       setThemeState(!isLight);
     };
 
-    // Apply persisted theme if present
+    // Reset pre-versioned preferences once so the dark default takes effect.
     try {
-      const savedTheme = localStorage.getItem('theme');
+      let savedTheme = localStorage.getItem('theme');
+      if (localStorage.getItem(THEME_VERSION_KEY) !== THEME_VERSION) {
+        savedTheme = 'dark';
+        localStorage.setItem('theme', savedTheme);
+        localStorage.setItem(THEME_VERSION_KEY, THEME_VERSION);
+      }
+
       if (savedTheme === 'light') {
         setThemeState(true);
       } else {
-        // Apply seasonal colors even if staying in dark mode
-        applySeasonalColors();
+        setThemeState(false);
       }
     } catch (e) { /* ignore */ }
 

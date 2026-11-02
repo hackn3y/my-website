@@ -216,16 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
         stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
     }
 
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeText = document.getElementById('theme-text');
-
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        themeIcon.textContent = '☀️';
-        themeText.textContent = 'Light Mode';
-    }
-
     // If a blog page requested the cart to open, handle it and clear the flag
     try {
         if (localStorage.getItem('openCart') === '1') {

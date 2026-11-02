@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title description">
+  <title id="title">Active Directory and telemetry lab network</title>
+  <desc id="description">An OPNsense gateway routes between a Windows Server domain controller on VLAN 20 and a Windows 11 client on VLAN 30, hosted in a Proxmox VE lab.</desc>
+  <defs>
+    <style>
+      .canvas { fill: #101318; }
+      .frame { fill: #171c23; stroke: #414956; stroke-width: 2; }
+      .router { fill: #242d38; stroke: #ff8a50; stroke-width: 2; }
+      .server { fill: #1d2c3b; stroke: #69aef7; stroke-width: 2; }
+      .client { fill: #1e302d; stroke: #64c7a2; stroke-width: 2; }
+      .line { fill: none; stroke: #8b95a3; stroke-width: 3; }
+      .title { fill: #f4f6f8; font: 700 24px Arial, sans-serif; }
+      .label { fill: #f4f6f8; font: 700 18px Arial, sans-serif; }
+      .detail { fill: #bec6d0; font: 15px Arial, sans-serif; }
+      .accent { fill: #ff9a68; font: 700 15px Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect class="canvas" width="960" height="500" rx="22"/>
+  <rect class="frame" x="30" y="28" width="900" height="444" rx="18"/>
+  <text class="title" x="58" y="68">Proxmox VE · 192.168.10.220/24</text>
+
+  <path class="line" d="M480 190v46M250 236h460M250 236v48M710 236v48"/>
+  <circle cx="480" cy="236" r="6" fill="#ff8a50"/>
+
+  <rect class="router" x="330" y="105" width="300" height="86" rx="14"/>
+  <text class="label" x="480" y="140" text-anchor="middle">OPNsense Gateway</text>
+  <text class="detail" x="480" y="166" text-anchor="middle">Inter-VLAN routing and firewall</text>
+
+  <rect class="server" x="75" y="284" width="350" height="145" rx="14"/>
+  <text class="accent" x="100" y="316">VLAN 20 · SERVERS</text>
+  <text class="label" x="100" y="350">Windows Server · Domain Controller</text>
+  <text class="detail" x="100" y="379">10.0.20.102 · lab.local · DNS</text>
+  <text class="detail" x="100" y="405">Gateway 10.0.20.1 · DHCP .100–.200</text>
+
+  <rect class="client" x="535" y="284" width="350" height="145" rx="14"/>
+  <text class="accent" x="560" y="316">VLAN 30 · CLIENTS</text>
+  <text class="label" x="560" y="350">Windows 11 Enterprise</text>
+  <text class="detail" x="560" y="379">10.0.30.50 · Domain-joined</text>
+  <text class="detail" x="560" y="405">Gateway 10.0.30.1 · DNS 10.0.20.102</text>
+</svg>

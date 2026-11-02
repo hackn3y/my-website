@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A segmented Proxmox lab with OPNsense VLANs, Windows Server Active Directory, a Windows 11 domain client, Group Policy, and Sysmon telemetry.">
+    <meta name="author" content="Ryan Hackney">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ryanhackney.com/blog-post-ad-telemetry-lab.html">
+    <meta property="og:title" content="Building an Enterprise-Grade Active Directory &amp; Telemetry Lab on Proxmox VE - Ryan Hackney">
+    <meta property="og:description" content="How I built a segmented Proxmox lab with OPNsense, Active Directory, Group Policy, and Microsoft Sysmon.">
+    <meta property="og:image" content="https://ryanhackney.com/ad-telemetry-lab.svg">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ryanhackney.com/blog-post-ad-telemetry-lab.html">
+    <meta property="twitter:title" content="Building an Enterprise-Grade Active Directory &amp; Telemetry Lab on Proxmox VE - Ryan Hackney">
+    <meta property="twitter:description" content="How I built a segmented Proxmox lab with OPNsense, Active Directory, Group Policy, and Microsoft Sysmon.">
+    <meta property="twitter:image" content="https://ryanhackney.com/ad-telemetry-lab.svg">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Ryan Hackney">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>Building an Enterprise-Grade Active Directory &amp; Telemetry Lab on Proxmox VE - Ryan Hackney</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-primary: #ff6b35;
+            --accent-hover: #ff4500;
+            --border-color: #333;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+        body.light-mode {
+            --bg-primary: #fff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555;
+            --border-color: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.5rem 5%;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-center { display: flex; justify-content: center; flex: 1 1 auto; }
+        .nav-controls { display: flex; align-items: center; gap: 0.6rem; }
+        nav ul { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+        nav a { color: var(--accent-primary); text-decoration: none; }
+        nav a:hover { color: var(--accent-hover); }
+        .theme-toggle, .cart-btn { color: var(--text-primary); background: transparent; border: 0; cursor: pointer; }
+        .hamburger { display: none; flex-direction: column; gap: 4px; padding: 0.5rem; background: transparent; border: 0; cursor: pointer; }
+        .hamburger-line { width: 24px; height: 2px; background: var(--text-primary); }
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+        .blog-post { max-width: 1000px; margin: 4rem auto; padding: 0 5%; }
+        .back-link { display: inline-block; margin-bottom: 2rem; color: var(--accent-primary); font-weight: 600; }
+        .blog-post h1 { font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.2; margin-bottom: 1rem; }
+        .blog-meta { margin-bottom: 2rem; padding-bottom: 1rem; color: var(--text-secondary); border-bottom: 2px solid var(--border-color); }
+        .blog-content { font-size: 1.08rem; }
+        .blog-content p, .blog-content li { color: var(--text-secondary); }
+        .blog-content h2 { margin: 2rem 0 1rem; }
+        .blog-content h3 { margin: 1.5rem 0 0.75rem; }
+        .blog-content ul, .blog-content ol { padding-left: 2rem; }
+        .blog-content li { margin-bottom: 0.5rem; }
+        .blog-content a { color: var(--accent-primary); }
+        .blog-content figure { margin: 2rem 0; }
+        .blog-content figure img { display: block; width: 100%; height: auto; border-radius: 12px; }
+        .blog-content figcaption { margin-top: 0.75rem; color: var(--text-secondary); font-size: 0.9rem; text-align: center; }
+        .blog-content pre {
+            overflow-x: auto;
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .blog-content code { font-family: Consolas, 'Courier New', monospace; }
+        .highlight-box {
+            margin: 2rem 0;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 8px 8px 0;
+        }
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+        .social-links { display: flex; justify-content: center; gap: 1rem; margin-top: 0.75rem; }
+        .social-links a { color: var(--accent-primary); }
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: 1rem 5%;
+                background: var(--bg-secondary);
+            }
+            .nav-center.active { display: block; }
+            .nav-center ul { flex-direction: column; gap: 0.75rem; padding: 0; }
+            .hamburger { display: flex; }
+            .blog-post { margin-top: 2rem; margin-bottom: 2rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="content-layout.css">
+</head>
+<body>
+    <article class="blog-post">
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+        <h1>Building an Enterprise-Grade Active Directory &amp; Telemetry Lab on Proxmox VE</h1>
+        <div class="blog-meta">
+            <strong>Published:</strong> November 1, 2026 • <strong>Category:</strong> Systems &amp; Security • <strong>Read Time:</strong> 8 min
+        </div>
+
+        <div class="blog-content">
+            <p>A dedicated homelab is a practical way to learn enterprise systems administration, network segmentation, and defensive security monitoring. I built this environment on Proxmox VE with an OPNsense firewall, a Windows Server domain controller, and a Windows 11 Enterprise workstation on separate networks.</p>
+            <p>The project ties together the fundamentals: route isolated subnets, make clients find domain services through DNS, organize computers and users in Active Directory, apply workstation policy, and collect endpoint events with Microsoft Sysmon.</p>
+
+            <figure>
+                <img src="ad-telemetry-lab.svg" alt="Proxmox lab topology showing an OPNsense gateway, a Windows Server domain controller on VLAN 20, and a Windows 11 client on VLAN 30">
+                <figcaption>The domain controller and workstation sit on separate OPNsense-managed VLANs.</figcaption>
+            </figure>
+
+            <div class="highlight-box">
+                <strong>Lab at a glance</strong>
+                <ul>
+                    <li>Proxmox VE host: <code>192.168.10.220/24</code></li>
+                    <li>VLAN 20 server network: <code>10.0.20.0/24</code>, gateway <code>10.0.20.1</code></li>
+                    <li>Windows Server domain controller: <code>10.0.20.102</code>, domain <code>lab.local</code></li>
+                    <li>VLAN 30 client network: <code>10.0.30.0/24</code>, gateway <code>10.0.30.1</code></li>
+                    <li>Windows 11 client: <code>10.0.30.50</code>, using the domain controller for DNS</li>
+                </ul>
+            </div>
+
+            <h2>1. Segmenting the virtual network</h2>
+            <p>I used OPNsense as the virtual firewall and gateway for two separate networks. VLAN 20 is for servers, and VLAN 30 is for clients. Each network has its own gateway and DHCP scope, with dynamic addresses from <code>.100</code> through <code>.200</code>.</p>
+            <ul>
+                <li><strong>VLAN 20:</strong> <code>10.0.20.0/24</code>, gateway <code>10.0.20.1</code>, DHCP pool <code>10.0.20.100–10.0.20.200</code>.</li>
+                <li><strong>VLAN 30:</strong> <code>10.0.30.0/24</code>, gateway <code>10.0.30.1</code>, DHCP pool <code>10.0.30.100–10.0.30.200</code>.</li>
+            </ul>
+            <p>The domain controller uses a static address outside the server pool, and I assigned the Windows client <code>10.0.30.50</code>, outside the client pool. I added firewall rules for the traffic needed to test and use domain services across the VLAN boundary. In a segmented lab, it is better to allow only the required traffic than to treat inter-VLAN routing as unrestricted access.</p>
+
+            <h2>2. Installing Active Directory and getting DNS right</h2>
+            <p>I configured Windows Server with the static address <code>10.0.20.102/24</code>, then promoted it to a domain controller for <code>lab.local</code> with integrated DNS. On the domain controller, I verified the domain name with:</p>
+            <pre><code>(Get-ADDomain).DNSRoot</code></pre>
+            <p>The first cross-subnet lookup exposed a DNS registration issue: <code>nslookup lab.local</code> returned an address on another server interface, <code>192.168.50.10</code>, instead of the domain controller's server-network address. In DNS Manager, I corrected the zone's host (A) record to <code>10.0.20.102</code>, then cleared the DNS server cache and re-registered the DNS client:</p>
+            <pre><code>Clear-DnsServerCache
+Register-DnsClient</code></pre>
+            <p>This was a good reminder that a multihomed server can publish an address clients cannot use. I verified the record from the client network before moving on; when a server has multiple interfaces, its DNS registration settings and the records it publishes should also be reviewed.</p>
+
+            <h2>3. Joining the Windows 11 client</h2>
+            <p>The workstation is on VLAN 30 with address <code>10.0.30.50/24</code>, gateway <code>10.0.30.1</code>, and preferred DNS server <code>10.0.20.102</code>. Pointing the client at the domain controller for DNS is essential: domain discovery depends on the AD DNS records, not just general internet name resolution.</p>
+            <p>After confirming reachability and that <code>lab.local</code> resolved to <code>10.0.20.102</code>, I joined the workstation to the domain from an elevated PowerShell session:</p>
+            <pre><code>Test-Connection 10.0.20.102
+Resolve-DnsName lab.local
+Add-Computer -DomainName "lab.local" -Credential (Get-Credential "lab\Administrator") -Restart</code></pre>
+            <p>Using <code>Get-Credential</code> prompts for the password rather than putting it in the command itself. I checked the DNS result first so a failed join would not be confused with a name-resolution problem.</p>
+
+            <h2>4. Organizing accounts and targeting Group Policy</h2>
+            <p>I created an <code>Enterprise</code> organizational unit with separate child OUs for workstations, users, and service accounts. After the join, I moved the computer object from the default <code>Computers</code> container into <code>Enterprise → Workstations</code>.</p>
+            <pre><code>lab.local
+└── Enterprise
+    ├── Workstations
+    ├── Users
+    └── Service Accounts</code></pre>
+            <p>In Group Policy Management, I created a <code>Workstation-Security-Baseline</code> GPO and linked it to the Workstations OU for computer-scoped workstation settings. I then refreshed policy on the client:</p>
+            <pre><code>gpupdate /force</code></pre>
+            <p><strong>Policy scope matters:</strong> a GPO linked to the Workstations OU is appropriate for computer settings targeted at those machines, but domain account password requirements should be configured at the domain level or with fine-grained password policies. I treat those as separate policy decisions and verify that settings apply to the intended accounts and computers.</p>
+
+            <h2>5. Capturing endpoint telemetry with Sysmon</h2>
+            <p>To make activity on the Windows workstation observable, I installed Microsoft Sysmon from Sysinternals and used a baseline XML configuration. Sysmon runs as a service and records detailed system activity according to the selected configuration.</p>
+            <p>After extracting the tools and configuration into <code>C:\Tools\Sysmon\</code>, I installed it from an elevated PowerShell prompt:</p>
+            <pre><code>Set-Location C:\Tools\Sysmon
+.\Sysmon64.exe -i sysmonconfig.xml</code></pre>
+            <p>I verified events in Event Viewer under <strong>Applications and Services Logs → Microsoft → Windows → Sysmon → Operational</strong>. A useful next step is to review the configuration and generated events together: collecting more data is not automatically better if the signal is difficult to interpret or creates unnecessary volume.</p>
+
+            <h2>What this lab makes possible</h2>
+            <p>This build brought together isolated server and client networks, an Active Directory domain with working cross-subnet DNS, a logical OU structure, a workstation GPO, and endpoint telemetry. Each layer can now be tested independently when something does not work: routing and firewall access, DNS, domain membership, policy application, or event generation.</p>
+            <p>Next, I plan to centralize the Sysmon data with a Wazuh agent and use authorized, isolated simulations to evaluate what the telemetry detects. That will turn the workstation's local event log into a starting point for broader monitoring and detection practice.</p>
+            <p>For the broader virtualization and network layout, see the <a href="project-homelab.html">homelab project page</a> and my post on <a href="blog-post-homelab.html">building a segmented Proxmox homelab</a>.</p>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Ryan Hackney. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/rhackn3y/">Instagram</a>
+            <a href="https://x.com/Hackn3y">Twitter</a>
+            <a href="https://www.linkedin.com/in/ryan-hackney-0b9230132/">LinkedIn</a>
+        </div>
+    </footer>
+    <script src="js/header.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>
